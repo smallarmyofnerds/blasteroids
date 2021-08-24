@@ -10,5 +10,8 @@ class HelloMessage(Message):
     def encode(self):
         return super(HelloMessage, self).encode() + self.encode_string(self.player_name)
     
+    def handle(self, state):
+        state.handle_HELO(self)
+    
     def __repr__(self):
         return f'{super(HelloMessage, self).__repr__()}:{self.player_name}'
