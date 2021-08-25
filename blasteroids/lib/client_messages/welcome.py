@@ -1,4 +1,6 @@
 from .message import Message
+from .message_decoder import MessageDecoder
+
 
 class WelcomeMessage(Message):
     TYPE = 'WELC'
@@ -13,3 +15,9 @@ class WelcomeMessage(Message):
 
     def __repr__(self):
         return f'{super(WelcomeMessage, self).__repr__()}:{self.server_name}:{self.welcome_message}'
+
+
+class WelcomeMessageDecoder(MessageDecoder):
+    def decode(self, encoded_message):
+        player_name = encoded_message.pop_string()
+        return WelcomeMessage(player_name)
