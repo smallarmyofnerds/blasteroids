@@ -1,5 +1,5 @@
 from .message import Message
-from .message_decoder import MessageDecoder
+from .message_encoder import MessageEncoder
 
 
 class WelcomeMessage(Message):
@@ -10,14 +10,17 @@ class WelcomeMessage(Message):
         self.server_name = server_name
         self.welcome_message = welcome_message
 
-    def encode(self):
-        return super(WelcomeMessage, self).encode() + self.encode_string(self.server_name) + self.encode_string(self.welcome_message)
-
     def __repr__(self):
         return f'{super(WelcomeMessage, self).__repr__()}:{self.server_name}:{self.welcome_message}'
 
 
-class WelcomeMessageDecoder(MessageDecoder):
+class WelcomeMessageEncoder(MessageEncoder):
+    def __init__(self):
+        super(WelcomeMessageEncoder, self).__init__(WelcomeMessage.TYPE)
+
+    def encode(self, message):
+        return super(WelcomeMessageEncoder, self)._encode_type() + self._encode_string(message.server_name) + self._encode_string(message.welcome_message)
+
     def decode(self, encoded_message):
         player_name = encoded_message.pop_string()
         return WelcomeMessage(player_name)

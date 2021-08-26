@@ -1,3 +1,4 @@
+from blasteroids.lib.client_messages.entry import EntryMessage
 import threading
 
 
@@ -17,7 +18,7 @@ class Hopper:
 
     def remove(self, player):
         self.players.remove(player)
-
+    
 
 class Lobby:
     def __init__(self, hub):
@@ -27,9 +28,13 @@ class Lobby:
 
     def add_player(self, player):
         self.players.append(player)
+        player.handle_message(EntryMessage(self.get_player_list()))
 
     def remove_player(self, player):
         self.players.remove(player)
+
+    def get_player_list(self):
+        return list(map(lambda p: p.name, self.players))
 
     def add_player_to_hopper(self, player):
         if player not in self.players:
@@ -39,18 +44,23 @@ class Lobby:
             return
 
         self.hopper.add(player)
+        if self.hopper.is_full():
+            self.hub.start_game(self.hopper)
+            self.hopper = Hopper(2)
 
 
 class Hub(threading.Thread):
     def __init__(self):
         self.lobby = Lobby(self)
-        self.client_connections = []
-        self.client_connections_lock = threading.Lock()
+        self.game = None
 
-    def add_client_connection(self, client_connection):
-        self.client_connections_lock.acquire()
-        self.client_connections.append(client_connection)
-        self.client_connections_lock.release()
+    def start_game(self, hopper):
+        if self.game is not None:
+            raise Exception('Game already running')
+
+        game = Game(hopper.players)
+        game.start()
+        self.game = game
 
     def run(self):
         self.running = True

@@ -16,3 +16,10 @@ class EncodedMessage:
     def pop_string(self):
         length = self.pop_short()
         return self.pop_raw_string(length)
+
+    def pop_string_array(self):
+        length = self.pop_short()
+        a = []
+        for i in range(length):
+            a.append(self.pop_string())
+        return a
