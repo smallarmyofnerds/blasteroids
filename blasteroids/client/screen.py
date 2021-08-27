@@ -12,3 +12,6 @@ class Screen:
 
     def reset(self):
         self.surface.fill((0, 0, 0))
+    
+    def draw_sprite(self, sprite, position):
+        pass
