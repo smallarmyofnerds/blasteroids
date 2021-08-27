@@ -1,18 +1,15 @@
-import pygame
-from .spacegame_utils import wrap_to_world
-
 class GameObject:
-    def __init__(self, position, direction, velocity, size):
+    def __init__(self, id, position, orientation):
+        self.id = id
         self.position = position
-        self.direction = direction
-        self.velocity = velocity
-        self.size = size
+        self.orientation = orientation
+
+    def _update(self, position, orientation):
+        self.position = position
+        self.orientation = orientation
+
+    def destroy(self):
+        pass
 
     def draw(self, screen):
         pass
-
-    def move(self, world_size):
-        self.position = wrap_to_world(self.position + self.velocity, world_size)
-
-    def collides_with(self, other):
-        return pygame.sprite.spritecollide(self.mask, other.mask, False, pygame.sprite.collide.mask())
