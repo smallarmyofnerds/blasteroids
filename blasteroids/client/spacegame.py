@@ -6,7 +6,9 @@ from pygame import draw
 
 from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP
 
-from blasteroids.client.models import Asteroid, Jukebox, Spaceship
+from blasteroids.client.jukebox import Jukebox
+from blasteroids.client.game_objects import asteroid
+from blasteroids.client.models import Spaceship
 from blasteroids.client.spacegame_utils import get_random_position, load_sound, load_sprite, print_text, print_timer
 
 class SpaceRocks:
@@ -53,7 +55,7 @@ class SpaceRocks:
                 if (position.distance_to(self.spaceship.position) > self.MIN_ASTEROID_DISTANCE):
                     break
 
-            self.asteroids.append(Asteroid(position, self.asteroids.append))
+            self.asteroids.append(asteroid(position, self.asteroids.append))
 
 
     def _get_game_objects(self):

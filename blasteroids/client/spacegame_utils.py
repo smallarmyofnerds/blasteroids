@@ -21,6 +21,10 @@ def wrap_position(position, surface):
     w, h = surface.get_size()
     return Vector2(x % w, y % h)
 
+def wrap_to_world(position, world_size):
+    x, y = position
+    w, h = world_size
+    return Vector2(x % w, y % h)
 
 def get_random_position(surface):
     return Vector2(
