@@ -4,7 +4,7 @@ from .game_object import GameObject
 class ObstacleObject(GameObject):
     def __init__(self, server_object, sprite_library):
         super(ObstacleObject, self).__init__(server_object)
-        self.sprite = sprite_library.get('player_1_static')
+        self.sprite = sprite_library.get('player_2_static')
 
     def draw(self, screen):
         screen.draw_sprite(self.sprite, self.position, self.orientation)

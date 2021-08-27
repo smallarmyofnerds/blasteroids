@@ -12,7 +12,7 @@ class SpriteLibrary:
         self.sprites['player_1_static'] = self._load_sprite('player_1_static.png')
         # self.sprites['player_1_flying'] = self._load_sprite('player_1_flying.png')
         # self.sprites['player_1_exploding'] = self._load_sprite('player_1_exploding.png')
-        # self.sprites['player_2_static'] = self._load_sprite('player_2_static.png')
+        self.sprites['player_2_static'] = self._load_sprite('player_2_static.png')
 
     def get(self, name):
         return self.sprites.get(name)
