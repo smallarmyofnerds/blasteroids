@@ -1,5 +1,13 @@
-from blasteroids.client.spacegame import SpaceRocks
+from game import Game
 
-if __name__ == "__main__":
-    space_rocks = SpaceRocks()
-    space_rocks.main_loop()
+
+class ServerConnection:
+    def send_inputs(self, inputs):
+        pass
+
+
+server_connection = ServerConnection()
+
+game = Game(server_connection)
+
+game.start()
