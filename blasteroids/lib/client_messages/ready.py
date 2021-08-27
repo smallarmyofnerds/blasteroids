@@ -8,9 +8,6 @@ class ReadyMessage(Message):
     def __init__(self):
         super(ReadyMessage, self).__init__(ReadyMessage.TYPE)
 
-    def dispatch(self, handler):
-        return handler.handle_REDY(self)
-
     def __repr__(self):
         return f'{super(ReadyMessage, self).__repr__()}'
 

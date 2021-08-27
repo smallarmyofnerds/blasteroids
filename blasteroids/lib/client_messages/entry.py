@@ -9,9 +9,6 @@ class EntryMessage(Message):
         super(EntryMessage, self).__init__(EntryMessage.TYPE)
         self.player_list = player_list
 
-    def dispatch(self, handler):
-        return handler.handle_ENTR(self)
-
     def __repr__(self):
         return f"{super(EntryMessage, self).__repr__()}:{','.join(self.player_list)}"
 

@@ -9,9 +9,6 @@ class InputMessage(Message):
         super(InputMessage, self).__init__(InputMessage.TYPE)
         self.player_name = player_name
 
-    def dispatch(self, handler):
-        return handler.handle_INPT(self)
-
     def __repr__(self):
         return f'{super(InputMessage, self).__repr__()}:{self.player_name}'
 

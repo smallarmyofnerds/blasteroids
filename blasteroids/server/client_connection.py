@@ -1,8 +1,10 @@
+from blasteroids.lib.client_messages.hello import HelloMessage
 import select
 import threading
-from blasteroids.lib import log, WelcomeMessage, MessageEncoding, EncodedMessage
-import blasteroids.lib.client_messages as client_messages
+from blasteroids.lib import log, MessageEncoding, EncodedMessage
+from blasteroids.lib.client_messages import WelcomeMessage
 from blasteroids.lib.util import SynchronizedQueue
+from .player import Player
 
 logger = log.get_logger(__name__)
 
@@ -22,51 +24,7 @@ class ClientConnectionState:
         self.hub.queue_message(message)
 
     def handle_message(self, message):
-        message.dispatch(self)
-
-    def handle_HELO(self):
-        raise Exception('Unexpected HELO')
-
-    def handle_INPT(self):
-        raise Exception('Unexpected INPT')
-
-
-class PlayerState:
-    def __init__(self, player):
-        self.player = player
-
-
-class LobbyState(PlayerState):
-    def __init__(self, player, lobby):
-        super(LobbyState, self).__init__(player)
-        self.lobby = lobby
-
-    def initialize(self):
-        self.lobby.add_player(self.player)
-
-    def handle_ENTR(self, message):
-        self.player.queue_outgoing_message(message)
-
-    def handle_REDY(self, message):
-        self.lobby.add_player_to_hopper(self.player)
-
-
-class Player:
-    def __init__(self, client_connection, hub, name):
-        self.client_connection = client_connection
-        self.hub = hub
-        self.name = name
-        self.state = None
-
-    def initialize(self):
-        self.state = LobbyState(self.hub.lobby)
-        self.state.initialize()
-
-    def handle_message(self, message):
-        message.dispatch(self.state)
-
-    def queue_outgoing_message(self, message):
-        self.client_connection.queue_message(message)
+        raise Exception(f'Unhandled message type {message.type}')
 
 
 class ConnectedState(ClientConnectionState):
@@ -91,7 +49,12 @@ class HandshakeState(ClientConnectionState):
         self.welcome_message = welcome_message
 
     def initialize(self):
-        self.queue_client_message(client_messages.WelcomeMessage(self.server_name, self.welcome_message))
+        self.queue_client_message(WelcomeMessage(self.server_name, self.welcome_message))
+
+    def handle_message(self, message):
+        if message.type == HelloMessage.TYPE:
+            self.handle_HELO(message)
+        super(HandshakeState, self).handle_message(message)
 
     def handle_HELO(self, message):
         self._change_state(ConnectedState(self.client_connection, self.hub, message.player_name))

@@ -9,9 +9,6 @@ class HelloMessage(Message):
         super(HelloMessage, self).__init__(HelloMessage.TYPE)
         self.player_name = player_name
 
-    def dispatch(self, handler):
-        return handler.handle_HELO(self)
-
     def __repr__(self):
         return f'{super(HelloMessage, self).__repr__()}:{self.player_name}'
 
