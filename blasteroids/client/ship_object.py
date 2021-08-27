@@ -12,7 +12,7 @@ class ShipObject(GameObject):
         super(ShipObject, self)._update(raw_ship.position, raw_ship.orientation)
 
     def draw(self, screen):
-        screen.surface.blit(self.static_sprite, (self.position.x, self.position.y))
+        screen.draw_sprite(self.static_sprite, self.position, self.orientation)
 
     def destroy(self):
         print('Oh noes')

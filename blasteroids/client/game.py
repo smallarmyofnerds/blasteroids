@@ -32,12 +32,19 @@ class Game(threading.Thread):
             if self.counter_delete_me < 300:
                 self.world_buffer.my_ship = None
             elif self.counter_delete_me == 300:
-                self.world_buffer.my_ship = ServerShip(12, Vector2(100, 100), Vector2(0, 1), 'player_1')
+                self.world_buffer.my_ship = ServerShip(12, Vector2(100, 200), Vector2(0, 1), 'player_1')
             else:
                 self.world_buffer.my_ship.position = self.world_buffer.my_ship.position + Vector2(1, 0)
         else:
+            self.world_buffer.my_ship.orientation.rotate_ip(-1)
             self.world_buffer.my_ship.position = self.world_buffer.my_ship.position + Vector2(1, 0)
+        
+        self.world_buffer.objects_by_id[129].position += Vector2(-1, -1)
+        self.world_buffer.objects_by_id[129].orientation.rotate_ip(5)
+
         self.world.update(self.world_buffer)
+        if self.world.my_ship:
+            self.screen.move_camera_to(self.world.my_ship.position)
 
     def _process_inputs(self):
 
