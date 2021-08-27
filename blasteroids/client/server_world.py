@@ -1,6 +1,6 @@
 from pygame import Vector2
-from server_ship import ServerShip
-from server_obstacle import ServerObstacle
+from .server_ship import ServerShip
+from .server_obstacle import ServerObstacle
 
 
 class ServerWorld:

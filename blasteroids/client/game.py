@@ -2,11 +2,11 @@ import pygame
 import threading
 from pygame.math import Vector2
 from .screen import Screen
-from sprite_library import SpriteLibrary
-from world import World
-from server_world import ServerWorld
-from server_ship import ServerShip
-from player_inputs import PlayerInputs
+from .sprite_library import SpriteLibrary
+from .world import World
+from .server_world import ServerWorld
+from .server_ship import ServerShip
+from .player_inputs import PlayerInputs
 
 
 class Game(threading.Thread):

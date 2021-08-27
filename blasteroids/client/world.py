@@ -1,7 +1,7 @@
-from ship_object import ShipObject
-from projectile_object import ProjectileObject
-from obstacle_object import ObstacleObject
-from power_up_object import PowerUpObject
+from .ship_object import ShipObject
+from .projectile_object import ProjectileObject
+from .obstacle_object import ObstacleObject
+from .power_up_object import PowerUpObject
 
 
 class World:

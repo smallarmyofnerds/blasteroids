@@ -1,4 +1,4 @@
-from server_object import ServerObject
+from .server_object import ServerObject
 
 
 class ServerShip(ServerObject):
