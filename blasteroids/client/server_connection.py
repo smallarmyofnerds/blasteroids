@@ -3,7 +3,7 @@ class ServerConnection:
         self.running = False
 
     def send_inputs(self, inputs):
-        pass
+        print(inputs)
 
     def start(self):
         self.running = True

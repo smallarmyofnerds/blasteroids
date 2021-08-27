@@ -18,6 +18,7 @@ class Game(threading.Thread):
         self.fps = 30
         self.screen = Screen(config.screen_width, config.screen_height)
         self.server_connection = server_connection
+        self.something_pressed_last_time = False
 
         sprite_library = SpriteLibrary()
         sprite_library.load_all()
@@ -61,7 +62,16 @@ class Game(threading.Thread):
         inputs.up = is_key_pressed[pygame.K_UP]
         inputs.fire = is_key_pressed[pygame.K_SPACE]
 
-        self.server_connection.send_inputs(inputs)
+
+        if inputs.is_anything_pressed():
+            self.server_connection.send_inputs(inputs)
+            self.something_pressed_last_time = True
+        else:
+            if self.something_pressed_last_time:
+                self.server_connection.send_inputs(inputs)
+                self.something_pressed_last_time = False
+            else:
+                pass
 
     def _draw(self):
         self.screen.reset()
