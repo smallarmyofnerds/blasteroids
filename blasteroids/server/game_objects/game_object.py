@@ -5,7 +5,8 @@ class GameObject:
     MIN_VELOCITY = 0.5
     MIN_ROTATIONAL_VELOCITY = 0.1
 
-    def __init__(self, position, orientation, velocity, rotational_velocity):
+    def __init__(self, id, position, orientation, velocity, rotational_velocity):
+        self.id = id
         self.position = position
         self.orientation = orientation
         self.velocity = velocity

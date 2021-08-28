@@ -1,9 +1,9 @@
-from blasteroids.lib import GameObject
+from .game_object import GameObject
 
 
 class DestroyableGameObject(GameObject):
-    def __init__(self, position, orientation, velocity, rotational_velocity, damage, health):
-        super(DestroyableGameObject, self).__init__(position, orientation, velocity, rotational_velocity)
+    def __init__(self, id, position, orientation, velocity, rotational_velocity, damage, health):
+        super(DestroyableGameObject, self).__init__(id, position, orientation, velocity, rotational_velocity)
         self.damage = damage
         self.health = health
 

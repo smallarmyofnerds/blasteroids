@@ -1,22 +1,22 @@
-import pygame
 import threading
-from pygame.math import Vector2
+from blasteroids.lib.client_messages.input import InputMessage
+import pygame
 from .screen import Screen
 from .sprite_library import SpriteLibrary
 from .world import World
-from .server_world import ServerWorld
-from .server_ship import ServerShip
-from .player_inputs import PlayerInputs
+from blasteroids.lib import log, PlayerInputs
+
+logger = log.get_logger(__name__)
 
 
-class Game(threading.Thread):
+class Game:
     def __init__(self, server_connection, config):
-        super(Game, self).__init__()
         pygame.init()
         self.running = True
         self.clock = pygame.time.Clock()
         self.fps = 30
         self.screen = Screen(config.screen_width, config.screen_height)
+        server_connection.game = self
         self.server_connection = server_connection
         self.something_pressed_last_time = False
 
@@ -24,31 +24,22 @@ class Game(threading.Thread):
         sprite_library.load_all()
         self.world = World(sprite_library)
 
-        self.world_buffer = ServerWorld()
+        self.lock = threading.Lock()
+        self.world_buffer = None
         self.counter_delete_me = 0
 
-    def _update(self):
-        self.counter_delete_me += 1
-        if self.counter_delete_me > 200:
-            if self.counter_delete_me < 300:
-                self.world_buffer.my_ship = None
-            elif self.counter_delete_me == 300:
-                self.world_buffer.my_ship = ServerShip(12, Vector2(100, 200), Vector2(0, 1), 'player_1')
-            else:
-                self.world_buffer.my_ship.position = self.world_buffer.my_ship.position + Vector2(1, 0)
-        else:
-            self.world_buffer.my_ship.orientation.rotate_ip(-1)
-            self.world_buffer.my_ship.position = self.world_buffer.my_ship.position + Vector2(1, 0)
-        
-        self.world_buffer.objects_by_id[129].position += Vector2(-1, -1)
-        self.world_buffer.objects_by_id[129].orientation.rotate_ip(5)
+    def update_world(self, server_world):
+        self.lock.acquire()
+        self.world_buffer = server_world
+        self.lock.release()
 
-        self.world.update(self.world_buffer)
-        if self.world.my_ship:
-            self.screen.move_camera_to(self.world.my_ship.position)
+    def _update(self):
+        if self.world_buffer:
+            self.world.update(self.world_buffer)
+            if self.world.my_ship:
+                self.screen.move_camera_to(self.world.my_ship.position)
 
     def _process_inputs(self):
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.stop()
@@ -62,13 +53,12 @@ class Game(threading.Thread):
         inputs.up = is_key_pressed[pygame.K_UP]
         inputs.fire = is_key_pressed[pygame.K_SPACE]
 
-
         if inputs.is_anything_pressed():
-            self.server_connection.send_inputs(inputs)
+            self.server_connection.queue_message(InputMessage.from_player_inputs(inputs))
             self.something_pressed_last_time = True
         else:
             if self.something_pressed_last_time:
-                self.server_connection.send_inputs(inputs)
+                self.server_connection.queue_message(InputMessage.from_player_inputs(inputs))
                 self.something_pressed_last_time = False
             else:
                 pass
@@ -87,5 +77,6 @@ class Game(threading.Thread):
             self._draw()
 
     def stop(self):
-        print('Shutting down...')
-        self.running = False
+        if self.running:
+            logger.info('Shutting down...')
+            self.running = False

@@ -3,16 +3,15 @@ import select
 import threading
 from blasteroids.lib import log
 from .client_connection import ClientConnection
-from blasteroids.lib.util import SynchronizedList
 
 logger = log.get_logger(__name__)
 
 
 class ConnectionFactory:
-    def __init__(self, config, game_server, hub):
+    def __init__(self, config, game_server, game):
         self.config = config
         self.game_server = game_server
-        self.hub = hub
+        self.game = game
         self.next_id = 0
 
     def get_next_id(self):
@@ -21,17 +20,19 @@ class ConnectionFactory:
         return id
 
     def create(self, client_socket, client_address):
-        return ClientConnection(self.get_next_id(), client_socket, client_address, self.config, self.hub, self.game_server)
+        logger.info('Creating new client connection')
+        return ClientConnection(self.get_next_id(), client_socket, client_address, self.config, self.game, self.game_server)
 
 
 class GameServer:
-    def __init__(self, config, hub):
+    def __init__(self, config, game):
         self.address = config.server_address
         self.port = config.server_port
         self.server_name = config.server_name
         self.welcome_message = config.welcome_message
-        self.connection_factory = ConnectionFactory(config, self, hub)
-        self.client_connections = SynchronizedList()
+        self.connection_factory = ConnectionFactory(config, self, game)
+        self.client_connections = []
+        self.client_connections_lock = threading.Lock()
         self.running = False
 
     def _bind_socket(self, address, port):
@@ -43,10 +44,14 @@ class GameServer:
     def _register_client_connection(self, client_socket, client_address):
         connection = self.connection_factory.create(client_socket, client_address)
         connection.start()
+        self.client_connections_lock.acquire()
         self.client_connections.append(connection)
+        self.client_connections_lock.release()
 
     def remove_connection(self, client_connection):
+        self.client_connections_lock.acquire()
         self.client_connections.remove(client_connection)
+        self.client_connections_lock.release()
 
     def start(self):
         server = self._bind_socket(self.address, self.port)
@@ -63,8 +68,13 @@ class GameServer:
                     logger.info(f'Accepted connection from {client_address}')
                     self._register_client_connection(client_socket, client_address)
 
-        logger.info('Server shutting down')
+        logger.info('Closing client connections')
+        self.client_connections_lock.acquire()
+        for client_connection in self.client_connections:
+            client_connection.stop()
+        self.client_connections_lock.release()
+
+        logger.info('Shutting down')
 
     def stop(self):
         self.running = False
-        threading.join(self)

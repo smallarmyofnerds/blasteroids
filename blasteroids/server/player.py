@@ -1,36 +1,40 @@
-class PlayerState:
-    def __init__(self, player):
-        self.player = player
-
-
-class LobbyState(PlayerState):
-    def __init__(self, player, lobby):
-        super(LobbyState, self).__init__(player)
-        self.lobby = lobby
-
-    def initialize(self):
-        self.lobby.add_player(self.player)
-
-    def handle_ENTR(self, message):
-        self.player.queue_outgoing_message(message)
-
-    def handle_REDY(self, message):
-        self.lobby.add_player_to_hopper(self.player)
+import threading
+from blasteroids.lib.client_messages import WorldMessage
 
 
 class Player:
-    def __init__(self, client_connection, hub, name):
+    def __init__(self, ship, client_connection):
+        self.ship = ship
         self.client_connection = client_connection
-        self.hub = hub
-        self.name = name
-        self.state = None
+        self.inputs = None
+        self.lock = threading.Lock()
+        self.acceleration_rate = 1
+        self.rotational_acceleration_rate = 2
 
-    def initialize(self):
-        self.state = LobbyState(self.hub.lobby)
-        self.state.initialize()
+    def update_inputs(self, inputs):
+        self.lock.acquire()
+        self.inputs = inputs
+        self.lock.release()
 
-    def handle_message(self, message):
-        message.dispatch(self.state)
+    def process_input(self):
+        self.ship.zero_accelerations()
 
-    def queue_outgoing_message(self, message):
-        self.client_connection.queue_message(message)
+        self.lock.acquire()
+
+        if self.inputs:
+            if self.inputs.left:
+                if self.inputs.right:
+                    pass
+                else:
+                    self.ship.set_rotating_left(self.rotational_acceleration_rate)
+            elif self.inputs.right:
+                self.ship.set_rotating_right(self.rotational_acceleration_rate)
+            if self.inputs.up:
+                self.ship.set_accelerating(self.acceleration_rate)
+            if self.inputs.fire:
+                self.shoot()
+
+        self.lock.release()
+
+    def send_world(self, server_objects):
+        self.client_connection.queue_message(WorldMessage(server_objects, self.ship.id))
