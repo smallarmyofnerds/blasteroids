@@ -5,7 +5,7 @@ class GameObject:
     MIN_VELOCITY = 0.5
     MIN_ROTATIONAL_VELOCITY = 0.1
 
-    def __init__(self, id, position, orientation, velocity, rotational_velocity):
+    def __init__(self, id, position, orientation, velocity, rotational_velocity, collision_mask):
         self.id = id
         self.position = position
         self.orientation = orientation
@@ -13,16 +13,18 @@ class GameObject:
         self.acceleration = pygame.Vector2(0, 0)
         self.rotational_velocity = rotational_velocity
         self.rotational_acceleration = 0  # dpsps
+        self.collision_mask = collision_mask
 
     def zero_accelerations(self):
         self.acceleration = pygame.Vector2(0, 0)
         self.rotational_acceleration = 0
 
     def set_rotating_left(self, rotational_acceleration_rate):
-        self.rotational_acceleration = -1 * rotational_acceleration_rate
+        self.rotational_acceleration = rotational_acceleration_rate
 
     def set_rotating_right(self, rotational_acceleration_rate):
-        self.rotational_acceleration = rotational_acceleration_rate
+        print('Accelerating right')
+        self.rotational_acceleration = -1 * rotational_acceleration_rate
 
     def set_accelerating(self, acceleration_rate):
         self.acceleration = self.orientation.normalize() * acceleration_rate
@@ -43,3 +45,8 @@ class GameObject:
 
         # move object
         self.position = self.position + self.velocity
+
+    def collides_with(self, other):
+        if pygame.sprite.spritecollide(self.collision_mask, [other.collision_mask], False, pygame.sprite.collide_mask):
+            return True
+        return False

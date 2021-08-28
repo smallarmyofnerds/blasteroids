@@ -9,7 +9,7 @@ class Player:
         self.inputs = None
         self.lock = threading.Lock()
         self.acceleration_rate = 1
-        self.rotational_acceleration_rate = 2
+        self.rotational_acceleration_rate = 1
 
     def update_inputs(self, inputs):
         self.lock.acquire()
@@ -33,6 +33,8 @@ class Player:
                 self.ship.set_accelerating(self.acceleration_rate)
             if self.inputs.fire:
                 self.shoot()
+
+        self.inputs = None
 
         self.lock.release()
 

@@ -67,23 +67,20 @@ class ClientConnection(threading.Thread):
                 messages_to_send = len(self.outgoing_messages) > 0
                 self.outgoing_messages_lock.release()
 
-                readable, writable, exceptional = select.select([self.socket], [self.socket] if messages_to_send else [], [self.socket])
+                readable, writable, exceptional = select.select([self.socket], [self.socket] if messages_to_send else [], [self.socket], 0.1)
 
                 for _ in exceptional:
-                    logger.info('Got exception')
                     self.socket.close()
                     self.is_running = False
                     self.game_server.remove_connection(self)
 
                 if self.is_running:
                     for _ in readable:
-                        logger.info('Got readable')
                         message = self._receive_message()
                         logger.info(f'Received {message}')
                         self._handle_message(message)
 
                     for _ in writable:
-                        logger.info('Got writable')
                         self._flush_outgoing_messages()
 
         except Exception as e:

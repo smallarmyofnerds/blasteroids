@@ -4,6 +4,7 @@ from pygame.transform import rotozoom
 
 UP = Vector2(0, 1)
 
+
 class Screen:
     def __init__(self, width, height):
         self.width = width

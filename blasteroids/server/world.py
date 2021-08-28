@@ -4,7 +4,8 @@ from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjec
 
 
 class World:
-    def __init__(self):
+    def __init__(self, sprite_library):
+        self.sprite_library = sprite_library
         self.ships = []
         self.projectiles = []
         self.power_ups = []
@@ -17,7 +18,7 @@ class World:
         return id
 
     def create_ship(self, name):
-        ship = Ship(self._get_next_id(), Vector2(0, 0), Vector2(0, 1), name)
+        ship = Ship(self.sprite_library, self._get_next_id(), Vector2(0, 0), Vector2(0, 1), name)
         self.ships.append(ship)
         return ship
 

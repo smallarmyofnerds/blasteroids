@@ -17,16 +17,16 @@ class World:
         for object in self.game_objects:
             object.draw(screen)
 
-    def _destroy_objects(self, buffer):
+    def _destroy_objects(self, server_world):
         for object in self.game_objects:
-            server_object = buffer.objects_by_id.get(object.id)
+            server_object = server_world.objects_by_id.get(object.id)
             if server_object:
                 pass
             else:
                 object.destroy()
 
-    def _create_new_objects(self, buffer):
-        for object in buffer.objects:
+    def _create_new_objects(self, server_world):
+        for object in server_world.objects:
             existing_object = self.game_objects_by_id.get(object.id)
             if existing_object:
                 existing_object.update(object)
@@ -45,20 +45,21 @@ class World:
                 self.game_objects.append(new_object)
                 self.game_objects_by_id[new_object.id] = new_object
 
-    def _sync_my_ship(self, buffer):
+    def _sync_my_ship(self, server_world):
         if self.my_ship:
-            if buffer.my_ship:
-                self.my_ship.update(buffer.my_ship)
+            if server_world.my_ship:
+                self.my_ship.update(server_world.my_ship)
             else:
                 self.my_ship.destroy()
                 self.my_ship = None
         else:
-            if buffer.my_ship:
-                self.my_ship = ShipObject(buffer.my_ship, self.sprite_library)
+            if server_world.my_ship:
+                self.my_ship = ShipObject(server_world.my_ship, self.sprite_library)
             else:
                 pass
 
-    def update(self, buffer):
-        self._sync_my_ship(buffer)
-        self._destroy_objects(buffer)
-        self._create_new_objects(buffer)
+    def update(self, server_world):
+        print(server_world)
+        self._sync_my_ship(server_world)
+        self._destroy_objects(server_world)
+        self._create_new_objects(server_world)

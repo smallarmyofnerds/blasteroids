@@ -1,15 +1,22 @@
 import signal
+
+import pygame
 from .config import Config
-from blasteroids.lib import log
+from blasteroids.lib import log, SpriteLibrary
 from .game_server import GameServer
 from .game import Game
+
+pygame.init()
 
 config = Config('server.ini')
 
 log.initialize_logging(config)
 logger = log.get_logger(__name__)
 
-game = Game()
+sprite_library = SpriteLibrary()
+sprite_library.load_all()
+
+game = Game(sprite_library)
 game.start()
 
 server = GameServer(config, game)
