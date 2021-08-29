@@ -12,10 +12,10 @@ class World:
         self.game_objects_by_id = {}
 
     def draw(self, screen):
-        if self.my_ship:
-            self.my_ship.draw(screen)
         for object in self.game_objects:
             object.draw(screen)
+        if self.my_ship:
+            self.my_ship.draw(screen)
 
     def _destroy_objects(self, server_world):
         for object in self.game_objects:

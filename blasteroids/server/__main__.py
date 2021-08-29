@@ -13,10 +13,10 @@ config = Config('server.ini')
 log.initialize_logging(config)
 logger = log.get_logger(__name__)
 
-sprite_library = SpriteLibrary()
+sprite_library = SpriteLibrary(False)
 sprite_library.load_all()
 
-game = Game(sprite_library)
+game = Game(config, sprite_library)
 game.start()
 
 server = GameServer(config, game)

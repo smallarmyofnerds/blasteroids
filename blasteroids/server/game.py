@@ -8,12 +8,13 @@ logger = log.get_logger(__name__)
 
 
 class Game(threading.Thread):
-    def __init__(self, sprite_library):
+    def __init__(self, config, sprite_library):
         super(Game, self).__init__()
+        self.config = config
         self.running = False
         self.clock = pygame.time.Clock()
         self.players = [None] * 2
-        self.world = World(sprite_library)
+        self.world = World(config, sprite_library)
         self.fps = 60
 
     def _get_next_player_id(self):
@@ -33,6 +34,7 @@ class Game(threading.Thread):
         return player
 
     def remove_player(self, player):
+        self.world.remove_ship(player.ship)
         if self.players[0] == player:
             self.players[0] = None
         elif self.players[1] == player:
@@ -43,7 +45,7 @@ class Game(threading.Thread):
     def _process_inputs(self):
         for player in self.players:
             if player:
-                player.process_input()
+                player.process_input(self.world)
 
     def _broadcast_updates(self):
         server_objects = self.world.to_server_objects()
@@ -56,7 +58,7 @@ class Game(threading.Thread):
         while self.running:
             self.clock.tick(self.fps)
             self._process_inputs()
-            self.world.update()
+            self.world.update(self.clock.get_time() / 1000.0)
             self._broadcast_updates()
 
     def stop(self):

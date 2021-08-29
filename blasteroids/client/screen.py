@@ -31,7 +31,7 @@ class Screen:
 
     def draw_sprite(self, sprite, position, orientation):
         angle = orientation.angle_to(UP)
-        rotated_sprite = rotozoom(sprite, angle, 1.0)
+        rotated_sprite = rotozoom(sprite, -1 * angle, 1.0)
         rotated_sprite_rect = rotated_sprite.get_rect()
         rotated_sprite_rect.center = self._world_to_viewport(position)
         self.surface.blit(rotated_sprite, rotated_sprite_rect)

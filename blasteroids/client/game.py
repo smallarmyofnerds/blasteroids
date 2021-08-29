@@ -19,9 +19,8 @@ class Game:
         self.server_connection = server_connection
         self.something_pressed_last_time = False
 
-        sprite_library = SpriteLibrary()
-        sprite_library.load_all()
-        self.world = World(sprite_library)
+        self.sprite_library = SpriteLibrary()
+        self.world = World(self.sprite_library)
 
         self.lock = threading.Lock()
         self.world_buffer = None
@@ -34,6 +33,7 @@ class Game:
 
     def _update(self):
         if self.world_buffer:
+            print(self.world_buffer)
             self.world.update(self.world_buffer)
             if self.world.my_ship:
                 self.screen.move_camera_to(self.world.my_ship.position)
@@ -69,6 +69,7 @@ class Game:
 
     def run(self):
         self.screen.init()
+        self.sprite_library.load_all()
         while self.running:
             self.clock.tick(self.fps)
             self._process_inputs()

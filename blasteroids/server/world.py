@@ -1,10 +1,16 @@
+import random
+import threading
 from pygame import Vector2
-from blasteroids.server.game_objects import Obstacle, Projectile, Ship, PowerUp
+import pygame
+from blasteroids.server.game_objects import Obstacle, Ship, PowerUp, Asteroid
 from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjectile, ServerObstacle
 
 
 class World:
-    def __init__(self, sprite_library):
+    def __init__(self, config, sprite_library):
+        self.config = config
+        self.width = config.world_width
+        self.height = config.world_height
         self.sprite_library = sprite_library
         self.ships = []
         self.projectiles = []
@@ -12,18 +18,45 @@ class World:
         self.obstacles = []
         self.next_id = 0
 
+        self.lock = threading.Lock()
+
+        self.last_obstacle_at = None
+        self._generate_initial_obstacles()
+
+    def _generate_initial_obstacles(self):
+        for i in range(10):
+            obstacle = Asteroid(
+                self._get_next_id(),
+                Vector2(
+                    # random.randint(0, self.width),
+                    # random.randint(0, self.height)
+                    0, 0
+                ),
+                Vector2(0, 1).rotate(random.random() * 360.0),
+                Vector2(0, 1).rotate(random.random() * 360.0) * random.random() * 50,
+                10000,
+                1000,
+            )
+            self.obstacles.append(obstacle)
+        self.last_obstacle_at = pygame.time.get_ticks()
+
     def _get_next_id(self):
         id = self.next_id
         self.next_id += 1
         return id
 
     def create_ship(self, name):
-        ship = Ship(self.sprite_library, self._get_next_id(), Vector2(0, 0), Vector2(0, 1), name)
+        self.lock.acquire()
+        ship = Ship(self.config, self.sprite_library, self._get_next_id(), Vector2(0, 0), Vector2(0, 1), name)
         self.ships.append(ship)
+        self.lock.release()
         return ship
 
-    def create_projectile(self, name):
-        self.projectiles.append(Projectile(self._get_next_id(), Vector2(0, 0), Vector2(0, 1), 1000))
+    def create_projectile(self, projectile):
+        self.lock.acquire()
+        projectile.id = self._get_next_id()
+        self.projectiles.append(projectile)
+        self.lock.release()
 
     def remove_projectile(self, projectile):
         self.projectiles.remove(projectile)
@@ -40,9 +73,12 @@ class World:
     def remove_ship(self, ship):
         self.ships.remove(ship)
 
-    def _update_all(self):
-        for o in [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles]:
-            o.update()
+    def _update_all(self, delta_time):
+        # self.lock.acquire()
+        all_objects = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles]
+        # self.lock.release()
+        for o in all_objects:
+            o.update(self, delta_time)
 
     def _test_ship_collisions(self):
         for ship in self.ships:
@@ -73,8 +109,10 @@ class World:
                     power_up.apply_power_up_to(ship)
                     power_up.destroy(self)
 
-    def update(self):
-        self._update_all()
+    def update(self, delta_time):
+        self.lock.acquire()
+        self._update_all(delta_time)
+        self.lock.release()
         self._test_ship_collisions()
         self._test_projectile_collisions()
         self._test_power_up_collisions()

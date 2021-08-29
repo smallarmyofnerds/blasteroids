@@ -14,7 +14,7 @@ class Player:
         self.inputs = inputs
         self.lock.release()
 
-    def process_input(self):
+    def process_input(self, world):
         self.ship.zero_accelerations()
 
         self.lock.acquire()
@@ -30,7 +30,7 @@ class Player:
             if self.inputs.up:
                 self.ship.set_accelerating()
             if self.inputs.fire:
-                self.shoot()
+                self.ship.shoot(world)
 
         self.inputs = None
 
