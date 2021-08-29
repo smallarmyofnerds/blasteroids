@@ -9,7 +9,7 @@ class Player:
         self.inputs = None
         self.lock = threading.Lock()
         self.acceleration_rate = 1
-        self.rotational_acceleration_rate = 1
+        self.rotational_acceleration_rate = 3
 
     def update_inputs(self, inputs):
         self.lock.acquire()

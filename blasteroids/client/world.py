@@ -59,7 +59,6 @@ class World:
                 pass
 
     def update(self, server_world):
-        print(server_world)
         self._sync_my_ship(server_world)
         self._destroy_objects(server_world)
         self._create_new_objects(server_world)

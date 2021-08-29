@@ -66,7 +66,7 @@ class ServerConnection(threading.Thread):
             messages_to_send = len(self.outgoing_messages) > 0
             self.outgoing_messages_lock.release()
 
-            readable, writable, exceptional = select.select([self.socket], [self.socket] if messages_to_send else [], [self.socket], 0.2)
+            readable, writable, exceptional = select.select([self.socket], [self.socket] if messages_to_send else [], [self.socket], 0.001)
 
             for _ in readable:
                 message = self._receive_message()
@@ -80,6 +80,8 @@ class ServerConnection(threading.Thread):
                 self.socket.close()
                 self.running = False
 
+        logger.info('Closing server connection')
+        self.socket.shutdown(1)
         self.socket.close()
 
     def stop(self):

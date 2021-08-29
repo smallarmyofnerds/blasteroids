@@ -14,7 +14,7 @@ class Game(threading.Thread):
         self.clock = pygame.time.Clock()
         self.players = [None] * 2
         self.world = World(sprite_library)
-        self.fps = 30
+        self.fps = 60
 
     def _get_next_player_id(self):
         if self.players[0] is None:
@@ -25,7 +25,9 @@ class Game(threading.Thread):
 
     def create_player(self, client_connection):
         player_id = self._get_next_player_id()
-        ship = self.world.create_ship(f'player_{player_id}')
+        player_name = f'player_{player_id}'
+        logger.info(f'{player_name} connected')
+        ship = self.world.create_ship(player_name)
         player = Player(ship, client_connection)
         self.players[player_id - 1] = player
         return player
@@ -35,7 +37,8 @@ class Game(threading.Thread):
             self.players[0] = None
         elif self.players[1] == player:
             self.players[1] = None
-        raise Exception('Unknown player')
+        else:
+            raise Exception('Unknown player')
 
     def _process_inputs(self):
         for player in self.players:

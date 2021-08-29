@@ -22,6 +22,7 @@ class ClientConnection(threading.Thread):
         self.address = address
         self.server_name = config.server_name
         self.welcome_message = config.welcome_message
+        self.game = game
         self.player = game.create_player(self)
         self.game_server = game_server
         self.message_encoding = MessageEncoding(client_message_encoders)
@@ -44,17 +45,13 @@ class ClientConnection(threading.Thread):
     def _flush_outgoing_messages(self):
         self.outgoing_messages_lock.acquire()
         for message in self.outgoing_messages:
-            try:
-                logger.info(f'Sending {message}')
-                self._send_message(message)
-            except Exception as e:
-                logger.exception(e)
+            self._send_message(message)
         self.outgoing_messages = []
         self.outgoing_messages_lock.release()
 
     def _handle_message(self, message):
         if message.type != InputMessage.TYPE:
-            raise Exception(f'Unexpected message type {message.type}')
+            raise Exception(f'Unexpected message type "{message.type}"')
 
         self.player.update_inputs(message.to_player_inputs())
 
@@ -67,7 +64,7 @@ class ClientConnection(threading.Thread):
                 messages_to_send = len(self.outgoing_messages) > 0
                 self.outgoing_messages_lock.release()
 
-                readable, writable, exceptional = select.select([self.socket], [self.socket] if messages_to_send else [], [self.socket], 0.1)
+                readable, writable, exceptional = select.select([self.socket], [self.socket] if messages_to_send else [], [self.socket], 0.001)
 
                 for _ in exceptional:
                     self.socket.close()
@@ -76,15 +73,24 @@ class ClientConnection(threading.Thread):
 
                 if self.is_running:
                     for _ in readable:
+                        # logger.info('Socket is readable')
                         message = self._receive_message()
-                        logger.info(f'Received {message}')
-                        self._handle_message(message)
+                        if message:
+                            logger.info(f'Received {message}')
+                            self._handle_message(message)
 
                     for _ in writable:
                         self._flush_outgoing_messages()
 
         except Exception as e:
-            logger.exception(e)
+            logger.error(e)
+        finally:
+            logger.info('Removing player from game')
+            self.game.remove_player(self.player)
+            logger.info('Closing socket')
+            self.socket.close()
+            logger.info('Removing client connection')
+            self.game_server.remove_connection(self)
 
     def stop(self):
         if self.is_running:
