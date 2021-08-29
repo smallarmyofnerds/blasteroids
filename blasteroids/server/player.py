@@ -8,8 +8,6 @@ class Player:
         self.client_connection = client_connection
         self.inputs = None
         self.lock = threading.Lock()
-        self.acceleration_rate = 1
-        self.rotational_acceleration_rate = 3
 
     def update_inputs(self, inputs):
         self.lock.acquire()
@@ -26,11 +24,11 @@ class Player:
                 if self.inputs.right:
                     pass
                 else:
-                    self.ship.set_rotating_left(self.rotational_acceleration_rate)
+                    self.ship.set_rotating_left()
             elif self.inputs.right:
-                self.ship.set_rotating_right(self.rotational_acceleration_rate)
+                self.ship.set_rotating_right()
             if self.inputs.up:
-                self.ship.set_accelerating(self.acceleration_rate)
+                self.ship.set_accelerating()
             if self.inputs.fire:
                 self.shoot()
 
