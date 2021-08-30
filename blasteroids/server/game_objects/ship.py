@@ -57,17 +57,30 @@ class Ship(DestroyableGameObject):
             self.destroy()
 
     def _before_update(self, world, delta_time):
+        self.zero_accelerations()
         inputs = self.player.get_inputs()
-        if inputs:
-            self.zero_accelerations()
-            if inputs.left:
-                if inputs.right:
-                    pass
-                else:
-                    self.set_rotating_left()
-            elif inputs.right:
-                self.set_rotating_right()
-            if inputs.up:
-                self.set_accelerating()
-            if inputs.fire:
-                self.shoot(world)
+        if world.is_in_bounds(self.position):
+            if inputs:
+                if inputs.left:
+                    if inputs.right:
+                        pass
+                    else:
+                        self.set_rotating_left()
+                elif inputs.right:
+                    self.set_rotating_right()
+                if inputs.up:
+                    self.set_accelerating()
+                if inputs.fire:
+                    self.shoot(world)
+        else:
+            self.acceleration = world.get_return_vector(self.position).normalize() * self.acceleration_rate * 2
+            if inputs:
+                if inputs.left:
+                    if inputs.right:
+                        pass
+                    else:
+                        self.set_rotating_left()
+                elif inputs.right:
+                    self.set_rotating_right()
+                if inputs.fire:
+                    self.shoot(world)

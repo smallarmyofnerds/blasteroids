@@ -45,6 +45,32 @@ class World:
         self.last_obstacle_at = None
         self._generate_initial_asteroids()
 
+    def is_in_bounds(self, p):
+        return p.x > 0 and p.x < self.width and p.y > 0 and p.y < self.height
+    
+    def get_return_vector(self, p):
+        if p.x < 0:
+            if p.y < 0:
+                return Vector2(1, 1)
+            elif p.y > self.height:
+                return Vector2(1, -1)
+            else:
+                return Vector2(1, 0)
+        elif p.x > self.width:
+            if p.y < 0:
+                return Vector2(-1, 1)
+            elif p.y > self.height:
+                return Vector2(-1, -1)
+            else:
+                return Vector2(-1, 0)
+        else:
+            if p.y < 0:
+                return Vector2(0, 1)
+            elif p.y > self.height:
+                return Vector2(0, -1)
+            else:
+                return Vector2(0, 0)
+
     def _generate_initial_asteroids(self):
         for _ in range(10):
             self.add_new_asteroid(3, Vector2(random.randint(0, self.width), random.randint(0, self.height)))
