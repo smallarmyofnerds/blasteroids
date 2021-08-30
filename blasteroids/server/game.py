@@ -3,6 +3,7 @@ import threading
 import pygame
 from .player import Player
 from .world import World
+from blasteroids.lib.client_messages import WelcomeMessage
 
 logger = log.get_logger(__name__)
 
@@ -30,6 +31,7 @@ class Game(threading.Thread):
         logger.info(f'{player_name} connected')
         ship = self.world.create_ship(player_name)
         player = Player(ship, client_connection)
+        client_connection.queue_message(WelcomeMessage(self.world.width, self.world.height))
         self.players[player_id - 1] = player
         return player
 

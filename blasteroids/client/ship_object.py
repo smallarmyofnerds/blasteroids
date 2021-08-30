@@ -13,6 +13,3 @@ class ShipObject(GameObject):
 
     def draw(self, screen):
         screen.draw_sprite(self.static_sprite, self.position, self.orientation)
-
-    def destroy(self):
-        print('Oh noes')

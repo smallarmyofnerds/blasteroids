@@ -3,8 +3,8 @@ from .projectile import Projectile
 
 
 class Laser(Projectile):
-    def __init__(self, config, id, position, orientation, velocity, damage):
-        super(Laser, self).__init__(id, 'laser', position, orientation, velocity, config.laser_radius, damage)
+    def __init__(self, config, owner, id, position, orientation, velocity, damage):
+        super(Laser, self).__init__(owner, id, 'laser', position, orientation, velocity, config.laser_radius, damage)
         self.created_at = pygame.time.get_ticks()
 
     def _update(self, world, delta_time):

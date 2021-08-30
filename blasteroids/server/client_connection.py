@@ -2,12 +2,13 @@ from blasteroids.lib.client_messages.input import InputMessageEncoder
 import select
 import threading
 from blasteroids.lib import log
-from blasteroids.lib.client_messages import InputMessage, WorldMessage, WorldMessageEncoder, MessageEncoding, EncodedMessage
+from blasteroids.lib.client_messages import InputMessage, WorldMessage, WorldMessageEncoder, MessageEncoding, EncodedMessage, WelcomeMessage, WelcomeMessageEncoder
 
 logger = log.get_logger(__name__)
 
 
 client_message_encoders = {
+    WelcomeMessage.TYPE: WelcomeMessageEncoder(),
     InputMessage.TYPE: InputMessageEncoder(),
     WorldMessage.TYPE: WorldMessageEncoder()
 }
@@ -23,7 +24,7 @@ class ClientConnection(threading.Thread):
         self.server_name = config.server_name
         self.welcome_message = config.welcome_message
         self.game = game
-        self.player = game.create_player(self)
+        self.player = None
         self.game_server = game_server
         self.message_encoding = MessageEncoding(client_message_encoders)
 
@@ -57,6 +58,8 @@ class ClientConnection(threading.Thread):
 
     def run(self):
         logger.info('Running client connection')
+
+        self.player = self.game.create_player(self)
 
         try:
             while self.is_running:

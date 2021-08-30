@@ -26,6 +26,9 @@ class Game:
         self.world_buffer = None
         self.counter_delete_me = 0
 
+    def initialize_world(self, world_width, world_height):
+        self.screen.initialize_world(world_width, world_height)
+
     def update_world(self, server_world):
         self.lock.acquire()
         self.world_buffer = server_world

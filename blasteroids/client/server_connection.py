@@ -1,6 +1,6 @@
+from blasteroids.lib.client_messages.welcome import WelcomeMessage, WelcomeMessageEncoder
 from blasteroids.lib.client_messages.input import InputMessage, InputMessageEncoder
 from blasteroids.lib.client_messages.world import WorldMessage, WorldMessageEncoder
-from blasteroids.lib.util.synchronized_queue import SynchronizedQueue
 import threading
 import socket
 import select
@@ -10,6 +10,7 @@ from blasteroids.lib.client_messages import MessageEncoding, EncodedMessage
 logger = log.get_logger(__name__)
 
 server_message_encoders = {
+    WelcomeMessage.TYPE: WelcomeMessageEncoder(),
     InputMessage.TYPE: InputMessageEncoder(),
     WorldMessage.TYPE: WorldMessageEncoder()
 }
@@ -51,6 +52,9 @@ class ServerConnection(threading.Thread):
         self.outgoing_messages_lock.release()
 
     def _handle_message(self, message):
+        if message.type == WelcomeMessage.TYPE:
+            self.game.initialize_world(message.world_width, message.world_height)
+            return
         if message.type != WorldMessage.TYPE:
             raise Exception(f'Unexpected message type {message.type}')
 

@@ -8,7 +8,7 @@ class GameObject:
         self.orientation = server_object.orientation
         self.name = server_object.name
         self.destroyed_at = None
-        self.death_duration = 500
+        self.death_duration = 100
 
     def _update(self, position, orientation):
         self.position = position
@@ -18,7 +18,8 @@ class GameObject:
         self.destroyed_at = pygame.time.get_ticks()
 
     def should_be_removed(self):
-        return self.destroyed_at is not None and (pygame.time.get_ticks() - self.destroyed_at > self.death_duration)
+        dead_for = pygame.time.get_ticks() - self.destroyed_at
+        return dead_for > self.death_duration
 
     def draw(self, screen):
         pass

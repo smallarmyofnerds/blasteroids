@@ -70,7 +70,9 @@ class World:
     def _remove_dead_objects(self):
         objects_to_remove = []
         for object in self.dying_objects:
+            print(f'Testing {object}')
             if object.should_be_removed():
+                print(f'Removing {object}')
                 objects_to_remove.append(object)
         for object in objects_to_remove:
             self.dying_objects.remove(object)

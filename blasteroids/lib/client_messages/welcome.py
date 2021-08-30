@@ -5,13 +5,13 @@ from .message_encoder import MessageEncoder
 class WelcomeMessage(Message):
     TYPE = 'WELC'
 
-    def __init__(self, server_name, welcome_message):
+    def __init__(self, world_width, world_height):
         super(WelcomeMessage, self).__init__(WelcomeMessage.TYPE)
-        self.server_name = server_name
-        self.welcome_message = welcome_message
+        self.world_width = world_width
+        self.world_height = world_height
 
     def __repr__(self):
-        return f'{super(WelcomeMessage, self).__repr__()}:{self.server_name}:{self.welcome_message}'
+        return f'{super(WelcomeMessage, self).__repr__()}:{self.world_width}:{self.world_height}'
 
 
 class WelcomeMessageEncoder(MessageEncoder):
@@ -19,8 +19,9 @@ class WelcomeMessageEncoder(MessageEncoder):
         super(WelcomeMessageEncoder, self).__init__(WelcomeMessage.TYPE)
 
     def encode(self, message):
-        return super(WelcomeMessageEncoder, self)._encode_type() + self._encode_string(message.server_name) + self._encode_string(message.welcome_message)
+        return super(WelcomeMessageEncoder, self)._encode_type() + self._encode_short(message.world_width) + self._encode_short(message.world_height)
 
     def decode(self, encoded_message):
-        player_name = encoded_message.pop_string()
-        return WelcomeMessage(player_name)
+        world_width = encoded_message.pop_short()
+        world_height = encoded_message.pop_short()
+        return WelcomeMessage(world_width, world_height)

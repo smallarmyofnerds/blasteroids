@@ -3,7 +3,6 @@ import pygame
 
 class GameObject:
     MIN_VELOCITY = 0.5
-    MAX_VELOCITY = 100
     MIN_ROTATIONAL_VELOCITY = 0.001
     MAX_ROTATIONAL_VELOCITY = 190
 
@@ -34,8 +33,8 @@ class GameObject:
         self.velocity = self.velocity + self.acceleration
         if self.velocity.length() < GameObject.MIN_VELOCITY:
             self.velocity = pygame.Vector2(0, 0)
-        if self.velocity.length() > GameObject.MAX_VELOCITY:
-            self.velocity = self.velocity.normalize() * GameObject.MAX_VELOCITY
+        # if self.velocity.length() > GameObject.MAX_VELOCITY:
+        #     self.velocity = self.velocity.normalize() * GameObject.MAX_VELOCITY
 
         # move object
         self.position = self.position + delta_time * self.velocity

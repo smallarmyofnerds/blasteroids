@@ -11,6 +11,3 @@ class ObstacleObject(GameObject):
 
     def update(self, raw_obstacle):
         super(ObstacleObject, self)._update(raw_obstacle.position, raw_obstacle.orientation)
-
-    def destroy(self):
-        pass

@@ -25,7 +25,7 @@ class Ship(DestroyableGameObject):
         self.laser_cool_down = 200
 
     def on_removed(self, world):
-        self.player.initialize_respawn_timer()
+        pass
 
     def zero_accelerations(self):
         self.acceleration = pygame.Vector2(0, 0)
@@ -43,5 +43,5 @@ class Ship(DestroyableGameObject):
     def shoot(self, world):
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.laser_cool_down:
-            world.create_projectile(Laser(self.config, None, self.position, self.orientation, self.orientation.normalize() * 1000, 100))
+            world.create_projectile(Laser(self.config, self, None, self.position, self.orientation, self.orientation.normalize() * 1000, 100))
             self.last_shot = now
