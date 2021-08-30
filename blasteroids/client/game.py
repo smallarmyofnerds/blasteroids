@@ -1,3 +1,4 @@
+from blasteroids.client.sound_library import SoundLibrary
 import threading
 from blasteroids.lib.client_messages.input import InputMessage
 import pygame
@@ -20,7 +21,8 @@ class Game:
         self.something_pressed_last_time = False
 
         self.sprite_library = SpriteLibrary()
-        self.world = World(self.sprite_library)
+        self.sound_library = SoundLibrary()
+        self.world = World(self.sprite_library, self.sound_library)
 
         self.lock = threading.Lock()
         self.world_buffer = None

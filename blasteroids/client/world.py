@@ -5,8 +5,9 @@ from .power_up_object import PowerUpObject
 
 
 class World:
-    def __init__(self, sprite_library):
+    def __init__(self, sprite_library, sound_library):
         self.sprite_library = sprite_library
+        self.sound_library = sound_library
         self.my_ship = None
         self.game_objects = []
         self.game_objects_by_id = {}
@@ -50,6 +51,8 @@ class World:
                     new_object = PowerUpObject(object, self.sprite_library)
                 else:
                     raise Exception(f'Unrecognized object type {object.type} from server')
+
+                new_object.on_create(self.sound_library)
 
                 self.game_objects.append(new_object)
                 self.game_objects_by_id[new_object.id] = new_object
