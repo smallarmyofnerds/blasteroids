@@ -61,11 +61,6 @@ class Game(threading.Thread):
         
         self.lock.release()
 
-    def _process_inputs(self):
-        for player in self.players:
-            if player:
-                player.process_input(self.world)
-
     def _broadcast_updates(self):
         server_objects = self.world.to_server_objects()
         for player in self.players:
@@ -77,7 +72,6 @@ class Game(threading.Thread):
         while self.running:
             self.clock.tick(self.fps)
             self.lock.acquire()
-            self._process_inputs()
             self.world.update(self.clock.get_time() / 1000.0)
             self._broadcast_updates()
             self.lock.release()

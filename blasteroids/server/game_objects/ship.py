@@ -55,3 +55,19 @@ class Ship(DestroyableGameObject):
 
         if self.health <= 0:
             self.destroy()
+
+    def _before_update(self, world, delta_time):
+        inputs = self.player.get_inputs()
+        if inputs:
+            self.zero_accelerations()
+            if inputs.left:
+                if inputs.right:
+                    pass
+                else:
+                    self.set_rotating_left()
+            elif inputs.right:
+                self.set_rotating_right()
+            if inputs.up:
+                self.set_accelerating()
+            if inputs.fire:
+                self.shoot(world)

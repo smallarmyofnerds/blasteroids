@@ -19,6 +19,8 @@ class GameObject:
         self.collision_radius = collision_radius
 
     def update(self, world, delta_time):
+        self._before_update(world, delta_time)
+
         # update rotational velocity from rotational acceleration
         rotational_friction = -1 * self.rotational_velocity_friction * self.rotational_velocity
         self.rotational_velocity = self.rotational_velocity + rotational_friction + self.rotational_acceleration
@@ -39,9 +41,12 @@ class GameObject:
         # move object
         self.position = self.position + delta_time * self.velocity
 
-        self._update(world, delta_time)
+        self._after_update(world, delta_time)
 
-    def _update(self, world, delta_time):
+    def _before_update(self, world, delta_time):
+        pass
+
+    def _after_update(self, world, delta_time):
         pass
 
     def collides_with(self, other):

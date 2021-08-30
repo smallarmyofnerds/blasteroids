@@ -15,31 +15,15 @@ class Player:
         self.inputs = inputs
         self.lock.release()
 
+    def get_inputs(self):
+        self.lock.acquire()
+        inputs = self.inputs
+        self.lock.release()
+        return inputs
+
     def remove_ship(self):
         self.lock.acquire()
         self.ship = None
-        self.lock.release()
-
-    def process_input(self, world):
-        self.lock.acquire()
-
-        if self.ship:
-            self.ship.zero_accelerations()
-            if self.inputs:
-                if self.inputs.left:
-                    if self.inputs.right:
-                        pass
-                    else:
-                        self.ship.set_rotating_left()
-                elif self.inputs.right:
-                    self.ship.set_rotating_right()
-                if self.inputs.up:
-                    self.ship.set_accelerating()
-                if self.inputs.fire:
-                    self.ship.shoot(world)
-
-        self.inputs = None
-
         self.lock.release()
 
     def send_world(self, server_objects):
