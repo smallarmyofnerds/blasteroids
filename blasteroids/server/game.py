@@ -8,13 +8,13 @@ logger = log.get_logger(__name__)
 
 
 class Game(threading.Thread):
-    def __init__(self, config, sprite_library):
+    def __init__(self, config):
         super(Game, self).__init__()
         self.config = config
         self.running = False
         self.clock = pygame.time.Clock()
         self.players = [None] * 2
-        self.world = World(config, sprite_library)
+        self.world = World(config)
         self.fps = 60
 
     def _get_next_player_id(self):

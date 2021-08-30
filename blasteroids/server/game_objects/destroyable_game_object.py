@@ -2,8 +2,8 @@ from .game_object import GameObject
 
 
 class DestroyableGameObject(GameObject):
-    def __init__(self, id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, collision_mask, damage, health):
-        super(DestroyableGameObject, self).__init__(id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, collision_mask)
+    def __init__(self, id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, damage, health):
+        super(DestroyableGameObject, self).__init__(id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction)
         self.damage = damage
         self.health = health
 

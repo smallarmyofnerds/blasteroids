@@ -4,10 +4,8 @@ from .destroyable_game_object import DestroyableGameObject
 
 
 class Ship(DestroyableGameObject):
-    def __init__(self, config, sprite_library, id, position, orientation, name):
-        img = sprite_library.get(f'{name}_static')
-        collision_mask = pygame.mask.from_surface(img)
-        super(Ship, self).__init__(id, name, position, orientation, pygame.Vector2(0, 0), 0, config.ship_rotational_velocity_friction, collision_mask, 100, 100)
+    def __init__(self, config, id, position, orientation, name):
+        super(Ship, self).__init__(id, name, position, orientation, pygame.Vector2(0, 0), 0, config.ship_rotational_velocity_friction, 100, 100)
         self.player = None
         self.acceleration_rate = config.ship_acceleration_rate
         self.rotational_acceleration_rate = config.ship_rotational_acceleration_rate

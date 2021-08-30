@@ -6,7 +6,7 @@ class GameObject:
     MIN_ROTATIONAL_VELOCITY = 0.001
     MAX_ROTATIONAL_VELOCITY = 190
 
-    def __init__(self, id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, collision_mask):
+    def __init__(self, id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction):
         self.id = id
         self.name = name
         self.position = position
@@ -16,7 +16,6 @@ class GameObject:
         self.rotational_velocity = rotational_velocity
         self.rotational_velocity_friction = rotational_velocity_friction
         self.rotational_acceleration = 0  # dpsps
-        self.collision_mask = collision_mask
 
     def update(self, world, delta_time):
         # update rotational velocity from rotational acceleration

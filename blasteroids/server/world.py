@@ -7,11 +7,10 @@ from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjec
 
 
 class World:
-    def __init__(self, config, sprite_library):
+    def __init__(self, config):
         self.config = config
         self.width = config.world_width
         self.height = config.world_height
-        self.sprite_library = sprite_library
         self.ships = []
         self.projectiles = []
         self.power_ups = []
@@ -47,7 +46,7 @@ class World:
 
     def create_ship(self, name):
         self.lock.acquire()
-        ship = Ship(self.config, self.sprite_library, self._get_next_id(), Vector2(0, 0), Vector2(0, 1), name)
+        ship = Ship(self.config, self._get_next_id(), Vector2(0, 0), Vector2(0, 1), name)
         self.ships.append(ship)
         self.lock.release()
         return ship
@@ -74,9 +73,9 @@ class World:
         self.ships.remove(ship)
 
     def _update_all(self, delta_time):
-        # self.lock.acquire()
+        self.lock.acquire()
         all_objects = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles]
-        # self.lock.release()
+        self.lock.release()
         for o in all_objects:
             o.update(self, delta_time)
 
@@ -110,9 +109,7 @@ class World:
                     power_up.destroy(self)
 
     def update(self, delta_time):
-        self.lock.acquire()
         self._update_all(delta_time)
-        self.lock.release()
         self._test_ship_collisions()
         self._test_projectile_collisions()
         self._test_power_up_collisions()
