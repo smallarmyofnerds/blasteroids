@@ -4,23 +4,21 @@ from blasteroids.server.game_objects.obstacle import Obstacle
 
 
 class Asteroid(Obstacle):
-    def __init__(self, level, id, position, orientation, velocity, damage, health):
+    def __init__(self, level, id, position, orientation, velocity, collision_radius, damage, health):
         name = f'asteroid_{level}'
         super(Asteroid, self).__init__(
             id,
             name,
             position,
-            self._random_orientation(),
+            orientation,
             velocity,
             self._random_rotational_velocity(),
             0,
+            collision_radius,
             damage,
             health,
         )
         self.level = level
-
-    def _random_orientation(self):
-        return Vector2(0, 1).rotate(random.random() * 360.0)
 
     def _random_rotational_velocity(self):
         return random.randint(-10, 10) * 2

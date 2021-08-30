@@ -33,7 +33,7 @@ class Game:
 
     def _update(self):
         if self.world_buffer:
-            print(self.world_buffer)
+            # print(self.world_buffer)
             self.world.update(self.world_buffer)
             if self.world.my_ship:
                 self.screen.move_camera_to(self.world.my_ship.position)

@@ -16,6 +16,7 @@ DEFAULT_LASER_RADIUS = 5
 DEFAULT_ASTEROID_MAX_SPEED = 50
 DEFAULT_ASTEROID_BASE_DAMAGE = 10000
 DEFAULT_ASTEROID_BASE_HEALTH = 1000
+DEFAULT_ASTEROID_BASE_COLLISION_RADIUS = 28
 
 DEFAULT_WORLD_WIDTH = 10000
 DEFAULT_WORLD_HEIGHT = 10000
@@ -45,6 +46,7 @@ class Config:
         self.asteroid_max_speed = int(config['Game'].get('AsteroidMaxSpeed', DEFAULT_ASTEROID_MAX_SPEED))
         self.asteroid_base_damage = int(config['Game'].get('AsteroidBaseDamage', DEFAULT_ASTEROID_BASE_DAMAGE))
         self.asteroid_base_health = int(config['Game'].get('AsteroidBaseHealth', DEFAULT_ASTEROID_BASE_HEALTH))
+        self.asteroid_base_collision_radius = int(config['Game'].get('AsteroidBaseCollisionRadius', DEFAULT_ASTEROID_BASE_COLLISION_RADIUS))
 
         self.world_width = int(config['Game'].get('WorldWidth', DEFAULT_WORLD_WIDTH))
         self.world_height = int(config['Game'].get('WorldHeight', DEFAULT_WORLD_HEIGHT))

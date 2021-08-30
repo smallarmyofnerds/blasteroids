@@ -11,9 +11,11 @@ class AsteroidFactory:
         self.max_speed = config.asteroid_max_speed
         self.damage = {}
         self.health = {}
+        self.collision_radius = {}
         for i in range(3):
-            self.damage[i + 1] = int((i + 1) * config.asteroid_base_damage / 3.0)
-            self.health[i + 1] = int((i + 1) * config.asteroid_base_health / 3.0)
+            self.damage[i + 1] = int((i + 1) * config.asteroid_base_damage)
+            self.health[i + 1] = int((i + 1) * config.asteroid_base_health)
+            self.collision_radius[i + 1] = int((i + 1) * config.asteroid_base_collision_radius)
 
     def create(self, level, id, position):
         return Asteroid(
@@ -22,6 +24,7 @@ class AsteroidFactory:
             position,
             Vector2(0, 1).rotate(random.random() * 360.0),
             Vector2(0, 1).rotate(random.random() * 360.0) * random.random() * self.max_speed,
+            self.collision_radius[level],
             self.damage[level],
             self.health[level],
         )
@@ -47,7 +50,7 @@ class World:
 
     def _generate_initial_asteroids(self):
         for _ in range(10):
-            self.add_new_asteroid(3, Vector2(0, 0))
+            self.add_new_asteroid(3, Vector2(random.randint(0, self.width), random.randint(0, self.height)))
         self.last_obstacle_at = pygame.time.get_ticks()
 
     def add_new_asteroid(self, level, position):
