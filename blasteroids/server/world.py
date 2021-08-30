@@ -6,6 +6,27 @@ from blasteroids.server.game_objects import Obstacle, Ship, PowerUp, Asteroid
 from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjectile, ServerObstacle
 
 
+class AsteroidFactory:
+    def __init__(self, config):
+        self.max_speed = config.asteroid_max_speed
+        self.damage = {}
+        self.health = {}
+        for i in range(3):
+            self.damage[i + 1] = int((i + 1) * config.asteroid_base_damage / 3.0)
+            self.health[i + 1] = int((i + 1) * config.asteroid_base_health / 3.0)
+
+    def create(self, level, id, position):
+        return Asteroid(
+            level,
+            id,
+            position,
+            Vector2(0, 1).rotate(random.random() * 360.0),
+            Vector2(0, 1).rotate(random.random() * 360.0) * random.random() * self.max_speed,
+            self.damage[level],
+            self.health[level],
+        )
+
+
 class World:
     def __init__(self, config):
         self.config = config
@@ -19,25 +40,18 @@ class World:
 
         self.lock = threading.Lock()
 
-        self.last_obstacle_at = None
-        self._generate_initial_obstacles()
+        self.asteroid_factory = AsteroidFactory(config)
 
-    def _generate_initial_obstacles(self):
-        for i in range(10):
-            obstacle = Asteroid(
-                self._get_next_id(),
-                Vector2(
-                    # random.randint(0, self.width),
-                    # random.randint(0, self.height)
-                    0, 0
-                ),
-                Vector2(0, 1).rotate(random.random() * 360.0),
-                Vector2(0, 1).rotate(random.random() * 360.0) * random.random() * 50,
-                10000,
-                1000,
-            )
-            self.obstacles.append(obstacle)
+        self.last_obstacle_at = None
+        self._generate_initial_asteroids()
+
+    def _generate_initial_asteroids(self):
+        for _ in range(10):
+            self.add_new_asteroid(3, Vector2(0, 0))
         self.last_obstacle_at = pygame.time.get_ticks()
+
+    def add_new_asteroid(self, level, position):
+        self.obstacles.append(self.asteroid_factory.create(level, self._get_next_id(), position))
 
     def _get_next_id(self):
         id = self.next_id
@@ -74,9 +88,9 @@ class World:
 
     def _update_all(self, delta_time):
         self.lock.acquire()
-        all_objects = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles]
+        objects_to_update = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles]
         self.lock.release()
-        for o in all_objects:
+        for o in objects_to_update:
             o.update(self, delta_time)
 
     def _test_ship_collisions(self):

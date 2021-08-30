@@ -6,7 +6,7 @@ class GameObject:
     MIN_ROTATIONAL_VELOCITY = 0.001
     MAX_ROTATIONAL_VELOCITY = 190
 
-    def __init__(self, id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction):
+    def __init__(self, id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, collision_radius):
         self.id = id
         self.name = name
         self.position = position
@@ -16,6 +16,7 @@ class GameObject:
         self.rotational_velocity = rotational_velocity
         self.rotational_velocity_friction = rotational_velocity_friction
         self.rotational_acceleration = 0  # dpsps
+        self.collision_radius = collision_radius
 
     def update(self, world, delta_time):
         # update rotational velocity from rotational acceleration
@@ -36,7 +37,13 @@ class GameObject:
         # move object
         self.position = self.position + delta_time * self.velocity
 
+        self._update(world, delta_time)
+
+    def _update(self, world, delta_time):
+        pass
+
     def collides_with(self, other):
-        # if pygame.sprite.spritecollide(self.collision_mask, [other.collision_mask], False, pygame.sprite.collide_mask):
-        #     return True
-        return False
+        vector_between = self.position - other.position
+        distance_between = vector_between.length()
+        min_distance = self.collision_radius + other.collision_radius
+        return distance_between <= min_distance
