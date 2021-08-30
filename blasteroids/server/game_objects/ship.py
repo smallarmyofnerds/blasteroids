@@ -28,8 +28,8 @@ class Ship(DestroyableGameObject):
     def on_removed(self, world):
         self.player.remove_ship()
 
-    def zero_accelerations(self):
-        self.acceleration = pygame.Vector2(0, 0)
+    def zero_accelerations(self, delta_time):
+        self.acceleration = -1 * delta_time * self.velocity
         self.rotational_acceleration = 0
 
     def set_rotating_left(self):
@@ -57,7 +57,7 @@ class Ship(DestroyableGameObject):
             self.destroy()
 
     def _before_update(self, world, delta_time):
-        self.zero_accelerations()
+        self.zero_accelerations(delta_time)
         inputs = self.player.get_inputs()
         if world.is_in_bounds(self.position):
             if inputs:
