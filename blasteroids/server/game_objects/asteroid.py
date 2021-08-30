@@ -23,8 +23,7 @@ class Asteroid(Obstacle):
     def _random_rotational_velocity(self):
         return random.randint(-10, 10) * 2
 
-    def destroy(self, world):
-        world.remove_obstacle(self)
+    def on_removed(self, world):
         if self.level > 1:
             for i in range(3):
                 world.add_new_asteroid(self.level - 1, self.position)

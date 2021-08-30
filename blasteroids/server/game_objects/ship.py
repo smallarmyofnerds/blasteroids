@@ -22,10 +22,10 @@ class Ship(DestroyableGameObject):
         self.acceleration_rate = config.ship_acceleration_rate
         self.rotational_acceleration_rate = config.ship_rotational_acceleration_rate
         self.last_shot = 0
-        self.laser_cool_down = 100
+        self.laser_cool_down = 200
 
-    def destroy(self, world):
-        world.remove_ship(self)
+    def on_removed(self, world):
+        self.player.initialize_respawn_timer()
 
     def zero_accelerations(self):
         self.acceleration = pygame.Vector2(0, 0)

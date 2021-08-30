@@ -9,4 +9,4 @@ class Laser(Projectile):
 
     def _update(self, world, delta_time):
         if pygame.time.get_ticks() - self.created_at > 500:
-            self.destroy(world)
+            self.destroy()

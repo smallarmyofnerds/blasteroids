@@ -63,7 +63,7 @@ class World:
 
     def create_ship(self, name):
         self.lock.acquire()
-        ship = Ship(self.config, self._get_next_id(), Vector2(0, 0), Vector2(0, 1), name)
+        ship = Ship(self.config, self._get_next_id(), Vector2(random.randint(0, self.width), random.randint(0, self.height)), Vector2(0, 1), name)
         self.ships.append(ship)
         self.lock.release()
         return ship
@@ -89,10 +89,23 @@ class World:
     def remove_ship(self, ship):
         self.ships.remove(ship)
 
+    def _remove_destroyed_objects(self, object_list):
+        objects_to_remove = []
+        for o in object_list:
+            if o.destroyed:
+                objects_to_remove.append(o)
+        for o in objects_to_remove:
+            object_list.remove(o)
+            o.on_removed(self)
+
+    def _remove_destroyed(self):
+        self._remove_destroyed_objects(self.ships)
+        self._remove_destroyed_objects(self.obstacles)
+        self._remove_destroyed_objects(self.power_ups)
+        self._remove_destroyed_objects(self.projectiles)
+
     def _update_all(self, delta_time):
-        self.lock.acquire()
         objects_to_update = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles]
-        self.lock.release()
         for o in objects_to_update:
             o.update(self, delta_time)
 
@@ -105,27 +118,28 @@ class World:
                     ship.apply_damage_to(other)
                     other.apply_damage_to(ship)
                     if ship.health == 0:
-                        ship.destroy(self)
+                        ship.destroy()
                     if other.health == 0:
-                        other.destroy(self)
+                        other.destroy()
 
     def _test_projectile_collisions(self):
         for projectile in self.projectiles:
             for other in [*self.ships, *self.obstacles]:
                 if projectile.collides_with(other):
                     projectile.apply_damage_to(other)
-                    projectile.destroy(self)
+                    projectile.destroy()
                     if other.health == 0:
-                        other.destroy(self)
+                        other.destroy()
 
     def _test_power_up_collisions(self):
         for ship in self.ships:
             for power_up in self.power_ups:
                 if ship.collides_with(power_up):
                     power_up.apply_power_up_to(ship)
-                    power_up.destroy(self)
+                    power_up.destroy()
 
     def update(self, delta_time):
+        self._remove_destroyed()
         self._update_all(delta_time)
         self._test_ship_collisions()
         self._test_projectile_collisions()

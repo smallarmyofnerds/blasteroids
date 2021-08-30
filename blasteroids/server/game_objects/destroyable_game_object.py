@@ -6,6 +6,7 @@ class DestroyableGameObject(GameObject):
         super(DestroyableGameObject, self).__init__(id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, collision_radius)
         self.damage = damage
         self.health = health
+        self.destroyed = False
 
     def take_damage(self, damage):
         self.health = max(0, self.health - damage)
@@ -13,5 +14,8 @@ class DestroyableGameObject(GameObject):
     def apply_damage_to(self, other):
         other.take_damage(self.damage)
 
-    def destroy(self, world):
+    def destroy(self):
+        self.destroyed = True
+
+    def on_removed(self, world):
         pass
