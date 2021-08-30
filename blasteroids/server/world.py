@@ -42,8 +42,7 @@ class World:
 
         self.asteroid_factory = AsteroidFactory(config)
 
-        self.last_obstacle_at = None
-        self._generate_initial_asteroids()
+        self._top_up_asteroids()
 
     def is_in_bounds(self, p, padding = 0):
         return (p.x + padding) > 0 and (p.x - padding) < self.width and (p.y + padding) > 0 and (p.y - padding) < self.height
@@ -71,10 +70,10 @@ class World:
             else:
                 return Vector2(0, 0)
 
-    def _generate_initial_asteroids(self):
-        for _ in range(10):
+    def _top_up_asteroids(self):
+        asteroids_to_generate = max(0, self.config.min_asteroids - len(self.obstacles))
+        for _ in range(asteroids_to_generate):
             self.add_new_asteroid(3, Vector2(random.randint(0, self.width), random.randint(0, self.height)))
-        self.last_obstacle_at = pygame.time.get_ticks()
 
     def add_new_asteroid(self, level, position):
         self.obstacles.append(self.asteroid_factory.create(level, self._get_next_id(), position))
@@ -154,6 +153,7 @@ class World:
         self._test_ship_collisions()
         self._test_projectile_collisions()
         self._test_power_up_collisions()
+        self._top_up_asteroids()
 
     def to_server_objects(self):
         objects = []

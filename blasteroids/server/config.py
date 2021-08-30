@@ -14,6 +14,7 @@ DEFAULT_SHIP_HEALTH = 100
 DEFAULT_LASER_RADIUS = 5
 DEFAULT_LASER_DAMAGE = 200
 
+DEFAULT_MIN_ASTEROIDS = 40
 DEFAULT_ASTEROID_MAX_SPEED = 50
 DEFAULT_ASTEROID_BASE_DAMAGE = 800
 DEFAULT_ASTEROID_BASE_HEALTH = 200
@@ -45,6 +46,7 @@ class Config:
         self.laser_radius = float(config['Game'].get('LaserRadius', DEFAULT_LASER_RADIUS))
         self.laser_damage = int(config['Game'].get('LaserDamage', DEFAULT_LASER_DAMAGE))
 
+        self.min_asteroids = int(config['Game'].get('MinAsteroids', DEFAULT_MIN_ASTEROIDS))
         self.asteroid_max_speed = int(config['Game'].get('AsteroidMaxSpeed', DEFAULT_ASTEROID_MAX_SPEED))
         self.asteroid_base_damage = int(config['Game'].get('AsteroidBaseDamage', DEFAULT_ASTEROID_BASE_DAMAGE))
         self.asteroid_base_health = int(config['Game'].get('AsteroidBaseHealth', DEFAULT_ASTEROID_BASE_HEALTH))
