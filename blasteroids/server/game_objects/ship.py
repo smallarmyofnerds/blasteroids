@@ -26,7 +26,7 @@ class Ship(DestroyableGameObject):
         self.shield = 0
 
     def on_removed(self, world):
-        pass
+        self.player.remove_ship()
 
     def zero_accelerations(self):
         self.acceleration = pygame.Vector2(0, 0)

@@ -5,7 +5,7 @@ import threading
 import socket
 import select
 from blasteroids.lib import log
-from blasteroids.lib.client_messages import MessageEncoding, EncodedMessage
+from blasteroids.lib.client_messages import MessageEncoding, MessageBuffer
 
 logger = log.get_logger(__name__)
 
@@ -24,32 +24,25 @@ class ServerConnection(threading.Thread):
         self.socket = None
         self.running = False
         self.message_encoding = MessageEncoding(server_message_encoders)
+        self.message_buffer = MessageBuffer(self.message_encoding)
         self.outgoing_messages = []
-        self.outgoing_messages_lock = threading.Lock()
+        self.lock = threading.Lock()
         self.game = None
 
     def queue_message(self, message):
-        self.outgoing_messages_lock.acquire()
+        self.lock.acquire()
         self.outgoing_messages.append(message)
-        self.outgoing_messages_lock.release()
+        self.lock.release()
 
-    def _send_message(self, message):
-        self.socket.send(self.message_encoding.encode(message))
-
-    def _receive_message(self):
+    def _receive_bytes(self):
         encoded_bytes = self.socket.recv(8192)
-        return self.message_encoding.decode(EncodedMessage(encoded_bytes))
-
-    def _flush_outgoing_messages(self):
-        self.outgoing_messages_lock.acquire()
-        for message in self.outgoing_messages:
-            try:
-                logger.info(f'Sending {message}')
-                self._send_message(message)
-            except Exception as e:
-                logger.error(e)
-        self.outgoing_messages = []
-        self.outgoing_messages_lock.release()
+        self.message_buffer.push(encoded_bytes)
+    
+    def _process_messages(self):
+        messages = self.message_buffer.pop_all()
+        for message in messages:
+            logger.info(f'Received {message}')
+            self._handle_message(message)
 
     def _handle_message(self, message):
         if message.type == WelcomeMessage.TYPE:
@@ -60,22 +53,35 @@ class ServerConnection(threading.Thread):
 
         self.game.update_world(message.to_server_world())
 
+    def _flush_outgoing_messages(self):
+        self.lock.acquire()
+        for message in self.outgoing_messages:
+            try:
+                logger.info(f'Sending {message}')
+                self._send_message(message)
+            except Exception as e:
+                logger.error(e)
+        self.outgoing_messages = []
+        self.lock.release()
+
+    def _send_message(self, message):
+        self.socket.send(self.message_encoding.encode(message))
+
     def run(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((self.server_address, self.server_port))
 
         self.running = True
         while self.running:
-            self.outgoing_messages_lock.acquire()
+            self.lock.acquire()
             messages_to_send = len(self.outgoing_messages) > 0
-            self.outgoing_messages_lock.release()
+            self.lock.release()
 
             readable, writable, exceptional = select.select([self.socket], [self.socket] if messages_to_send else [], [self.socket], 0.001)
 
             for _ in readable:
-                message = self._receive_message()
-                logger.info(f'Received {message}')
-                self._handle_message(message)
+                self._receive_bytes()
+                self._process_messages()
 
             for _ in writable:
                 self._flush_outgoing_messages()

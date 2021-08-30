@@ -29,7 +29,7 @@ class WorldMessageEncoder(MessageEncoder):
         for object in message.objects:
             buffer += self._encode_server_object(object)
         buffer += self._encode_short(message.player_id)
-        return bytes(buffer)
+        return bytes(buffer) + b'****'
 
     def decode(self, encoded_message):
         count = encoded_message.pop_short()

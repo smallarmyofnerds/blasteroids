@@ -7,6 +7,9 @@ class EncodedMessage:
     def __init__(self, msg):
         self.msg = msg
 
+    def push(self, b):
+        self.msg = self.msg + b
+
     def pop(self, length):
         b = self.msg[:length]
         self.msg = self.msg[length:]

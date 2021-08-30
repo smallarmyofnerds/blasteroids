@@ -24,9 +24,9 @@ class Screen:
 
     def reset(self):
         self.surface.fill((0, 0, 0))
-        for i in range(int(self.world_width + 1 / 500)):
+        for i in range(int((self.world_width + 1) / 500)):
             pygame.draw.line(self.surface, (255, 255, 255), self._world_to_viewport(Vector2(i * 500, self.world_height)), self._world_to_viewport(Vector2(i * 500, 0)))
-        for i in range(int(self.world_height / 500)):
+        for i in range(int((self.world_height + 1) / 500)):
             pygame.draw.line(self.surface, (255, 255, 255), self._world_to_viewport(Vector2(0, i * 500)), self._world_to_viewport(Vector2(self.world_width, i * 500)))
 
     def move_camera_to(self, position):

@@ -33,7 +33,7 @@ class InputMessageEncoder(MessageEncoder):
         super(InputMessageEncoder, self).__init__(InputMessage.TYPE)
 
     def encode(self, message):
-        return super(InputMessageEncoder, self)._encode_type() + self._encode_boolean(message.left) + self._encode_boolean(message.right) + self._encode_boolean(message.up) + self._encode_boolean(message.fire)
+        return super(InputMessageEncoder, self)._encode_type() + self._encode_boolean(message.left) + self._encode_boolean(message.right) + self._encode_boolean(message.up) + self._encode_boolean(message.fire) + b'****'
 
     def decode(self, encoded_message):
         left = encoded_message.pop_boolean()

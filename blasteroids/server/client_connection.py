@@ -2,7 +2,7 @@ from blasteroids.lib.client_messages.input import InputMessageEncoder
 import select
 import threading
 from blasteroids.lib import log
-from blasteroids.lib.client_messages import InputMessage, WorldMessage, WorldMessageEncoder, MessageEncoding, EncodedMessage, WelcomeMessage, WelcomeMessageEncoder
+from blasteroids.lib.client_messages import InputMessage, WorldMessage, WorldMessageEncoder, MessageEncoding, WelcomeMessage, WelcomeMessageEncoder, MessageBuffer
 
 logger = log.get_logger(__name__)
 
@@ -27,28 +27,25 @@ class ClientConnection(threading.Thread):
         self.player = None
         self.game_server = game_server
         self.message_encoding = MessageEncoding(client_message_encoders)
+        self.message_buffer = MessageBuffer(self.message_encoding)
 
         self.outgoing_messages = []
-        self.outgoing_messages_lock = threading.Lock()
+        self.lock = threading.Lock()
 
     def queue_message(self, message):
-        self.outgoing_messages_lock.acquire()
+        self.lock.acquire()
         self.outgoing_messages.append(message)
-        self.outgoing_messages_lock.release()
+        self.lock.release()
 
-    def _send_message(self, message):
-        self.socket.send(self.message_encoding.encode(message))
-
-    def _receive_message(self):
+    def _receive_bytes(self):
         encoded_bytes = self.socket.recv(8192)
-        return self.message_encoding.decode(EncodedMessage(encoded_bytes))
-
-    def _flush_outgoing_messages(self):
-        self.outgoing_messages_lock.acquire()
-        for message in self.outgoing_messages:
-            self._send_message(message)
-        self.outgoing_messages = []
-        self.outgoing_messages_lock.release()
+        self.message_buffer.push(encoded_bytes)
+    
+    def _process_messages(self):
+        messages = self.message_buffer.pop_all()
+        for message in messages:
+            logger.info(f'Received {message}')
+            self._handle_message(message)
 
     def _handle_message(self, message):
         if message.type != InputMessage.TYPE:
@@ -56,16 +53,27 @@ class ClientConnection(threading.Thread):
 
         self.player.update_inputs(message.to_player_inputs())
 
+    def _flush_outgoing_messages(self):
+        self.lock.acquire()
+        for message in self.outgoing_messages:
+            self._send_message(message)
+        self.outgoing_messages = []
+        self.lock.release()
+
+    def _send_message(self, message):
+        self.socket.send(self.message_encoding.encode(message))
+
     def run(self):
         logger.info('Running client connection')
 
         self.player = self.game.create_player(self)
+        logger.info(f'{self.player.name} connected')
 
         try:
             while self.is_running:
-                self.outgoing_messages_lock.acquire()
+                self.lock.acquire()
                 messages_to_send = len(self.outgoing_messages) > 0
-                self.outgoing_messages_lock.release()
+                self.lock.release()
 
                 readable, writable, exceptional = select.select([self.socket], [self.socket] if messages_to_send else [], [self.socket], 0.001)
 
@@ -76,11 +84,8 @@ class ClientConnection(threading.Thread):
 
                 if self.is_running:
                     for _ in readable:
-                        # logger.info('Socket is readable')
-                        message = self._receive_message()
-                        if message:
-                            logger.info(f'Received {message}')
-                            self._handle_message(message)
+                        self._receive_bytes()
+                        self._process_messages()
 
                     for _ in writable:
                         self._flush_outgoing_messages()

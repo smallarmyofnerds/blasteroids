@@ -19,7 +19,7 @@ class WelcomeMessageEncoder(MessageEncoder):
         super(WelcomeMessageEncoder, self).__init__(WelcomeMessage.TYPE)
 
     def encode(self, message):
-        return super(WelcomeMessageEncoder, self)._encode_type() + self._encode_short(message.world_width) + self._encode_short(message.world_height)
+        return super(WelcomeMessageEncoder, self)._encode_type() + self._encode_short(message.world_width) + self._encode_short(message.world_height) + b'****'
 
     def decode(self, encoded_message):
         world_width = encoded_message.pop_short()

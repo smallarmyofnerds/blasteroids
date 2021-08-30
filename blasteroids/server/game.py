@@ -17,6 +17,7 @@ class Game(threading.Thread):
         self.players = [None] * 2
         self.world = World(config)
         self.fps = 60
+        self.lock = threading.Lock()
 
     def _get_next_player_id(self):
         if self.players[0] is None:
@@ -24,25 +25,41 @@ class Game(threading.Thread):
         if self.players[1] is None:
             return 2
         raise Exception('Too many players')
-
-    def create_player(self, client_connection):
+    
+    def _get_next_player(self):
         player_id = self._get_next_player_id()
         player_name = f'player_{player_id}'
-        logger.info(f'{player_name} connected')
+        return player_id, player_name
+
+    def create_player(self, client_connection):
+        self.lock.acquire()
+
+        player_id, player_name = self._get_next_player()
+
         ship = self.world.create_ship(player_name)
-        player = Player(ship, client_connection)
-        client_connection.queue_message(WelcomeMessage(self.world.width, self.world.height))
+
+        player = Player(player_name, ship, client_connection)
         self.players[player_id - 1] = player
+        
+        ship.player = player
+
+        client_connection.queue_message(WelcomeMessage(self.world.width, self.world.height))
+
+        self.lock.release()
+
         return player
 
     def remove_player(self, player):
-        self.world.remove_ship(player.ship)
+        self.lock.acquire()
+
         if self.players[0] == player:
             self.players[0] = None
         elif self.players[1] == player:
             self.players[1] = None
         else:
-            raise Exception('Unknown player')
+            logger.error('Removing unknown player')
+        
+        self.lock.release()
 
     def _process_inputs(self):
         for player in self.players:
@@ -59,9 +76,11 @@ class Game(threading.Thread):
         self.running = True
         while self.running:
             self.clock.tick(self.fps)
+            self.lock.acquire()
             self._process_inputs()
             self.world.update(self.clock.get_time() / 1000.0)
             self._broadcast_updates()
+            self.lock.release()
 
     def stop(self):
         if self.running:

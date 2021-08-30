@@ -1,5 +1,4 @@
 import random
-import threading
 from pygame import Vector2
 import pygame
 from blasteroids.server.game_objects import Obstacle, Ship, PowerUp, Asteroid
@@ -39,9 +38,7 @@ class World:
         self.projectiles = []
         self.power_ups = []
         self.obstacles = []
-        self.next_id = 0
-
-        self.lock = threading.Lock()
+        self.next_id = 1
 
         self.asteroid_factory = AsteroidFactory(config)
 
@@ -62,17 +59,13 @@ class World:
         return id
 
     def create_ship(self, name):
-        self.lock.acquire()
         ship = Ship(self.config, self._get_next_id(), Vector2(random.randint(0, self.width), random.randint(0, self.height)), Vector2(0, 1), name)
         self.ships.append(ship)
-        self.lock.release()
         return ship
 
     def create_projectile(self, projectile):
-        self.lock.acquire()
         projectile.id = self._get_next_id()
         self.projectiles.append(projectile)
-        self.lock.release()
 
     def remove_projectile(self, projectile):
         self.projectiles.remove(projectile)
@@ -85,9 +78,6 @@ class World:
 
     def create_power_up(self, name):
         self.power_ups.append(PowerUp(self._get_next_id(), Vector2(0, 0), Vector2(0, 1)))
-
-    def remove_ship(self, ship):
-        self.ships.remove(ship)
 
     def _remove_destroyed_objects(self, object_list):
         objects_to_remove = []

@@ -56,11 +56,13 @@ class Game:
         inputs.fire = is_key_pressed[pygame.K_SPACE]
 
         if inputs.is_anything_pressed():
-            self.server_connection.queue_message(InputMessage.from_player_inputs(inputs))
+            if self.world.my_ship:
+                self.server_connection.queue_message(InputMessage.from_player_inputs(inputs))
             self.something_pressed_last_time = True
         else:
             if self.something_pressed_last_time:
-                self.server_connection.queue_message(InputMessage.from_player_inputs(inputs))
+                if self.world.my_ship:
+                    self.server_connection.queue_message(InputMessage.from_player_inputs(inputs))
                 self.something_pressed_last_time = False
             else:
                 pass
