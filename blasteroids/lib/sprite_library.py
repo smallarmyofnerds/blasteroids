@@ -8,8 +8,8 @@ class SpriteLibrary:
 
     def _load_sprite(self, filename):
         image = pygame.image.load(f'assets/sprites/{filename}')
-        if self.convert:
-            return image.convert()
+        # if self.convert:
+        #     return image.convert()
         return image
 
     def load_all(self):
