@@ -13,8 +13,8 @@ class AsteroidFactory:
         self.health = {}
         self.collision_radius = {}
         for i in range(3):
-            self.damage[i + 1] = int((i + 1) * config.asteroid_base_damage)
-            self.health[i + 1] = int((i + 1) * config.asteroid_base_health)
+            self.damage[i + 1] = int(pow(3, i) * config.asteroid_base_damage)
+            self.health[i + 1] = int(pow(3, i) * config.asteroid_base_health)
             self.collision_radius[i + 1] = int((i + 1) * config.asteroid_base_collision_radius)
 
     def create(self, level, id, position):
@@ -117,10 +117,6 @@ class World:
                 if ship.collides_with(other):
                     ship.apply_damage_to(other)
                     other.apply_damage_to(ship)
-                    if ship.health == 0:
-                        ship.destroy()
-                    if other.health == 0:
-                        other.destroy()
 
     def _test_projectile_collisions(self):
         for projectile in self.projectiles:
@@ -128,8 +124,6 @@ class World:
                 if projectile.collides_with(other):
                     projectile.apply_damage_to(other)
                     projectile.destroy()
-                    if other.health == 0:
-                        other.destroy()
 
     def _test_power_up_collisions(self):
         for ship in self.ships:

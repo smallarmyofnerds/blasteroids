@@ -23,6 +23,7 @@ class Ship(DestroyableGameObject):
         self.rotational_acceleration_rate = config.ship_rotational_acceleration_rate
         self.last_shot = 0
         self.laser_cool_down = 200
+        self.shield = 0
 
     def on_removed(self, world):
         pass
@@ -43,5 +44,14 @@ class Ship(DestroyableGameObject):
     def shoot(self, world):
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.laser_cool_down:
-            world.create_projectile(Laser(self.config, self, None, self.position, self.orientation, self.orientation.normalize() * 1000, 100))
+            world.create_projectile(Laser(self.config, self, None, self.position, self.orientation, self.orientation.normalize() * 1000, self.config.laser_damage))
             self.last_shot = now
+
+    def take_damage(self, damage):
+        damage_to_shield = max(self.shield, self.shield - damage)
+        damage_to_health = damage - damage_to_shield
+        self.shield -= damage_to_shield
+        self.health -= damage_to_health
+
+        if self.health <= 0:
+            self.destroy()

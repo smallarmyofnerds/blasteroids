@@ -9,7 +9,10 @@ class DestroyableGameObject(GameObject):
         self.destroyed = False
 
     def take_damage(self, damage):
-        self.health = max(0, self.health - damage)
+        self.health -= damage
+
+        if self.health <= 0:
+            self.destroy()
 
     def apply_damage_to(self, other):
         other.take_damage(self.damage)
