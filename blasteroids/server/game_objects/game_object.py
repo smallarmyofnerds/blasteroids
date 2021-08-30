@@ -47,7 +47,8 @@ class GameObject:
         pass
 
     def _after_update(self, world, delta_time):
-        pass
+        if not world.is_in_bounds(self.position, 500):
+            self.destroy()
 
     def collides_with(self, other):
         vector_between = self.position - other.position

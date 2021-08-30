@@ -45,8 +45,8 @@ class World:
         self.last_obstacle_at = None
         self._generate_initial_asteroids()
 
-    def is_in_bounds(self, p):
-        return p.x > 0 and p.x < self.width and p.y > 0 and p.y < self.height
+    def is_in_bounds(self, p, padding = 0):
+        return (p.x + padding) > 0 and (p.x - padding) < self.width and (p.y + padding) > 0 and (p.y - padding) < self.height
     
     def get_return_vector(self, p):
         if p.x < 0:
