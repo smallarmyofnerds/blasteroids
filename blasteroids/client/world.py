@@ -10,20 +10,29 @@ class World:
         self.my_ship = None
         self.game_objects = []
         self.game_objects_by_id = {}
+        self.dying_objects = []
 
     def draw(self, screen):
         for object in self.game_objects:
+            object.draw(screen)
+        for object in self.dying_objects:
             object.draw(screen)
         if self.my_ship:
             self.my_ship.draw(screen)
 
     def _destroy_objects(self, server_world):
+        objects_to_remove = []
         for object in self.game_objects:
             server_object = server_world.objects_by_id.get(object.id)
             if server_object:
                 pass
             else:
-                object.destroy()
+                objects_to_remove.append(object)
+        for object in objects_to_remove:
+            self.game_objects.remove(object)
+            del self.game_objects_by_id[object.id]
+            self.dying_objects.append(object)
+            object.destroy()
 
     def _create_new_objects(self, server_world):
         for object in server_world.objects:
@@ -58,7 +67,16 @@ class World:
             else:
                 pass
 
+    def _remove_dead_objects(self):
+        objects_to_remove = []
+        for object in self.dying_objects:
+            if object.should_be_removed():
+                objects_to_remove.append(object)
+        for object in objects_to_remove:
+            self.dying_objects.remove(object)
+
     def update(self, server_world):
         self._sync_my_ship(server_world)
         self._destroy_objects(server_world)
         self._create_new_objects(server_world)
+        self._remove_dead_objects()
