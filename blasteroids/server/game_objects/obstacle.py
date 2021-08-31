@@ -1,6 +1,6 @@
-from .destroyable_game_object import DestroyableGameObject
+from .physical_object import PhysicalGameObject
 
 
-class Obstacle(DestroyableGameObject):
-    def __init__(self, id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, collision_radius, damage, health):
-        super(Obstacle, self).__init__(id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, collision_radius, damage, health)
+class Obstacle(PhysicalGameObject):
+    def __init__(self, id, name, position, orientation, velocity, collision_radius, damage, health, **kwargs):
+        super(Obstacle, self).__init__(id, name, position, orientation, velocity, collision_radius, damage, health, **kwargs)

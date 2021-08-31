@@ -12,11 +12,10 @@ class Asteroid(Obstacle):
             position,
             orientation,
             velocity,
-            self._random_rotational_velocity(),
-            0,
             collision_radius,
             damage,
             health,
+            rotational_velocity=self._random_rotational_velocity(),
         )
         self.level = level
 

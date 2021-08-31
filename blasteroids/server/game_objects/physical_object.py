@@ -1,12 +1,17 @@
 from .game_object import GameObject
 
 
-class DestroyableGameObject(GameObject):
-    def __init__(self, id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction, collision_radius, damage, health):
-        super(DestroyableGameObject, self).__init__(id, name, position, orientation, velocity, rotational_velocity, rotational_velocity_friction)
+class PhysicalGameObject(GameObject):
+    def __init__(self, id, name, position, orientation, velocity, collision_radius, damage, max_health, **kwargs):
+        super(PhysicalGameObject, self).__init__(id, name, position, orientation, velocity, **kwargs)
+
         self.damage = damage
-        self.health = health
+
+        self.max_health = max_health
+        self.health = max_health
+
         self.destroyed = False
+        
         self.collision_radius = collision_radius
 
     def take_damage(self, damage):

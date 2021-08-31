@@ -47,28 +47,28 @@ class World:
     def is_in_bounds(self, p, padding = 0):
         return (p.x + padding) > 0 and (p.x - padding) < self.width and (p.y + padding) > 0 and (p.y - padding) < self.height
     
-    def get_return_vector(self, p):
+    def get_return_vector(self, p, v):
         if p.x < 0:
             if p.y < 0:
-                return Vector2(1, 1)
+                return Vector2(1, 1).normalize() * v.length()
             elif p.y > self.height:
-                return Vector2(1, -1)
+                return Vector2(1, -1).normalize() * v.length()
             else:
-                return Vector2(1, 0)
+                return Vector2(1, 0).normalize() * v.length()
         elif p.x > self.width:
             if p.y < 0:
-                return Vector2(-1, 1)
+                return Vector2(-1, 1).normalize() * v.length()
             elif p.y > self.height:
-                return Vector2(-1, -1)
+                return Vector2(-1, -1).normalize() * v.length()
             else:
-                return Vector2(-1, 0)
+                return Vector2(-1, 0).normalize() * v.length()
         else:
             if p.y < 0:
-                return Vector2(0, 1)
+                return Vector2(0, 1).normalize() * v.length()
             elif p.y > self.height:
-                return Vector2(0, -1)
+                return Vector2(0, -1).normalize() * v.length()
             else:
-                return Vector2(0, 0)
+                return Vector2(0, 0).normalize() * v.length()
 
     def _top_up_asteroids(self):
         asteroids_to_generate = max(0, self.config.min_asteroids - len(self.obstacles))
@@ -123,6 +123,8 @@ class World:
         objects_to_update = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles]
         for o in objects_to_update:
             o.update(self, delta_time)
+            if not o.is_in_bounds(self):
+                o.destroy()
 
     def _test_ship_collisions(self):
         for ship in self.ships:
