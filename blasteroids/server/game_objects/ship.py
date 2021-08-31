@@ -73,10 +73,10 @@ class Armoury:
 
 
 class Ship(PhysicalGameObject):
-    def __init__(self, config, id, position, orientation, name):
+    def __init__(self, config, id, position, orientation, player):
         super(Ship, self).__init__(
             id,
-            name,
+            player.name,
             position,
             orientation,
             pygame.Vector2(0, 0),
@@ -85,7 +85,7 @@ class Ship(PhysicalGameObject):
             config.ship_health,
         )
         self.config = config
-        self.player = None
+        self.player = player
         self.acceleration_rate = config.ship_acceleration_rate
         self.rotational_acceleration_rate = config.ship_rotational_acceleration_rate
         self.rotational_velocity_friction = config.ship_rotational_velocity_friction
@@ -97,7 +97,7 @@ class Ship(PhysicalGameObject):
         self.max_shields = config.ship_max_shields
 
     def on_removed(self, world):
-        self.player.remove_ship()
+        self.player.kill()
 
     def shoot(self, world):
         self.armoury.shoot_active_weapon(self, world)

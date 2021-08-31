@@ -107,8 +107,8 @@ class World:
         self.next_id += 1
         return id
 
-    def create_ship(self, name):
-        ship = Ship(self.config, self._get_next_id(), Vector2(random.randint(0, self.width), random.randint(0, self.height)), Vector2(0, 1), name)
+    def create_ship(self, player):
+        ship = Ship(self.config, self._get_next_id(), Vector2(random.randint(0, self.width), random.randint(0, self.height)), Vector2(0, 1), player)
         self.ships.append(ship)
         return ship
 

@@ -18,6 +18,7 @@ class Game(threading.Thread):
         self.players = [None] * 2
         self.world = World(config)
         self.fps = 60
+        self.respawn_delay = 5000
         self.lock = threading.Lock()
 
     def _get_next_player_id(self):
@@ -37,13 +38,9 @@ class Game(threading.Thread):
 
         player_id, player_name = self._get_next_player()
 
-        ship = self.world.create_ship(player_name)
-
-        player = Player(player_name, ship, client_connection)
+        player = Player(player_name, client_connection)
         self.players[player_id - 1] = player
         
-        ship.player = player
-
         client_connection.queue_message(WelcomeMessage(self.world.width, self.world.height))
 
         self.lock.release()
@@ -62,6 +59,12 @@ class Game(threading.Thread):
         
         self.lock.release()
 
+    def _spawn_players(self):
+        for player in self.players:
+            if player and player.ship is None:
+                if pygame.time.get_ticks() - player.get_died_at() > self.respawn_delay:
+                    player.respawn(self.world)
+
     def _broadcast_updates(self):
         server_objects = self.world.to_server_objects()
         for player in self.players:
@@ -75,6 +78,7 @@ class Game(threading.Thread):
             self.lock.acquire()
             try:
                 self.world.update(self.clock.get_time() / 1000.0)
+                self._spawn_players()
                 self._broadcast_updates()
             except Exception as e:
                 logger.error(e)
