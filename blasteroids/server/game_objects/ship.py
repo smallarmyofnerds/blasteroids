@@ -36,13 +36,11 @@ class Ship(PhysicalGameObject):
             self.last_shot = now
 
     def take_damage(self, amount):
-        damage_to_shield = max(self.shield, self.shield - amount)
-        damage_to_health = amount - damage_to_shield
-        self.shield -= damage_to_shield
-        self.health -= damage_to_health
-
-        if self.health <= 0:
-            self.destroy()
+        if amount >= self.shield:
+            super(Ship, self).take_damage(amount - self.shield)
+            self.shield = 0
+        else:
+            self.shield -= amount
 
     def heal_by(self, amount):
         self.health = min(self.health + amount, self.max_health)
