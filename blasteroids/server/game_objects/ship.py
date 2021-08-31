@@ -24,6 +24,7 @@ class Ship(PhysicalGameObject):
         self.last_shot = 0
         self.laser_cool_down = 200
         self.shield = 0
+        self.max_shields = config.ship_max_shields
 
     def on_removed(self, world):
         self.player.remove_ship()
@@ -45,6 +46,15 @@ class Ship(PhysicalGameObject):
 
     def heal_by(self, amount):
         self.health = min(self.health + amount, self.max_health)
+    
+    def heal_full(self):
+        self.health = self.max_health
+
+    def shield_by(self, amount):
+        self.shield = min(self.shield + amount, self.max_shields)
+    
+    def shield_full(self):
+        self.shield = self.max_shields
 
     def _set_rotating_left(self):
         self.rotational_acceleration = -1 * self.rotational_acceleration_rate

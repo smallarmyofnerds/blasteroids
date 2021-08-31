@@ -151,6 +151,7 @@ class World:
 
     def _test_ship_collisions(self):
         for ship in self.ships:
+            print(ship.health, ship.shield)
             for other in [*self.ships, *self.obstacles]:
                 if ship == other:
                     continue
@@ -166,12 +167,11 @@ class World:
                     projectile.destroy()
 
     def _test_power_up_collisions(self):
-        pass
-        # for ship in self.ships:
-        #     for power_up in self.power_ups:
-        #         if ship.collides_with(power_up):
-        #             power_up.apply_power_up_to(ship)
-        #             power_up.destroy()
+        for ship in self.ships:
+            for power_up in self.power_ups:
+                if ship.collides_with(power_up):
+                    power_up.apply_power_up_to(ship)
+                    power_up.destroy()
 
     def update(self, delta_time):
         self._remove_destroyed()

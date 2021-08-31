@@ -10,6 +10,7 @@ DEFAULT_SHIP_ROTATIONAL_VELOCITY_FRICTION = 0.1
 DEFAULT_SHIP_RADIUS = 20
 DEFAULT_SHIP_DAMAGE = 100
 DEFAULT_SHIP_HEALTH = 100
+DEFAULT_SHIP_MAX_SHIELDS = 1000
 
 DEFAULT_LASER_RADIUS = 5
 DEFAULT_LASER_DAMAGE = 200
@@ -42,7 +43,7 @@ class Config:
         self.ship_radius = float(config['Game'].get('ShipRadius', DEFAULT_SHIP_RADIUS))
         self.ship_damage = int(config['Game'].get('ShipDamage', DEFAULT_SHIP_DAMAGE))
         self.ship_health = int(config['Game'].get('ShipHealth', DEFAULT_SHIP_HEALTH))
-
+        self.ship_max_shields = int(config['Game'].get('ShipMaxShields', DEFAULT_SHIP_MAX_SHIELDS))
         self.laser_radius = float(config['Game'].get('LaserRadius', DEFAULT_LASER_RADIUS))
         self.laser_damage = int(config['Game'].get('LaserDamage', DEFAULT_LASER_DAMAGE))
 
