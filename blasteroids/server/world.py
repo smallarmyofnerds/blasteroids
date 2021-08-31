@@ -152,7 +152,6 @@ class World:
 
     def _test_ship_collisions(self):
         for ship in self.ships:
-            print(ship.health, ship.shield)
             for other in [*self.ships, *self.obstacles]:
                 if ship == other:
                     continue

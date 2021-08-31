@@ -13,9 +13,17 @@ DEFAULT_SHIP_DAMAGE = 100
 DEFAULT_SHIP_HEALTH = 100
 DEFAULT_SHIP_MAX_SHIELDS = 1000
 
+DEFAULT_LASER_SPEED = 1000
 DEFAULT_LASER_RADIUS = 5
 DEFAULT_LASER_DAMAGE = 200
+DEFAULT_LASER_LIFESPAN = 1000
 DEFAULT_LASER_COOLDOWN = 200
+
+DEFAULT_RAPID_FIRE_SPEED = 1500
+DEFAULT_RAPID_FIRE_RADIUS = 2
+DEFAULT_RAPID_FIRE_DAMAGE = 80
+DEFAULT_RAPID_FIRE_LIFESPAN = 1000
+DEFAULT_RAPID_FIRE_COOLDOWN = 80
 
 DEFAULT_MIN_ASTEROIDS = 40
 DEFAULT_ASTEROID_MAX_SPEED = 50
@@ -51,9 +59,18 @@ class Config:
         self.ship_damage = int(config['Game'].get('ShipDamage', DEFAULT_SHIP_DAMAGE))
         self.ship_health = int(config['Game'].get('ShipHealth', DEFAULT_SHIP_HEALTH))
         self.ship_max_shields = int(config['Game'].get('ShipMaxShields', DEFAULT_SHIP_MAX_SHIELDS))
+
+        self.laser_speed = int(config['Game'].get('LaserSpeed', DEFAULT_LASER_SPEED))
         self.laser_radius = float(config['Game'].get('LaserRadius', DEFAULT_LASER_RADIUS))
         self.laser_damage = int(config['Game'].get('LaserDamage', DEFAULT_LASER_DAMAGE))
+        self.laser_lifespan = int(config['Game'].get('LaserLifespan', DEFAULT_LASER_LIFESPAN))
         self.laser_cooldown = int(config['Game'].get('LaserCooldown', DEFAULT_LASER_COOLDOWN))
+
+        self.rapid_fire_speed = int(config['Game'].get('RapidFireSpeed', DEFAULT_RAPID_FIRE_SPEED))
+        self.rapid_fire_radius = float(config['Game'].get('RapidFireRadius', DEFAULT_RAPID_FIRE_RADIUS))
+        self.rapid_fire_damage = int(config['Game'].get('RapidFireDamage', DEFAULT_RAPID_FIRE_DAMAGE))
+        self.rapid_fire_lifespan = int(config['Game'].get('RapidFireLifespan', DEFAULT_RAPID_FIRE_LIFESPAN))
+        self.rapid_fire_cooldown = int(config['Game'].get('RapidFireCooldown', DEFAULT_RAPID_FIRE_COOLDOWN))
 
         self.min_asteroids = int(config['Game'].get('MinAsteroids', DEFAULT_MIN_ASTEROIDS))
         self.asteroid_max_speed = int(config['Game'].get('AsteroidMaxSpeed', DEFAULT_ASTEROID_MAX_SPEED))

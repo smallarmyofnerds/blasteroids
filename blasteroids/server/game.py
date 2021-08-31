@@ -73,9 +73,13 @@ class Game(threading.Thread):
         while self.running:
             self.clock.tick(self.fps)
             self.lock.acquire()
-            self.world.update(self.clock.get_time() / 1000.0)
-            self._broadcast_updates()
-            self.lock.release()
+            try:
+                self.world.update(self.clock.get_time() / 1000.0)
+                self._broadcast_updates()
+            except Exception as e:
+                logger.error(e)
+            finally:
+                self.lock.release()
 
     def stop(self):
         if self.running:

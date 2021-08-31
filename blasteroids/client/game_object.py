@@ -8,7 +8,7 @@ class GameObject:
         self.orientation = server_object.orientation
         self.name = server_object.name
         self.destroyed_at = None
-        self.death_duration = 100
+        self.death_duration = 0
 
     def _update(self, position, orientation):
         self.position = position
