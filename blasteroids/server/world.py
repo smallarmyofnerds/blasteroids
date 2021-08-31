@@ -51,6 +51,7 @@ class World:
         self.power_ups = []
         self.obstacles = []
         self.next_id = 1
+        self.edge_acceleration_factor = config.world_edge_acceleration_factor
 
         self.asteroid_factory = AsteroidFactory(config)
 
@@ -73,25 +74,25 @@ class World:
     def get_return_vector(self, p, v):
         if p.x < 0:
             if p.y < 0:
-                return Vector2(1, 1).normalize() * v.length()
+                return Vector2(1, 1).normalize() * self.edge_acceleration_factor
             elif p.y > self.height:
-                return Vector2(1, -1).normalize() * v.length()
+                return Vector2(1, -1).normalize() * self.edge_acceleration_factor
             else:
-                return Vector2(1, 0).normalize() * v.length()
+                return Vector2(1, 0).normalize() * self.edge_acceleration_factor
         elif p.x > self.width:
             if p.y < 0:
-                return Vector2(-1, 1).normalize() * v.length()
+                return Vector2(-1, 1).normalize() * self.edge_acceleration_factor
             elif p.y > self.height:
-                return Vector2(-1, -1).normalize() * v.length()
+                return Vector2(-1, -1).normalize() * self.edge_acceleration_factor
             else:
-                return Vector2(-1, 0).normalize() * v.length()
+                return Vector2(-1, 0).normalize() * self.edge_acceleration_factor
         else:
             if p.y < 0:
-                return Vector2(0, 1).normalize() * v.length()
+                return Vector2(0, 1).normalize() * self.edge_acceleration_factor
             elif p.y > self.height:
-                return Vector2(0, -1).normalize() * v.length()
+                return Vector2(0, -1).normalize() * self.edge_acceleration_factor
             else:
-                return Vector2(0, 0).normalize() * v.length()
+                return Vector2(0, 0).normalize() * self.edge_acceleration_factor
 
     def _top_up_asteroids(self):
         asteroids_to_generate = max(0, self.config.min_asteroids - len(self.obstacles))

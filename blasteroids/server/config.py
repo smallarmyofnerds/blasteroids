@@ -23,6 +23,7 @@ DEFAULT_ASTEROID_BASE_COLLISION_RADIUS = 12
 
 DEFAULT_WORLD_WIDTH = 10000
 DEFAULT_WORLD_HEIGHT = 10000
+DEFAULT_WORLD_EDGE_ACCELERATION_FACTOR = 2
 
 
 class Config:
@@ -55,3 +56,4 @@ class Config:
 
         self.world_width = int(config['Game'].get('WorldWidth', DEFAULT_WORLD_WIDTH))
         self.world_height = int(config['Game'].get('WorldHeight', DEFAULT_WORLD_HEIGHT))
+        self.world_edge_acceleration_factor = float(config['Game'].get('WorldEdgeAccelerationFactor', DEFAULT_WORLD_EDGE_ACCELERATION_FACTOR))
