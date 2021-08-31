@@ -20,9 +20,9 @@ class Ship(PhysicalGameObject):
         self.acceleration_rate = config.ship_acceleration_rate
         self.rotational_acceleration_rate = config.ship_rotational_acceleration_rate
         self.rotational_velocity_friction = config.ship_rotational_velocity_friction
-        self.linear_friction = 0.1
+        self.linear_friction = config.ship_linear_friction
         self.last_shot = 0
-        self.laser_cool_down = 200
+        self.laser_cool_down = config.laser_cooldown
         self.shield = 0
         self.max_shields = config.ship_max_shields
 

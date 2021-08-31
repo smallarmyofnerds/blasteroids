@@ -56,8 +56,8 @@ class World:
         self.asteroid_factory = AsteroidFactory(config)
 
         self._top_up_asteroids()
-        self.power_ups.append(Heart(self._get_next_id(), Vector2(500, 500)))
-        self.power_ups.append(Shield(self._get_next_id(), Vector2(600, 500)))
+        self.power_ups.append(Heart(self._get_next_id(), Vector2(500, 500), config.heart_health))
+        self.power_ups.append(Shield(self._get_next_id(), Vector2(600, 500), config.shield_amount))
         self.power_ups.append(MegaHeart(self._get_next_id(), Vector2(700, 500)))
         self.power_ups.append(RapidFire(self._get_next_id(), Vector2(800, 500)))
         self.power_ups.append(DoubleFire(self._get_next_id(), Vector2(900, 500)))
