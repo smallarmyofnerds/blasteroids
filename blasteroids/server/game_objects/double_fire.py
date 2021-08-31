@@ -1,6 +1,6 @@
 from blasteroids.server.game_objects.power_up import PowerUp
 
 
-class Heart(PowerUp):
+class DoubleFire(PowerUp):
     def __init__(self, id, position, **kwargs):
-        super(Heart, self).__init__(id, "heart", position)
+        super(DoubleFire, self).__init__(id, "double_fire", position)

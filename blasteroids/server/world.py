@@ -1,9 +1,20 @@
-from blasteroids.server.game_objects.heart import Heart
+from blasteroids.server.game_objects.time_bomb import TimeBomb
+from blasteroids.server.game_objects.proximity_mine import ProximityMine
+from blasteroids.server.game_objects.mega_shield import MegaShield
+from blasteroids.server.game_objects.rocket import Rocket
+from blasteroids.server.game_objects.rocket_salvo import RocketSalvo
+from blasteroids.server.game_objects.spread_fire import SpreadFire
+from blasteroids.server.game_objects.double_fire import DoubleFire
+from blasteroids.server.game_objects.mega_heart import MegaHeart
 import random
 from pygame import Vector2
 import pygame
 from blasteroids.server.game_objects import Obstacle, Ship, PowerUp, Asteroid
 from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjectile, ServerObstacle
+from blasteroids.server.game_objects import shield
+from blasteroids.server.game_objects.heart import Heart
+from blasteroids.server.game_objects.shield import Shield
+from blasteroids.server.game_objects.rapid_fire import RapidFire
 
 
 class AsteroidFactory:
@@ -45,6 +56,16 @@ class World:
 
         self._top_up_asteroids()
         self.power_ups.append(Heart(self._get_next_id(), Vector2(500, 500)))
+        self.power_ups.append(Shield(self._get_next_id(), Vector2(600, 500)))
+        self.power_ups.append(MegaHeart(self._get_next_id(), Vector2(700, 500)))
+        self.power_ups.append(RapidFire(self._get_next_id(), Vector2(800, 500)))
+        self.power_ups.append(DoubleFire(self._get_next_id(), Vector2(900, 500)))
+        self.power_ups.append(SpreadFire(self._get_next_id(), Vector2(1000, 500)))
+        self.power_ups.append(RocketSalvo(self._get_next_id(), Vector2(1100, 500)))
+        self.power_ups.append(MegaShield(self._get_next_id(), Vector2(1200, 500)))
+        self.power_ups.append(Rocket(self._get_next_id(), Vector2(1300, 500)))
+        self.power_ups.append(ProximityMine(self._get_next_id(), Vector2(1400, 500)))
+        self.power_ups.append(TimeBomb(self._get_next_id(), Vector2(1500, 500)))
 
     def is_in_bounds(self, p, padding=0):
         return (p.x + padding) > 0 and (p.x - padding) < self.width and (p.y + padding) > 0 and (p.y - padding) < self.height
@@ -145,11 +166,12 @@ class World:
                     projectile.destroy()
 
     def _test_power_up_collisions(self):
-        for ship in self.ships:
-            for power_up in self.power_ups:
-                if ship.collides_with(power_up):
-                    power_up.apply_power_up_to(ship)
-                    power_up.destroy()
+        pass
+        # for ship in self.ships:
+        #     for power_up in self.power_ups:
+        #         if ship.collides_with(power_up):
+        #             power_up.apply_power_up_to(ship)
+        #             power_up.destroy()
 
     def update(self, delta_time):
         self._remove_destroyed()
