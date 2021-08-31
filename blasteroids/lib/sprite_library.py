@@ -21,6 +21,7 @@ class SpriteLibrary:
         self.sprites['asteroid_2'] = pygame.transform.scale(self._load_sprite('asteroid.png'), (64, 64))
         self.sprites['asteroid_1'] = pygame.transform.scale(self._load_sprite('asteroid.png'), (32, 32))
         self.sprites['laser'] = pygame.transform.scale(self._load_sprite('laser.png'), (15, 60))
+        self.sprites['heart'] = pygame.transform.scale(self._load_sprite('heart.png'), (48, 48))
 
     def get(self, name):
         return self.sprites.get(name)

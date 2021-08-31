@@ -1,3 +1,4 @@
+from blasteroids.server.game_objects.heart import Heart
 import random
 from pygame import Vector2
 import pygame
@@ -43,10 +44,11 @@ class World:
         self.asteroid_factory = AsteroidFactory(config)
 
         self._top_up_asteroids()
+        self.power_ups.append(Heart(self._get_next_id(), Vector2(500, 500)))
 
-    def is_in_bounds(self, p, padding = 0):
+    def is_in_bounds(self, p, padding=0):
         return (p.x + padding) > 0 and (p.x - padding) < self.width and (p.y + padding) > 0 and (p.y - padding) < self.height
-    
+
     def get_return_vector(self, p, v):
         if p.x < 0:
             if p.y < 0:

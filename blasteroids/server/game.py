@@ -1,3 +1,4 @@
+from blasteroids.lib.server_world import server_object
 from blasteroids.lib import log
 import threading
 import pygame
