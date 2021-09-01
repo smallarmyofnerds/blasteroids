@@ -1,3 +1,4 @@
+from blasteroids.server.game_objects.rocket_projectile import RocketProjectile
 from blasteroids.server.game_objects.laser import Laser
 import pygame
 from .physical_object import PhysicalGameObject
@@ -57,6 +58,25 @@ class SpreadFireWeapon(LaserWeapon):
             self.last_shot = now
 
 
+class RocketWeapon(Weapon):
+    def __init__(self, speed, collision_radius, damage, lifespan, cooldown):
+        self.speed = speed
+        self.collision_radius = collision_radius
+        self.damage = damage
+        self.lifespan = lifespan
+        self.cooldown = cooldown
+        self.last_shot = 0
+    
+    def _generate_rocket(self, ship, world, position, orientation):
+        world.create_projectile(RocketProjectile(ship, None, position, orientation, self.speed, self.collision_radius, self.damage, self.lifespan))
+
+    def shoot(self, ship, world):
+        now = pygame.time.get_ticks()
+        if now - self.last_shot > self.cooldown:
+            self._generate_rocket(ship, world, ship.position, ship.orientation)
+            self.last_shot = now
+
+
 class Armoury:
     def __init__(self, config):
         self.weapons = {
@@ -90,8 +110,15 @@ class Armoury:
                 config.rapid_fire.projectile_lifespan,
                 config.rapid_fire.cooldown,
             ),
+            'rocket': RocketWeapon(
+                config.laser.projectile_speed,
+                config.laser.projectile_radius,
+                config.laser.projectile_damage,
+                config.laser.projectile_lifespan,
+                config.laser.cooldown,
+            ),
         }
-        self.active_weapon_name = 'laser'
+        self.active_weapon_name = 'rocket'
     
     def set_active_weapon(self, weapon_name):
         self.active_weapon_name = weapon_name

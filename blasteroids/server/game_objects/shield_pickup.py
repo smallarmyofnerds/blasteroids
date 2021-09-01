@@ -1,10 +1,10 @@
 from blasteroids.server.game_objects.power_up import PowerUp
 
 
-class Heart(PowerUp):
+class ShieldPickup(PowerUp):
     def __init__(self, id, position, amount, lifespan, **kwargs):
-        super(Heart, self).__init__(id, "heart", position, lifespan)
+        super(ShieldPickup, self).__init__(id, "shield_pickup", position, lifespan)
         self.amount = amount
 
     def apply_power_up_to(self, ship):
-        ship.heal_by(self.amount)
+        ship.shield_by(self.amount)

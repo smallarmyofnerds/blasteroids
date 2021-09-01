@@ -1,6 +1,6 @@
 from blasteroids.server.game_objects.power_up import PowerUp
 
 
-class RocketSalvo(PowerUp):
+class TimeBombPickup(PowerUp):
     def __init__(self, id, position, lifespan, **kwargs):
-        super(RocketSalvo, self).__init__(id, "rocket_salvo", position, lifespan)
+        super(TimeBombPickup, self).__init__(id, "time_bomb_pickup", position, lifespan)

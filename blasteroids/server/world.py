@@ -1,20 +1,19 @@
-from blasteroids.server.game_objects.time_bomb import TimeBomb
-from blasteroids.server.game_objects.proximity_mine import ProximityMine
-from blasteroids.server.game_objects.mega_shield import MegaShield
-from blasteroids.server.game_objects.rocket import Rocket
-from blasteroids.server.game_objects.rocket_salvo import RocketSalvo
-from blasteroids.server.game_objects.spread_fire import SpreadFire
-from blasteroids.server.game_objects.double_fire import DoubleFire
-from blasteroids.server.game_objects.mega_heart import MegaHeart
+from blasteroids.server.game_objects.time_bomb_pickup import TimeBombPickup
+from blasteroids.server.game_objects.proximity_mine_pickup import ProximityMinePickup
+from blasteroids.server.game_objects.mega_shield_pickup import MegaShieldPickup
+from blasteroids.server.game_objects.rocket_pickup import RocketPickup
+from blasteroids.server.game_objects.rocket_salvo_pickup import RocketSalvoPickup
+from blasteroids.server.game_objects.spread_fire_pickup import SpreadFirePickup
+from blasteroids.server.game_objects.double_fire_pickup import DoubleFirePickup
+from blasteroids.server.game_objects.mega_heart_pickup import MegaHeartPickup
 import random
 from pygame import Vector2
-import pygame
 from blasteroids.server.game_objects import Obstacle, Ship, PowerUp, Asteroid
 from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjectile, ServerObstacle
 from blasteroids.server.game_objects import shield
-from blasteroids.server.game_objects.heart import Heart
-from blasteroids.server.game_objects.shield import Shield
-from blasteroids.server.game_objects.rapid_fire import RapidFire
+from blasteroids.server.game_objects.heart_pickup import HeartPickup
+from blasteroids.server.game_objects.shield_pickup import ShieldPickup
+from blasteroids.server.game_objects.rapid_fire_pickup import RapidFirePickup
 
 
 class AsteroidFactory:
@@ -124,27 +123,27 @@ class World:
 
     def add_new_power_up(self, name, position):
         if name == 'heart':
-            self.power_ups.append(Heart(self._get_next_id(), position, self.config.heart.health_amount, self.config.heart.pickup_lifespan))
+            self.power_ups.append(HeartPickup(self._get_next_id(), position, self.config.heart.health_amount, self.config.heart.pickup_lifespan))
         elif name == 'mega_heart':
-            self.power_ups.append(MegaHeart(self._get_next_id(), position, self.config.mega_heart.pickup_lifespan))
+            self.power_ups.append(MegaHeartPickup(self._get_next_id(), position, self.config.mega_heart.pickup_lifespan))
         elif name == 'shield':
-            self.power_ups.append(Shield(self._get_next_id(), position, self.config.shield.shield_amount, self.config.shield.pickup_lifespan))
+            self.power_ups.append(ShieldPickup(self._get_next_id(), position, self.config.shield.shield_amount, self.config.shield.pickup_lifespan))
         elif name == 'mega_shield':
-            self.power_ups.append(MegaShield(self._get_next_id(), position, self.config.mega_shield.pickup_lifespan))
+            self.power_ups.append(MegaShieldPickup(self._get_next_id(), position, self.config.mega_shield.pickup_lifespan))
         elif name == 'double_fire':
-            self.power_ups.append(DoubleFire(self._get_next_id(), position, self.config.double_fire.pickup_lifespan))
+            self.power_ups.append(DoubleFirePickup(self._get_next_id(), position, self.config.double_fire.pickup_lifespan))
         elif name == 'spread_fire':
-            self.power_ups.append(SpreadFire(self._get_next_id(), position, self.config.spread_fire.pickup_lifespan))
+            self.power_ups.append(SpreadFirePickup(self._get_next_id(), position, self.config.spread_fire.pickup_lifespan))
         elif name == 'rapid_fire':
-            self.power_ups.append(RapidFire(self._get_next_id(), position, self.config.rapid_fire.pickup_lifespan))
+            self.power_ups.append(RapidFirePickup(self._get_next_id(), position, self.config.rapid_fire.pickup_lifespan))
         elif name == 'rocket':
-            self.power_ups.append(Rocket(self._get_next_id(), position, self.config.rocket.pickup_lifespan))
+            self.power_ups.append(RocketPickup(self._get_next_id(), position, self.config.rocket.pickup_lifespan))
         elif name == 'rocket_salvo':
-            self.power_ups.append(RocketSalvo(self._get_next_id(), position, self.config.rocket_salvo.pickup_lifespan))
+            self.power_ups.append(RocketSalvoPickup(self._get_next_id(), position, self.config.rocket_salvo.pickup_lifespan))
         elif name == 'proximity_mine':
-            self.power_ups.append(ProximityMine(self._get_next_id(), position, self.config.proximity_mine.pickup_lifespan))
+            self.power_ups.append(ProximityMinePickup(self._get_next_id(), position, self.config.proximity_mine.pickup_lifespan))
         elif name == 'time_bomb':
-            self.power_ups.append(TimeBomb(self._get_next_id(), position, self.config.time_bomb.pickup_lifespan))
+            self.power_ups.append(TimeBombPickup(self._get_next_id(), position, self.config.time_bomb.pickup_lifespan))
 
     def _remove_destroyed_objects(self, object_list):
         objects_to_remove = []
