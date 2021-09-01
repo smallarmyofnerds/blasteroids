@@ -31,37 +31,65 @@ class LaserWeapon(Weapon):
 
 
 class DoubleFireWeapon(LaserWeapon):
-    def __init__(self, speed, collision_radius, damage, lifespan, cooldown):
+    def __init__(self, speed, collision_radius, damage, lifespan, cooldown, offset):
         super(DoubleFireWeapon, self).__init__(speed, collision_radius, damage, lifespan, cooldown)
+        self.offset = offset
     
     def shoot(self, ship, world):
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.cooldown:
-            self._generate_laser(ship, world, ship.position + 10 * ship.orientation.rotate(90).normalize(), ship.orientation)
-            self._generate_laser(ship, world, ship.position + 10 * ship.orientation.rotate(-90).normalize(), ship.orientation)
+            self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(90).normalize(), ship.orientation)
+            self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(-90).normalize(), ship.orientation)
             self.last_shot = now
 
 
 class SpreadFireWeapon(LaserWeapon):
-    def __init__(self, speed, collision_radius, damage, lifespan, cooldown):
+    def __init__(self, speed, collision_radius, damage, lifespan, cooldown, spread):
         super(SpreadFireWeapon, self).__init__(speed, collision_radius, damage, lifespan, cooldown)
+        self.spread = spread
     
     def shoot(self, ship, world):
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.cooldown:
             self._generate_laser(ship, world, ship.position, ship.orientation)
-            self._generate_laser(ship, world, ship.position, ship.orientation.rotate(20))
-            self._generate_laser(ship, world, ship.position, ship.orientation.rotate(-20))
+            self._generate_laser(ship, world, ship.position, ship.orientation.rotate(self.spread))
+            self._generate_laser(ship, world, ship.position, ship.orientation.rotate(-1 * self.spread))
             self.last_shot = now
 
 
 class Armoury:
     def __init__(self, config):
         self.weapons = {
-            'laser': LaserWeapon(config.laser_speed, config.laser_radius, config.laser_damage, config.laser_lifespan, config.laser_cooldown),
-            'double_fire': DoubleFireWeapon(config.laser_speed, config.laser_radius, config.laser_damage, config.laser_lifespan, config.laser_cooldown),
-            'spread_fire': SpreadFireWeapon(config.laser_speed, config.laser_radius, config.laser_damage, config.laser_lifespan, config.laser_cooldown),
-            'rapid_fire': LaserWeapon(config.rapid_fire_speed, config.rapid_fire_radius, config.rapid_fire_damage, config.rapid_fire_lifespan, config.rapid_fire_cooldown),
+            'laser': LaserWeapon(
+                config.laser.projectile_speed,
+                config.laser.projectile_radius,
+                config.laser.projectile_damage,
+                config.laser.projectile_lifespan,
+                config.laser.cooldown,
+            ),
+            'double_fire': DoubleFireWeapon(
+                config.laser.projectile_speed,
+                config.laser.projectile_radius,
+                config.laser.projectile_damage,
+                config.laser.projectile_lifespan,
+                config.laser.cooldown,
+                config.double_fire.offset,
+            ),
+            'spread_fire': SpreadFireWeapon(
+                config.laser.projectile_speed,
+                config.laser.projectile_radius,
+                config.laser.projectile_damage,
+                config.laser.projectile_lifespan,
+                config.laser.cooldown,
+                config.spread_fire.spread,
+            ),
+            'rapid_fire': LaserWeapon(
+                config.rapid_fire.projectile_speed,
+                config.rapid_fire.projectile_radius,
+                config.rapid_fire.projectile_damage,
+                config.rapid_fire.projectile_lifespan,
+                config.rapid_fire.cooldown,
+            ),
         }
         self.active_weapon_name = 'laser'
     
@@ -80,21 +108,21 @@ class Ship(PhysicalGameObject):
             position,
             orientation,
             pygame.Vector2(0, 0),
-            config.ship_radius,
-            config.ship_damage,
-            config.ship_health,
+            config.ship.radius,
+            config.ship.damage,
+            config.ship.max_health,
         )
         self.config = config
         self.player = player
-        self.acceleration_rate = config.ship_acceleration_rate
-        self.rotational_acceleration_rate = config.ship_rotational_acceleration_rate
-        self.rotational_velocity_friction = config.ship_rotational_velocity_friction
-        self.linear_friction = config.ship_linear_friction
+        self.acceleration_rate = config.ship.linear_acceleration
+        self.rotational_acceleration_rate = config.ship.angular_acceleration
+        self.rotational_velocity_friction = config.ship.angular_friction
+        self.linear_friction = config.ship.linear_friction
 
         self.armoury = Armoury(config)
 
         self.shield = 0
-        self.max_shields = config.ship_max_shields
+        self.max_shields = config.ship.max_shields
 
     def on_removed(self, world):
         self.player.kill()

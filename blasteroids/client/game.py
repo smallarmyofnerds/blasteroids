@@ -15,7 +15,7 @@ class Game:
         self.running = True
         self.clock = pygame.time.Clock()
         self.fps = 60
-        self.screen = Screen(config.screen_width, config.screen_height)
+        self.screen = Screen(config.client.screen_width, config.client.screen_height)
         server_connection.game = self
         self.server_connection = server_connection
         self.something_pressed_last_time = False

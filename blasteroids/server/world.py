@@ -19,14 +19,14 @@ from blasteroids.server.game_objects.rapid_fire import RapidFire
 
 class AsteroidFactory:
     def __init__(self, config):
-        self.max_speed = config.asteroid_max_speed
+        self.max_speed = config.asteroid.max_speed
         self.damage = {}
         self.health = {}
         self.collision_radius = {}
         for i in range(3):
-            self.damage[i + 1] = int(pow(3, i) * config.asteroid_base_damage)
-            self.health[i + 1] = int(pow(3, i) * config.asteroid_base_health)
-            self.collision_radius[i + 1] = int((i + 1) * config.asteroid_base_collision_radius)
+            self.damage[i + 1] = int(pow(3, i) * config.asteroid.base_damage)
+            self.health[i + 1] = int(pow(3, i) * config.asteroid.base_health)
+            self.collision_radius[i + 1] = int((i + 1) * config.asteroid.base_radius)
 
     def create(self, level, id, position):
         return Asteroid(
@@ -44,14 +44,14 @@ class AsteroidFactory:
 class World:
     def __init__(self, config):
         self.config = config
-        self.width = config.world_width
-        self.height = config.world_height
+        self.width = config.world.width
+        self.height = config.world.height
         self.ships = []
         self.projectiles = []
         self.power_ups = []
         self.obstacles = []
         self.next_id = 1
-        self.edge_acceleration_factor = config.world_edge_acceleration_factor
+        self.edge_acceleration_factor = config.world.edge_acceleration_factor
 
         self.asteroid_factory = AsteroidFactory(config)
 
@@ -84,7 +84,7 @@ class World:
                 return Vector2(0, 0).normalize() * self.edge_acceleration_factor
 
     def _top_up_asteroids(self):
-        asteroids_to_generate = max(0, self.config.min_asteroids - len(self.obstacles))
+        asteroids_to_generate = max(0, self.config.world.min_obstacles - len(self.obstacles))
         for _ in range(asteroids_to_generate):
             self.add_new_asteroid(3, Vector2(random.randint(0, self.width), random.randint(0, self.height)))
 
@@ -124,27 +124,27 @@ class World:
 
     def add_new_power_up(self, name, position):
         if name == 'heart':
-            self.power_ups.append(Heart(self._get_next_id(), position, self.config.heart_health, self.config.heart_lifespan))
+            self.power_ups.append(Heart(self._get_next_id(), position, self.config.heart.health_amount, self.config.heart.pickup_lifespan))
         elif name == 'mega_heart':
-            self.power_ups.append(MegaHeart(self._get_next_id(), position, self.config.mega_heart_lifespan))
+            self.power_ups.append(MegaHeart(self._get_next_id(), position, self.config.mega_heart.pickup_lifespan))
         elif name == 'shield':
-            self.power_ups.append(Shield(self._get_next_id(), position, self.config.shield_amount, self.config.shield_lifespan))
+            self.power_ups.append(Shield(self._get_next_id(), position, self.config.shield.shield_amount, self.config.shield.pickup_lifespan))
         elif name == 'mega_shield':
-            self.power_ups.append(MegaShield(self._get_next_id(), position, self.config.mega_shield_lifespan))
+            self.power_ups.append(MegaShield(self._get_next_id(), position, self.config.mega_shield.pickup_lifespan))
         elif name == 'double_fire':
-            self.power_ups.append(DoubleFire(self._get_next_id(), position, self.config.double_fire_lifespan))
+            self.power_ups.append(DoubleFire(self._get_next_id(), position, self.config.double_fire.pickup_lifespan))
         elif name == 'spread_fire':
-            self.power_ups.append(SpreadFire(self._get_next_id(), position, self.config.spread_fire_lifespan))
+            self.power_ups.append(SpreadFire(self._get_next_id(), position, self.config.spread_fire.pickup_lifespan))
         elif name == 'rapid_fire':
-            self.power_ups.append(RapidFire(self._get_next_id(), position, self.config.rapid_fire_lifespan))
+            self.power_ups.append(RapidFire(self._get_next_id(), position, self.config.rapid_fire.pickup_lifespan))
         elif name == 'rocket':
-            self.power_ups.append(Rocket(self._get_next_id(), position, self.config.rocket_lifespan))
+            self.power_ups.append(Rocket(self._get_next_id(), position, self.config.rocket.pickup_lifespan))
         elif name == 'rocket_salvo':
-            self.power_ups.append(RocketSalvo(self._get_next_id(), position, self.config.rocket_salvo_lifespan))
+            self.power_ups.append(RocketSalvo(self._get_next_id(), position, self.config.rocket_salvo.pickup_lifespan))
         elif name == 'proximity_mine':
-            self.power_ups.append(ProximityMine(self._get_next_id(), position, self.config.proximity_mine_lifespan))
+            self.power_ups.append(ProximityMine(self._get_next_id(), position, self.config.proximity_mine.pickup_lifespan))
         elif name == 'time_bomb':
-            self.power_ups.append(TimeBomb(self._get_next_id(), position, self.config.time_bomb_lifespan))
+            self.power_ups.append(TimeBomb(self._get_next_id(), position, self.config.time_bomb.pickup_lifespan))
 
     def _remove_destroyed_objects(self, object_list):
         objects_to_remove = []

@@ -19,8 +19,8 @@ server_message_encoders = {
 class ServerConnection(threading.Thread):
     def __init__(self, config):
         super(ServerConnection, self).__init__()
-        self.server_address = config.server_address
-        self.server_port = config.server_port
+        self.server_address = config.server.address
+        self.server_port = config.server.port
         self.socket = None
         self.running = False
         self.message_encoding = MessageEncoding(server_message_encoders)

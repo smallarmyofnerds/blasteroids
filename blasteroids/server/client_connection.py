@@ -15,14 +15,12 @@ client_message_encoders = {
 
 
 class ClientConnection(threading.Thread):
-    def __init__(self, id, socket, address, config, game, game_server):
+    def __init__(self, id, socket, address, game, game_server):
         super(ClientConnection, self).__init__()
         self.id = id
         self.socket = socket
         self.is_running = True
         self.address = address
-        self.server_name = config.server_name
-        self.welcome_message = config.welcome_message
         self.game = game
         self.player = None
         self.game_server = game_server

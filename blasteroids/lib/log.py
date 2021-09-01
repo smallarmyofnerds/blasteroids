@@ -8,7 +8,7 @@ levels = {
 }
 
 def initialize_logging(config):
-    logging.basicConfig(level=levels.get(config.logging_level, 'INFO'))
+    logging.basicConfig(level=levels.get(config.misc.logging_level, 'INFO'))
 
 def get_logger(name):
     return logging.getLogger(name)

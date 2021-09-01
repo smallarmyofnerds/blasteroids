@@ -51,60 +51,121 @@ DEFAULT_WORLD_HEIGHT = 10000
 DEFAULT_WORLD_EDGE_ACCELERATION_FACTOR = 2
 
 
+class ServerConfig:
+    def __init__(self, config):
+        self.address = config['Address']
+        self.port = int(config['Port'])
+
+class MiscConfig:
+    def __init__(self, config):
+        self.logging_level = config['LoggingLevel']
+
+class WorldConfig:
+    def __init__(self, config):
+        self.width = int(config['Width'])
+        self.height = int(config['Height'])
+        self.edge_acceleration_factor = float(config['EdgeAccelerationFactor'])
+        self.min_obstacles = int(config['MinObstacles'])
+
+class ShipConfig:
+    def __init__(self, config):
+        self.linear_acceleration = int(config['LinearAcceleration'])
+        self.linear_friction = float(config['LinearFriction'])
+        self.angular_acceleration = int(config['AngularAcceleration'])
+        self.angular_friction = float(config['AngularFriction'])
+        self.radius = int(config['Radius'])
+        self.damage = int(config['Damage'])
+        self.max_health = int(config['MaxHealth'])
+        self.max_shields = int(config['MaxShields'])
+
+class LaserConfig:
+    def __init__(self, config):
+        self.projectile_speed = int(config['ProjectileSpeed'])
+        self.projectile_radius = float(config['ProjectileRadius'])
+        self.projectile_damage = int(config['ProjectileDamage'])
+        self.projectile_lifespan = int(config['ProjectileLifespan'])
+        self.cooldown = int(config['Cooldown'])
+
+class RapidFireConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+        self.projectile_speed = int(config['ProjectileSpeed'])
+        self.projectile_radius = int(config['ProjectileRadius'])
+        self.projectile_damage = int(config['ProjectileDamage'])
+        self.projectile_lifespan = int(config['ProjectileLifespan'])
+        self.cooldown = int(config['Cooldown'])
+
+class DoubleFireConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+        self.offset = int(config['Offset'])
+
+class SpreadFireConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+        self.spread = int(config['Spread'])
+
+class HeartConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+        self.health_amount = int(config['HealthAmount'])
+
+class MegaHeartConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+
+class ShieldConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+        self.shield_amount = int(config['ShieldAmount'])
+
+class MegaShieldConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+
+class AsteroidConfig:
+    def __init__(self, config):
+        self.max_speed = int(config['MaxSpeed'])
+        self.base_damage = int(config['BaseDamage'])
+        self.base_health = int(config['BaseHealth'])
+        self.base_radius = int(config['BaseRadius'])
+
+class ProximityMineConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+
+class TimeBombConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+
+class RocketConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+
+class RocketSalvoConfig:
+    def __init__(self, config):
+        self.pickup_lifespan = int(config['PickupLifespan'])
+
 class Config:
     def __init__(self, filename):
         config = configparser.ConfigParser()
         config.read(filename)
 
-        self.server_address = config['Server'].get('Address', DEFAULT_SERVER_ADDRESS)
-        self.server_port = int(config['Server'].get('Port', DEFAULT_SERVER_PORT))
-        self.server_name = config['Server'].get('Name', socket.gethostname())
-        self.welcome_message = config['Server'].get('WelcomeMessage', f'Welcome to the {socket.gethostname()} server!')
+        self.server = ServerConfig(config['Server'])
+        self.misc = MiscConfig(config['Misc'])
+        self.world = WorldConfig(config['World'])
+        self.asteroid = AsteroidConfig(config['Asteroid'])
 
-        self.logging_level = config['Misc'].get('LoggingLevel', 'INFO')
-
-        self.ship_acceleration_rate = int(config['Game'].get('ShipAccelerationRate', DEFAULT_SHIP_ACCELERATION_RATE))
-        self.ship_rotational_acceleration_rate = int(config['Game'].get('ShipRotationalAccelerationRate', DEFAULT_SHIP_ROTATIONAL_ACCELERATION_RATE))
-        self.ship_rotational_velocity_friction = float(config['Game'].get('ShipRotationalVelocityFriction', DEFAULT_SHIP_ROTATIONAL_VELOCITY_FRICTION))
-        self.ship_linear_friction = float(config['Game'].get('ShipLinearFriction', DEFAULT_SHIP_LINEAR_FRICTION))
-        self.ship_radius = float(config['Game'].get('ShipRadius', DEFAULT_SHIP_RADIUS))
-        self.ship_damage = int(config['Game'].get('ShipDamage', DEFAULT_SHIP_DAMAGE))
-        self.ship_health = int(config['Game'].get('ShipHealth', DEFAULT_SHIP_HEALTH))
-        self.ship_max_shields = int(config['Game'].get('ShipMaxShields', DEFAULT_SHIP_MAX_SHIELDS))
-
-        self.laser_speed = int(config['Game'].get('LaserSpeed', DEFAULT_LASER_SPEED))
-        self.laser_radius = float(config['Game'].get('LaserRadius', DEFAULT_LASER_RADIUS))
-        self.laser_damage = int(config['Game'].get('LaserDamage', DEFAULT_LASER_DAMAGE))
-        self.laser_lifespan = int(config['Game'].get('LaserLifespan', DEFAULT_LASER_LIFESPAN))
-        self.laser_cooldown = int(config['Game'].get('LaserCooldown', DEFAULT_LASER_COOLDOWN))
-
-        self.rapid_fire_speed = int(config['Game'].get('RapidFireSpeed', DEFAULT_RAPID_FIRE_SPEED))
-        self.rapid_fire_radius = float(config['Game'].get('RapidFireRadius', DEFAULT_RAPID_FIRE_RADIUS))
-        self.rapid_fire_damage = int(config['Game'].get('RapidFireDamage', DEFAULT_RAPID_FIRE_DAMAGE))
-        self.rapid_fire_lifespan = int(config['Game'].get('RapidFireLifespan', DEFAULT_RAPID_FIRE_LIFESPAN))
-        self.rapid_fire_cooldown = int(config['Game'].get('RapidFireCooldown', DEFAULT_RAPID_FIRE_COOLDOWN))
-
-        self.min_asteroids = int(config['Game'].get('MinAsteroids', DEFAULT_MIN_ASTEROIDS))
-        self.asteroid_max_speed = int(config['Game'].get('AsteroidMaxSpeed', DEFAULT_ASTEROID_MAX_SPEED))
-        self.asteroid_base_damage = int(config['Game'].get('AsteroidBaseDamage', DEFAULT_ASTEROID_BASE_DAMAGE))
-        self.asteroid_base_health = int(config['Game'].get('AsteroidBaseHealth', DEFAULT_ASTEROID_BASE_HEALTH))
-        self.asteroid_base_collision_radius = int(config['Game'].get('AsteroidBaseCollisionRadius', DEFAULT_ASTEROID_BASE_COLLISION_RADIUS))
-
-        self.heart_health = int(config['Game'].get('HeartHealth', DEFAULT_HEART_HEALTH))
-        self.shield_amount = int(config['Game'].get('ShieldAmount', DEFAULT_SHIELD_AMOUNT))
-
-        self.double_fire_lifespan = int(config['Game'].get('DoubleFireLifespan', DEFAULT_DOUBLE_FIRE_LIFESPAN))
-        self.heart_lifespan = int(config['Game'].get('HeartLifespan', DEFAULT_HEART_LIFESPAN))
-        self.mega_heart_lifespan = int(config['Game'].get('MegaHeartLifespan', DEFAULT_MEGA_HEART_LIFESPAN))
-        self.mega_shield_lifespan = int(config['Game'].get('MegaShieldLifespan', DEFAULT_MEGA_SHIELD_LIFESPAN))
-        self.proximity_mine_lifespan = int(config['Game'].get('ProximityMineLifespan', DEFAULT_PROXIMITY_MINE_LIFESPAN))
-        self.rapid_fire_lifespan = int(config['Game'].get('RapidFireLifespan', DEFAULT_RAPID_FIRE_LIFESPAN))
-        self.rocket_salvo_lifespan = int(config['Game'].get('RocketSalvoLifespan', DEFAULT_ROCKET_SALVO_LIFESPAN))
-        self.rocket_lifespan = int(config['Game'].get('RocketLifespan', DEFAULT_ROCKET_LIFESPAN))
-        self.shield_lifespan = int(config['Game'].get('ShieldLifespan', DEFAULT_SHIELD_LIFESPAN))
-        self.spread_fire_lifespan = int(config['Game'].get('SpreadFireLifespan', DEFAULT_SPREAD_FIRE_LIFESPAN))
-        self.time_bomb_lifespan = int(config['Game'].get('TimeBombLifespan', DEFAULT_TIME_BOMB_LIFESPAN))
-
-        self.world_width = int(config['Game'].get('WorldWidth', DEFAULT_WORLD_WIDTH))
-        self.world_height = int(config['Game'].get('WorldHeight', DEFAULT_WORLD_HEIGHT))
-        self.world_edge_acceleration_factor = float(config['Game'].get('WorldEdgeAccelerationFactor', DEFAULT_WORLD_EDGE_ACCELERATION_FACTOR))
+        self.ship = ShipConfig(config['Ship'])
+        self.laser = LaserConfig(config['Laser'])
+        self.rapid_fire = RapidFireConfig(config['RapidFire'])
+        self.double_fire = DoubleFireConfig(config['DoubleFire'])
+        self.spread_fire = SpreadFireConfig(config['SpreadFire'])
+        self.heart = HeartConfig(config['Heart'])
+        self.mega_heart = MegaHeartConfig(config['MegaHeart'])
+        self.shield = ShieldConfig(config['Shield'])
+        self.mega_shield = MegaShieldConfig(config['MegaShield'])
+        self.rocket = RocketConfig(config['Rocket'])
+        self.rocket_salvo = RocketSalvoConfig(config['RocketSalvo'])
+        self.proximity_mine = ProximityMineConfig(config['ProximityMine'])
+        self.time_bomb = TimeBombConfig(config['TimeBomb'])

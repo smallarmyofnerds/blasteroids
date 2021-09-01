@@ -12,7 +12,6 @@ logger = log.get_logger(__name__)
 class Game(threading.Thread):
     def __init__(self, config):
         super(Game, self).__init__()
-        self.config = config
         self.running = False
         self.clock = pygame.time.Clock()
         self.players = [None] * 2
@@ -81,7 +80,7 @@ class Game(threading.Thread):
                 self._spawn_players()
                 self._broadcast_updates()
             except Exception as e:
-                logger.error(e)
+                logger.exception(e)
             finally:
                 self.lock.release()
 

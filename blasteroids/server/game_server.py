@@ -8,8 +8,7 @@ logger = log.get_logger(__name__)
 
 
 class ConnectionFactory:
-    def __init__(self, config, game_server, game):
-        self.config = config
+    def __init__(self, game_server, game):
         self.game_server = game_server
         self.game = game
         self.next_id = 0
@@ -21,16 +20,14 @@ class ConnectionFactory:
 
     def create(self, client_socket, client_address):
         logger.info('Creating new client connection')
-        return ClientConnection(self.get_next_id(), client_socket, client_address, self.config, self.game, self.game_server)
+        return ClientConnection(self.get_next_id(), client_socket, client_address, self.game, self.game_server)
 
 
 class GameServer:
     def __init__(self, config, game):
-        self.address = config.server_address
-        self.port = config.server_port
-        self.server_name = config.server_name
-        self.welcome_message = config.welcome_message
-        self.connection_factory = ConnectionFactory(config, self, game)
+        self.address = config.server.address
+        self.port = config.server.port
+        self.connection_factory = ConnectionFactory(self, game)
         self.client_connections = []
         self.client_connections_lock = threading.Lock()
         self.running = False
