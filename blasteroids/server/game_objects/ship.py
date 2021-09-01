@@ -155,6 +155,7 @@ class Ship(PhysicalGameObject):
         self.max_shields = config.ship.max_shields
 
     def on_removed(self, world):
+        world.create_instant_effect('shipimpact', self.position)
         self.player.kill()
 
     def shoot(self, world):

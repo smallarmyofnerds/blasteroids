@@ -21,5 +21,5 @@ class GameObject:
         dead_for = pygame.time.get_ticks() - self.destroyed_at
         return dead_for > self.death_duration
 
-    def draw(self, screen):
+    def draw(self, screen, my_position):
         pass

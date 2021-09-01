@@ -16,11 +16,11 @@ class World:
 
     def draw(self, screen):
         for object in self.game_objects:
-            object.draw(screen)
+            object.draw(screen, self.my_ship.position if self.my_ship is not None else None)
         for object in self.dying_objects:
-            object.draw(screen)
+            object.draw(screen, self.my_ship.position if self.my_ship is not None else None)
         if self.my_ship:
-            self.my_ship.draw(screen)
+            self.my_ship.draw(screen, None)
 
     def _destroy_objects(self, server_world):
         objects_to_remove = []

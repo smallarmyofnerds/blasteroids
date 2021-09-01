@@ -6,7 +6,7 @@ class ObstacleObject(GameObject):
         super(ObstacleObject, self).__init__(server_object)
         self.sprite = sprite_library.get(server_object.name)
 
-    def draw(self, screen):
+    def draw(self, screen, my_position):
         screen.draw_sprite(self.sprite, self.position, self.orientation)
 
     def update(self, raw_obstacle):

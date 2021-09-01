@@ -11,5 +11,5 @@ class ShipObject(GameObject):
     def update(self, raw_ship):
         super(ShipObject, self)._update(raw_ship.position, raw_ship.orientation)
 
-    def draw(self, screen):
+    def draw(self, screen, my_position):
         screen.draw_sprite(self.static_sprite, self.position, self.orientation)
