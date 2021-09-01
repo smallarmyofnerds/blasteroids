@@ -1,3 +1,4 @@
+from blasteroids.lib.server_world.server_effect import ServerEffect
 import struct
 from pygame.math import Vector2
 from blasteroids.lib.server_world import ServerShip, ServerObstacle, ServerProjectile, ServerPowerUp
@@ -47,6 +48,8 @@ class EncodedMessage:
             return ServerObstacle(id, position, orientation, name)
         elif type == 'POWERUP':
             return ServerPowerUp(id, position, orientation, name)
+        elif type == 'EFFECT':
+            return ServerEffect(id, position, orientation, name)
         else:
             raise Exception(f'Unrecognized object type {type}')
 

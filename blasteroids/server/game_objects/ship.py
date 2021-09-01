@@ -28,6 +28,7 @@ class LaserWeapon(Weapon):
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.cooldown:
             self._generate_laser(ship, world, ship.position, ship.orientation)
+            world.create_instant_effect('laser', ship.position)
             self.last_shot = now
 
 
@@ -41,6 +42,7 @@ class DoubleFireWeapon(LaserWeapon):
         if now - self.last_shot > self.cooldown:
             self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(90).normalize(), ship.orientation)
             self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(-90).normalize(), ship.orientation)
+            world.create_instant_effect('laser', ship.position)
             self.last_shot = now
 
 
@@ -55,6 +57,7 @@ class SpreadFireWeapon(LaserWeapon):
             self._generate_laser(ship, world, ship.position, ship.orientation)
             self._generate_laser(ship, world, ship.position, ship.orientation.rotate(self.spread))
             self._generate_laser(ship, world, ship.position, ship.orientation.rotate(-1 * self.spread))
+            world.create_instant_effect('laser', ship.position)
             self.last_shot = now
 
 
@@ -118,7 +121,7 @@ class Armoury:
                 config.laser.cooldown,
             ),
         }
-        self.active_weapon_name = 'rocket'
+        self.active_weapon_name = 'laser'
     
     def set_active_weapon(self, weapon_name):
         self.active_weapon_name = weapon_name

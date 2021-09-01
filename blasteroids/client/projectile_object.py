@@ -11,7 +11,3 @@ class ProjectileObject(GameObject):
 
     def update(self, raw_obstacle):
         super(ProjectileObject, self)._update(raw_obstacle.position, raw_obstacle.orientation)
-
-    def on_create(self, sound_library):
-        if self.name == 'laser':
-            sound_library.get_sound('laser').play()

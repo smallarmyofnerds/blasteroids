@@ -9,11 +9,12 @@ from blasteroids.server.game_objects.mega_heart_pickup import MegaHeartPickup
 import random
 from pygame import Vector2
 from blasteroids.server.game_objects import Obstacle, Ship, PowerUp, Asteroid
-from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjectile, ServerObstacle
+from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjectile, ServerObstacle, ServerEffect
 from blasteroids.server.game_objects import shield
 from blasteroids.server.game_objects.heart_pickup import HeartPickup
 from blasteroids.server.game_objects.shield_pickup import ShieldPickup
 from blasteroids.server.game_objects.rapid_fire_pickup import RapidFirePickup
+from blasteroids.server.game_objects.instant_effect import InstantEffect
 
 
 class AsteroidFactory:
@@ -49,6 +50,7 @@ class World:
         self.projectiles = []
         self.power_ups = []
         self.obstacles = []
+        self.effects = []
         self.next_id = 1
         self.edge_acceleration_factor = config.world.edge_acceleration_factor
 
@@ -120,6 +122,9 @@ class World:
 
     def remove_obstacle(self, obstacle):
         self.obstacles.remove(obstacle)
+    
+    def create_instant_effect(self, name, position):
+        self.effects.append(InstantEffect(self._get_next_id(), position, name))
 
     def add_new_power_up(self, name, position):
         if name == 'heart':
@@ -159,9 +164,10 @@ class World:
         self._remove_destroyed_objects(self.obstacles)
         self._remove_destroyed_objects(self.power_ups)
         self._remove_destroyed_objects(self.projectiles)
+        self._remove_destroyed_objects(self.effects)
 
     def _update_all(self, delta_time):
-        objects_to_update = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles]
+        objects_to_update = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles, *self.effects]
         for o in objects_to_update:
             o.update(self, delta_time)
             if not o.is_in_bounds(self):
@@ -208,4 +214,6 @@ class World:
             objects.append(ServerPowerUp.from_power_up(power_up))
         for obstacle in self.obstacles:
             objects.append(ServerObstacle.from_obstacle(obstacle))
+        for effect in self.effects:
+            objects.append(ServerEffect.from_effect(effect))
         return objects

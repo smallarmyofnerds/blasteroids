@@ -5,6 +5,7 @@ class SoundLibrary:
         self.sounds = {}
 
         self.sounds['laser'] = Sound('assets/sounds/laser.wav')
+        self.sounds['impact'] = Sound('assets/sounds/impact.wav')
 
     def get_sound(self, name):
         return self.sounds[name]

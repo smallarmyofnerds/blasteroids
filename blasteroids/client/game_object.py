@@ -23,6 +23,3 @@ class GameObject:
 
     def draw(self, screen):
         pass
-
-    def on_create(self, sound_library):
-        pass

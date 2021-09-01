@@ -10,8 +10,6 @@ class PhysicalGameObject(GameObject):
         self.max_health = max_health
         self.health = max_health
 
-        self.destroyed = False
-        
         self.collision_radius = collision_radius
 
     def take_damage(self, damage):
@@ -22,12 +20,6 @@ class PhysicalGameObject(GameObject):
 
     def apply_damage_to(self, other):
         other.take_damage(self.damage)
-
-    def destroy(self):
-        self.destroyed = True
-
-    def on_removed(self, world):
-        pass
 
     def collides_with(self, other):
         vector_between = self.position - other.position

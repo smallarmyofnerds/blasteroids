@@ -21,6 +21,8 @@ class GameObject:
         self.rotational_velocity = kwargs.get('rotational_velocity', 0)
         self.rotational_acceleration = 0  # dpsps
 
+        self.destroyed = False
+
     def update(self, world, delta_time):
         self._set_accelerations(world)
 
@@ -42,6 +44,12 @@ class GameObject:
 
         # move object
         self.position = self.position + delta_time * self.velocity
+
+    def destroy(self):
+        self.destroyed = True
+
+    def on_removed(self, world):
+        pass
 
     def _set_accelerations(self, world):
         pass

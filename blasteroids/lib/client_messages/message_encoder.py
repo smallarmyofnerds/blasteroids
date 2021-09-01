@@ -34,18 +34,6 @@ class MessageEncoder:
         buffer += self._encode_string(server_object.name)
         return bytes(buffer)
 
-    def _encode_ship(self, server_ship):
-        return self._encode_server_object(server_ship)
-
-    def _encode_projectile(self, server_projectile):
-        return self._encode_server_object(server_projectile)
-
-    def _encode_obstacle(self, server_obstacle):
-        return self._encode_server_object(server_obstacle)
-
-    def _encode_power_up(self, server_power_up):
-        return self._encode_server_object(server_power_up)
-
     def encode(self, message):
         raise Exception('Unimplemented')
 
