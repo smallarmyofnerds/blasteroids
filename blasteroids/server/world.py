@@ -56,17 +56,6 @@ class World:
         self.asteroid_factory = AsteroidFactory(config)
 
         self._top_up_asteroids()
-        self.power_ups.append(Heart(self._get_next_id(), Vector2(500, 500), config.heart_health))
-        self.power_ups.append(Shield(self._get_next_id(), Vector2(600, 500), config.shield_amount))
-        self.power_ups.append(MegaHeart(self._get_next_id(), Vector2(700, 500)))
-        self.power_ups.append(RapidFire(self._get_next_id(), Vector2(800, 500)))
-        self.power_ups.append(DoubleFire(self._get_next_id(), Vector2(900, 500)))
-        self.power_ups.append(SpreadFire(self._get_next_id(), Vector2(1000, 500)))
-        self.power_ups.append(RocketSalvo(self._get_next_id(), Vector2(1100, 500)))
-        self.power_ups.append(MegaShield(self._get_next_id(), Vector2(1200, 500)))
-        self.power_ups.append(Rocket(self._get_next_id(), Vector2(1300, 500)))
-        self.power_ups.append(ProximityMine(self._get_next_id(), Vector2(1400, 500)))
-        self.power_ups.append(TimeBomb(self._get_next_id(), Vector2(1500, 500)))
 
     def is_in_bounds(self, p, padding=0):
         return (p.x + padding) > 0 and (p.x - padding) < self.width and (p.y + padding) > 0 and (p.y - padding) < self.height
@@ -107,8 +96,16 @@ class World:
         self.next_id += 1
         return id
 
+    def _get_safe_position(self):
+        while True:
+            position = Vector2(random.randint(0, self.width), random.randint(0, self.height))
+            for o in [*self.ships, *self.obstacles, *self.projectiles, *self.power_ups]:
+                if position.distance_squared_to(o.position) > 10000:
+                    return position
+
     def create_ship(self, player):
-        ship = Ship(self.config, self._get_next_id(), Vector2(random.randint(0, self.width), random.randint(0, self.height)), Vector2(0, 1), player)
+        position = self._get_safe_position()
+        ship = Ship(self.config, self._get_next_id(), position, Vector2(0, 1), player)
         self.ships.append(ship)
         return ship
 
@@ -125,8 +122,29 @@ class World:
     def remove_obstacle(self, obstacle):
         self.obstacles.remove(obstacle)
 
-    def create_power_up(self, name):
-        self.power_ups.append(PowerUp(self._get_next_id(), Vector2(0, 0), Vector2(0, 1)))
+    def add_new_power_up(self, name, position):
+        if name == 'heart':
+            self.power_ups.append(Heart(self._get_next_id(), position, self.config.heart_health, self.config.heart_lifespan))
+        elif name == 'mega_heart':
+            self.power_ups.append(MegaHeart(self._get_next_id(), position, self.config.mega_heart_lifespan))
+        elif name == 'shield':
+            self.power_ups.append(Shield(self._get_next_id(), position, self.config.shield_amount, self.config.shield_lifespan))
+        elif name == 'mega_shield':
+            self.power_ups.append(MegaShield(self._get_next_id(), position, self.config.mega_shield_lifespan))
+        elif name == 'double_fire':
+            self.power_ups.append(DoubleFire(self._get_next_id(), position, self.config.double_fire_lifespan))
+        elif name == 'spread_fire':
+            self.power_ups.append(SpreadFire(self._get_next_id(), position, self.config.spread_fire_lifespan))
+        elif name == 'rapid_fire':
+            self.power_ups.append(RapidFire(self._get_next_id(), position, self.config.rapid_fire_lifespan))
+        elif name == 'rocket':
+            self.power_ups.append(Rocket(self._get_next_id(), position, self.config.rocket_lifespan))
+        elif name == 'rocket_salvo':
+            self.power_ups.append(RocketSalvo(self._get_next_id(), position, self.config.rocket_salvo_lifespan))
+        elif name == 'proximity_mine':
+            self.power_ups.append(ProximityMine(self._get_next_id(), position, self.config.proximity_mine_lifespan))
+        elif name == 'time_bomb':
+            self.power_ups.append(TimeBomb(self._get_next_id(), position, self.config.time_bomb_lifespan))
 
     def _remove_destroyed_objects(self, object_list):
         objects_to_remove = []

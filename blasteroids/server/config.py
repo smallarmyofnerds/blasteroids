@@ -34,6 +34,18 @@ DEFAULT_ASTEROID_BASE_COLLISION_RADIUS = 12
 DEFAULT_HEART_HEALTH = 400
 DEFAULT_SHIELD_AMOUNT = 400
 
+DEFAULT_DOUBLE_FIRE_LIFESPAN = 6000
+DEFAULT_HEART_LIFESPAN = 6000
+DEFAULT_MEGA_HEART_LIFESPAN = 3000
+DEFAULT_MEGA_SHIELD_LIFESPAN = 3000
+DEFAULT_PROXIMITY_MINE_LIFESPAN = 3000
+DEFAULT_RAPID_FIRE_LIFESPAN = 6000
+DEFAULT_ROCKET_SALVO_LIFESPAN = 3000
+DEFAULT_ROCKET_LIFESPAN = 3000
+DEFAULT_SHIELD_LIFESPAN = 6000
+DEFAULT_SPREAD_FIRE_LIFESPAN = 6000
+DEFAULT_TIME_BOMB_LIFESPAN = 3000
+
 DEFAULT_WORLD_WIDTH = 10000
 DEFAULT_WORLD_HEIGHT = 10000
 DEFAULT_WORLD_EDGE_ACCELERATION_FACTOR = 2
@@ -80,6 +92,18 @@ class Config:
 
         self.heart_health = int(config['Game'].get('HeartHealth', DEFAULT_HEART_HEALTH))
         self.shield_amount = int(config['Game'].get('ShieldAmount', DEFAULT_SHIELD_AMOUNT))
+
+        self.double_fire_lifespan = int(config['Game'].get('DoubleFireLifespan', DEFAULT_DOUBLE_FIRE_LIFESPAN))
+        self.heart_lifespan = int(config['Game'].get('HeartLifespan', DEFAULT_HEART_LIFESPAN))
+        self.mega_heart_lifespan = int(config['Game'].get('MegaHeartLifespan', DEFAULT_MEGA_HEART_LIFESPAN))
+        self.mega_shield_lifespan = int(config['Game'].get('MegaShieldLifespan', DEFAULT_MEGA_SHIELD_LIFESPAN))
+        self.proximity_mine_lifespan = int(config['Game'].get('ProximityMineLifespan', DEFAULT_PROXIMITY_MINE_LIFESPAN))
+        self.rapid_fire_lifespan = int(config['Game'].get('RapidFireLifespan', DEFAULT_RAPID_FIRE_LIFESPAN))
+        self.rocket_salvo_lifespan = int(config['Game'].get('RocketSalvoLifespan', DEFAULT_ROCKET_SALVO_LIFESPAN))
+        self.rocket_lifespan = int(config['Game'].get('RocketLifespan', DEFAULT_ROCKET_LIFESPAN))
+        self.shield_lifespan = int(config['Game'].get('ShieldLifespan', DEFAULT_SHIELD_LIFESPAN))
+        self.spread_fire_lifespan = int(config['Game'].get('SpreadFireLifespan', DEFAULT_SPREAD_FIRE_LIFESPAN))
+        self.time_bomb_lifespan = int(config['Game'].get('TimeBombLifespan', DEFAULT_TIME_BOMB_LIFESPAN))
 
         self.world_width = int(config['Game'].get('WorldWidth', DEFAULT_WORLD_WIDTH))
         self.world_height = int(config['Game'].get('WorldHeight', DEFAULT_WORLD_HEIGHT))
