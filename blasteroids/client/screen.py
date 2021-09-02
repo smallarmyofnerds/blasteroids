@@ -14,6 +14,7 @@ class Screen:
         self.surface = None
         self.camera_position = Vector2(0, 0)
         self.screen_bottom_left = Vector2(0, 0)
+        self.font = pygame.font.Font(None, 32)
 
     def init(self):
         self.surface = pygame.display.set_mode((self.width, self.height))
@@ -45,3 +46,16 @@ class Screen:
         rotated_sprite_rect = rotated_sprite.get_rect()
         rotated_sprite_rect.center = self._world_to_viewport(position)
         self.surface.blit(rotated_sprite, rotated_sprite_rect)
+
+    def draw_ui(self, health, shield, active_weapon, sprite_library):
+        self.health_message = self.font.render(str(health), True, (0, 255, 0))
+        self.health_width = self.health_message.get_width()
+
+        self.shield_message = self.font.render(str(shield), True, (0, 204, 255))
+        self.shield_width = self.shield_message.get_width()
+
+        self.surface.blit(self.health_message, (75 - int(self.health_width), 25, 100, 100))
+        self.surface.blit(self.shield_message, (150 - int(self.shield_width), 25, 100, 100))
+
+        if sprite_library.get(f'{active_weapon}_pickup') is not None:
+            self.surface.blit(sprite_library.get(f'{active_weapon}_pickup'), (self.width -75, 25, 50, 50))

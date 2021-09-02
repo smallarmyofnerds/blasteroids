@@ -24,6 +24,7 @@ class World:
             object.draw(screen, self.my_ship.position if self.my_ship is not None else None)
         if self.my_ship:
             self.my_ship.draw(screen, None)
+            screen.draw_ui(self.health, self.shield, self.active_weapon, self.sprite_library)
 
     def _destroy_objects(self, server_world):
         objects_to_remove = []
