@@ -1,11 +1,10 @@
-import pygame
 from .game_object import GameObject
 
 
 class EffectObject(GameObject):
     def __init__(self, server_object, sound_library):
         super(EffectObject, self).__init__(server_object)
-        self.sound = pygame.mixer.Sound(sound_library.get_sound(server_object.name).get_raw())
+        self.sound = sound_library.get_sound(server_object.name)
         self.has_played = False
 
     def draw(self, screen, my_position):

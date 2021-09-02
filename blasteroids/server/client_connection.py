@@ -43,7 +43,7 @@ class ClientConnection(threading.Thread):
     def _process_messages(self):
         messages = self.message_buffer.pop_all()
         for message in messages:
-            logger.info(f'Received {message}')
+            logger.debug(f'Received {message}')
             self._handle_message(message)
 
     def _handle_message(self, message):

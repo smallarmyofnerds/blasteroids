@@ -49,6 +49,9 @@ class Game(threading.Thread):
     def remove_player(self, player):
         self.lock.acquire()
 
+        if player.ship:
+            self.world.remove_ship(player.ship)
+
         if self.players[0] == player:
             self.players[0] = None
         elif self.players[1] == player:

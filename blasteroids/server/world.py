@@ -108,6 +108,9 @@ class World:
         ship = Ship(self.config, self._get_next_id(), position, Vector2(0, 1), player)
         self.ships.append(ship)
         return ship
+    
+    def remove_ship(self, ship):
+        self.ships.remove(ship)
 
     def create_projectile(self, projectile):
         projectile.id = self._get_next_id()
