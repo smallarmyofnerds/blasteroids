@@ -50,4 +50,12 @@ class Player:
         return died_at
 
     def send_world(self, server_objects):
-        self.client_connection.queue_message(WorldMessage(server_objects, self.ship.id if self.ship is not None else 0))
+        self.client_connection.queue_message(
+            WorldMessage(
+                server_objects,
+                self.ship.id if self.ship is not None else 0,
+                self.ship.health if self.ship is not None else 0,
+                self.ship.shield if self.ship is not None else 0,
+                self.ship.get_active_weapon() if self.ship is not None else '',
+            ),
+        )

@@ -16,6 +16,7 @@ class PhysicalGameObject(GameObject):
         self.health -= damage
 
         if self.health <= 0:
+            self.health = 0
             self.destroy()
 
     def apply_damage_to(self, other):

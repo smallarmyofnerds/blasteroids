@@ -13,6 +13,9 @@ class World:
         self.game_objects = []
         self.game_objects_by_id = {}
         self.dying_objects = []
+        self.health = 0
+        self.shield = 0
+        self.active_weapon = ''
 
     def draw(self, screen):
         for object in self.game_objects:
@@ -80,6 +83,9 @@ class World:
             self.dying_objects.remove(object)
 
     def update(self, server_world):
+        self.health = server_world.health
+        self.shield = server_world.shield
+        self.active_weapon = server_world.active_weapon
         self._sync_my_ship(server_world)
         self._destroy_objects(server_world)
         self._create_new_objects(server_world)

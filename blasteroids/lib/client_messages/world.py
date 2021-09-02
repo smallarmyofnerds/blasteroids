@@ -6,13 +6,16 @@ from .message_encoder import MessageEncoder
 class WorldMessage(Message):
     TYPE = 'WRLD'
 
-    def __init__(self, objects, player_id):
+    def __init__(self, objects, ship_id, health, shield, active_weapon):
         super(WorldMessage, self).__init__(WorldMessage.TYPE)
         self.objects = objects
-        self.player_id = player_id
+        self.ship_id = ship_id
+        self.health = health
+        self.shield = shield
+        self.active_weapon = active_weapon
 
     def to_server_world(self):
-        return ServerWorld(self.objects, self.player_id)
+        return ServerWorld(self.objects, self.ship_id, self.health, self.shield, self.active_weapon)
 
     def __repr__(self):
         return f'{super(WorldMessage, self).__repr__()}:...'
@@ -28,7 +31,10 @@ class WorldMessageEncoder(MessageEncoder):
         buffer += self._encode_short(len(message.objects))
         for object in message.objects:
             buffer += self._encode_server_object(object)
-        buffer += self._encode_short(message.player_id)
+        buffer += self._encode_short(message.ship_id)
+        buffer += self._encode_short(message.health)
+        buffer += self._encode_short(message.shield)
+        buffer += self._encode_string(message.active_weapon)
         return bytes(buffer) + b'****'
 
     def decode(self, encoded_message):
@@ -36,5 +42,8 @@ class WorldMessageEncoder(MessageEncoder):
         objects = []
         for i in range(count):
             objects.append(encoded_message.pop_object())
-        player_id = encoded_message.pop_short()
-        return WorldMessage(objects, player_id)
+        ship_id = encoded_message.pop_short()
+        health = encoded_message.pop_short()
+        shield = encoded_message.pop_short()
+        active_weapon = encoded_message.pop_string()
+        return WorldMessage(objects, ship_id, health, shield, active_weapon)

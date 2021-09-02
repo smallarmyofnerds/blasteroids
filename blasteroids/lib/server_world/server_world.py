@@ -1,8 +1,11 @@
 class ServerWorld:
-    def __init__(self, objects, my_ship_id):
+    def __init__(self, objects, my_ship_id, health, shield, active_weapon):
         self.my_ship = None
         self.objects = []
         self.objects_by_id = {}
+        self.health = health
+        self.shield = shield
+        self.active_weapon = active_weapon
 
         for object in objects:
             if object.id == my_ship_id:

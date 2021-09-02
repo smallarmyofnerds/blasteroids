@@ -214,6 +214,9 @@ class Ship(PhysicalGameObject):
     
     def set_active_weapon(self, weapon_name):
         self.armoury.set_active_weapon(weapon_name)
+    
+    def get_active_weapon(self):
+        return self.armoury.active_weapon_name
 
     def _set_rotating_left(self):
         self.rotational_acceleration = -1 * self.rotational_acceleration_rate
