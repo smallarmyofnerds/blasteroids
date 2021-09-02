@@ -10,7 +10,6 @@ import random
 from pygame import Vector2
 from blasteroids.server.game_objects import Obstacle, Ship, PowerUp, Asteroid
 from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjectile, ServerObstacle, ServerEffect
-from blasteroids.server.game_objects import shield
 from blasteroids.server.game_objects.heart_pickup import HeartPickup
 from blasteroids.server.game_objects.shield_pickup import ShieldPickup
 from blasteroids.server.game_objects.rapid_fire_pickup import RapidFirePickup
@@ -193,7 +192,7 @@ class World:
         for ship in self.ships:
             for power_up in self.power_ups:
                 if ship.collides_with(power_up):
-                    power_up.apply_power_up_to(ship)
+                    power_up.apply_power_up_to(ship, self)
                     power_up.destroy()
 
     def update(self, delta_time):

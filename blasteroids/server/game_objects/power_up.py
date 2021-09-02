@@ -15,5 +15,5 @@ class PowerUp(PhysicalGameObject):
         else:
             super(PowerUp, self).update(world, delta_time)
 
-    def apply_power_up_to(self, ship):
+    def apply_power_up_to(self, ship, world):
         pass

@@ -6,5 +6,6 @@ class HeartPickup(PowerUp):
         super(HeartPickup, self).__init__(id, "heart_pickup", position, lifespan)
         self.amount = amount
 
-    def apply_power_up_to(self, ship):
+    def apply_power_up_to(self, ship, world):
+        world.create_instant_effect('healing_pickup', self.position)
         ship.heal_by(self.amount)

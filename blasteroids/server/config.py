@@ -145,6 +145,7 @@ class RocketConfig:
 class RocketSalvoConfig:
     def __init__(self, config):
         self.pickup_lifespan = int(config['PickupLifespan'])
+        self.spread = int(config['Spread'])
 
 class Config:
     def __init__(self, filename):
