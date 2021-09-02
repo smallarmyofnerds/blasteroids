@@ -149,6 +149,18 @@ class World:
         elif name == 'time_bomb':
             self.power_ups.append(TimeBombPickup(self._get_next_id(), position, self.config.time_bomb.pickup_lifespan))
 
+    def ship_closest_to(self, position, ignore):
+        closest = None
+        for ship in self.ships:
+            if ignore is not None and ship == ignore:
+                continue
+            if closest is None:
+                closest = ship
+            else:
+                if position.distance_squared_to(ship.position) < position.distance_squared_to(closest.position):
+                    closest = ship
+        return closest
+            
     def _remove_destroyed_objects(self, object_list):
         objects_to_remove = []
         for o in object_list:

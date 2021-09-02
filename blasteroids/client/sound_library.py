@@ -15,6 +15,7 @@ class SoundLibrary:
         self.sounds['rocket_pickup'] = Sound('assets/sounds/rocket_pickup.wav')
         self.sounds['rocket_salvo_pickup'] = Sound('assets/sounds/rocket_salvo_pickup.wav')
         self.sounds['mega_pickup'] = Sound('assets/sounds/mega_pickup.wav')
+        self.sounds['rocket_shot'] = Sound('assets/sounds/laser.wav')
 
     def get_sound(self, name):
         return self.sounds[name]

@@ -141,10 +141,18 @@ class TimeBombConfig:
 class RocketConfig:
     def __init__(self, config):
         self.pickup_lifespan = int(config['PickupLifespan'])
+        self.projectile_speed = int(config['ProjectileSpeed'])
+        self.projectile_radius = int(config['ProjectileRadius'])
+        self.projectile_damage = int(config['ProjectileDamage'])
+        self.projectile_lifespan = int(config['ProjectileLifespan'])
 
 class RocketSalvoConfig:
     def __init__(self, config):
         self.pickup_lifespan = int(config['PickupLifespan'])
+        self.projectile_speed = int(config['ProjectileSpeed'])
+        self.projectile_radius = int(config['ProjectileRadius'])
+        self.projectile_damage = int(config['ProjectileDamage'])
+        self.projectile_lifespan = int(config['ProjectileLifespan'])
         self.spread = int(config['Spread'])
 
 class Config:

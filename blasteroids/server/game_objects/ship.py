@@ -13,24 +13,37 @@ class Weapon:
         pass
 
 
+class Cooldown(Weapon):
+    def __init__(self, cooldown):
+        self.cooldown = cooldown
+        self.last_shot = 0
+
+    def set_cooldown(self, cooldown):
+        self.cooldown = cooldown
+
+    def can_shoot(self):
+        return pygame.time.get_ticks() - self.last_shot > self.cooldown
+
+    def update_last_shot(self):
+        self.last_shot = pygame.time.get_ticks()
+
+
 class LaserWeapon(Weapon):
     def __init__(self, speed, collision_radius, damage, lifespan, cooldown):
+        self.cooldown = Cooldown(cooldown)
         self.speed = speed
         self.collision_radius = collision_radius
         self.damage = damage
         self.lifespan = lifespan
-        self.cooldown = cooldown
-        self.last_shot = 0
     
     def _generate_laser(self, ship, world, position, orientation):
         world.create_projectile(Laser(ship, None, position, orientation, self.speed, self.collision_radius, self.damage, self.lifespan))
 
     def shoot(self, ship, world):
-        now = pygame.time.get_ticks()
-        if now - self.last_shot > self.cooldown:
+        if self.cooldown.can_shoot():
             self._generate_laser(ship, world, ship.position, ship.orientation)
             world.create_instant_effect('laser', ship.position)
-            self.last_shot = now
+            self.cooldown.update_last_shot()
 
 
 class DoubleFireWeapon(LaserWeapon):
@@ -39,12 +52,11 @@ class DoubleFireWeapon(LaserWeapon):
         self.offset = offset
     
     def shoot(self, ship, world):
-        now = pygame.time.get_ticks()
-        if now - self.last_shot > self.cooldown:
+        if self.cooldown.can_shoot():
             self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(90).normalize(), ship.orientation)
             self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(-90).normalize(), ship.orientation)
             world.create_instant_effect('laser', ship.position)
-            self.last_shot = now
+            self.cooldown.update_last_shot()
 
 
 class SpreadFireWeapon(LaserWeapon):
@@ -53,57 +65,51 @@ class SpreadFireWeapon(LaserWeapon):
         self.spread = spread
     
     def shoot(self, ship, world):
-        now = pygame.time.get_ticks()
-        if now - self.last_shot > self.cooldown:
+        if self.cooldown.can_shoot():
             self._generate_laser(ship, world, ship.position, ship.orientation)
             self._generate_laser(ship, world, ship.position, ship.orientation.rotate(self.spread))
             self._generate_laser(ship, world, ship.position, ship.orientation.rotate(-1 * self.spread))
             world.create_instant_effect('laser', ship.position)
-            self.last_shot = now
+            self.cooldown.update_last_shot()
 
 
 class RocketWeapon(Weapon):
-    def __init__(self, speed, collision_radius, damage, lifespan):
+    def __init__(self, speed, collision_radius, damage, lifespan, name = 'rocket_projectile'):
         self.speed = speed
         self.collision_radius = collision_radius
         self.damage = damage
         self.lifespan = lifespan
-        self.last_shot = 0
+        self.name = name
     
     def _generate_rocket(self, ship, world, position, orientation):
-        world.create_projectile(RocketProjectile(ship, None, position, orientation, self.speed, self.collision_radius, self.damage, self.lifespan))
+        world.create_projectile(RocketProjectile(ship, None, position, orientation, self.speed, self.collision_radius, self.damage, self.lifespan, self.name))
 
     def shoot(self, ship, world):
         self._generate_rocket(ship, world, ship.position, ship.orientation)
-        ship.set_active_weapon('laser')
+        ship.reset_weapon()
+        world.create_instant_effect('rocket_shot', ship.position)
 
 
-class RocketSalvoWeapon(Weapon):
+class RocketSalvoWeapon(RocketWeapon):
     def __init__(self, speed, collision_radius, damage, lifespan, spread):
-        self.speed = speed / 4
-        self.collision_radius = collision_radius
-        self.damage = damage
-        self.lifespan = lifespan
+        super(RocketSalvoWeapon, self).__init__(speed, collision_radius, damage, lifespan, 'rocket_salvo_projectile')
         self.spread = spread
     
-    def _generate_rocket(self, ship, world, position, orientation):
-        world.create_projectile(RocketSalvoProjectile(ship, None, position, orientation, self.speed, self.collision_radius, self.damage, self.lifespan))
-
     def shoot(self, ship, world):
-        self._generate_rocket(ship, world, ship.position, ship.orientation)
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(self.spread))
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-0.1 * self.spread))
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-0.2 * self.spread))
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-0.3 * self.spread))
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-0.4 * self.spread))
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-0.5 * self.spread))
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-0.6 * self.spread))
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-0.7 * self.spread))
-        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-0.8 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-1 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-2 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-3 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-4 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(-5 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(1 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(2 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(3 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(4 * self.spread))
+        self._generate_rocket(ship, world, ship.position, ship.orientation.rotate(5 * self.spread))
 
-        ship.set_active_weapon('laser')
+        ship.reset_weapon()
 
-        world.create_instant_effect('laser', ship.position)
+        world.create_instant_effect('rocket_shot', ship.position)
 
 
 class Armoury:
@@ -140,26 +146,34 @@ class Armoury:
                 config.rapid_fire.cooldown,
             ),
             'rocket': RocketWeapon(
-                config.laser.projectile_speed,
-                config.laser.projectile_radius,
-                config.laser.projectile_damage,
-                config.laser.projectile_lifespan,
+                config.rocket.projectile_speed,
+                config.rocket.projectile_radius,
+                config.rocket.projectile_damage,
+                config.rocket.projectile_lifespan,
             ),
             'rocket_salvo': RocketSalvoWeapon(
-                config.laser.projectile_speed,
-                config.laser.projectile_radius,
-                config.laser.projectile_damage,
-                config.laser.projectile_lifespan,
+                config.rocket_salvo.projectile_speed,
+                config.rocket_salvo.projectile_radius,
+                config.rocket_salvo.projectile_damage,
+                config.rocket_salvo.projectile_lifespan,
                 config.rocket_salvo.spread,
             ),
         }
-        self.active_weapon_name = 'rocket'
+        self.active_weapon_name = 'laser'
+        self.cooldown = Cooldown(0)
     
     def set_active_weapon(self, weapon_name):
         self.active_weapon_name = weapon_name
     
+    def reset_weapon(self):
+        self.set_active_weapon('laser')
+        self.cooldown.set_cooldown(500)
+    
     def shoot_active_weapon(self, ship, world):
-        self.weapons[self.active_weapon_name].shoot(ship, world)
+        if self.cooldown.can_shoot():
+            self.cooldown.set_cooldown(0)
+            self.weapons[self.active_weapon_name].shoot(ship, world)
+            self.cooldown.update_last_shot()
 
 
 class Ship(PhysicalGameObject):
@@ -214,6 +228,9 @@ class Ship(PhysicalGameObject):
     
     def set_active_weapon(self, weapon_name):
         self.armoury.set_active_weapon(weapon_name)
+    
+    def reset_weapon(self):
+        self.armoury.reset_weapon()
     
     def get_active_weapon(self):
         return self.armoury.active_weapon_name
