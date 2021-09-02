@@ -37,6 +37,7 @@ class ClientConnection(threading.Thread):
 
     def _receive_bytes(self):
         encoded_bytes = self.socket.recv(8192)
+        self.game_server.record_bytes_received(len(encoded_bytes))
         self.message_buffer.push(encoded_bytes)
     
     def _process_messages(self):
@@ -59,7 +60,9 @@ class ClientConnection(threading.Thread):
         self.lock.release()
 
     def _send_message(self, message):
-        self.socket.send(self.message_encoding.encode(message))
+        encoded_message = self.message_encoding.encode(message)
+        self.socket.send(encoded_message)
+        self.game_server.record_bytes_sent(len(encoded_message))
 
     def run(self):
         logger.info('Running client connection')

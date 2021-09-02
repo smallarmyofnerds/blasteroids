@@ -1,3 +1,4 @@
+import time
 import socket
 import select
 import threading
@@ -31,6 +32,10 @@ class GameServer:
         self.client_connections = []
         self.client_connections_lock = threading.Lock()
         self.running = False
+        self.lock = threading.Lock()
+        self.bytes_sent = 0
+        self.bytes_received = 0
+        self.last_report_at = time.time()
 
     def _bind_socket(self, address, port):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,6 +54,30 @@ class GameServer:
         self.client_connections_lock.acquire()
         self.client_connections.remove(client_connection)
         self.client_connections_lock.release()
+    
+    def record_bytes_sent(self, count):
+        self.lock.acquire()
+        self.bytes_sent += count
+        self.lock.release()
+    
+    def record_bytes_received(self, count):
+        self.lock.acquire()
+        self.bytes_received += count
+        self.lock.release()
+    
+    def _report_bps(self):
+        now = time.time()
+        if now - self.last_report_at > 2:
+            self.lock.acquire()
+            bytes_sent = self.bytes_sent
+            bytes_received = self.bytes_received
+            last_report_at = self.last_report_at
+            self.bytes_sent = 0
+            self.bytes_received = 0
+            self.last_report_at = now
+            self.lock.release()
+            bps = round(((bytes_sent + bytes_received) * 8) / (now - last_report_at) / 1000000, 2)
+            logger.info(f'Bandwidth: ({bps}Mbps)')
 
     def start(self):
         server = self._bind_socket(self.address, self.port)
@@ -64,6 +93,7 @@ class GameServer:
                     client_socket, client_address = server.accept()
                     logger.info(f'Accepted connection from {client_address}')
                     self._register_client_connection(client_socket, client_address)
+            self._report_bps()
 
         logger.info('Closing client connections')
         self.client_connections_lock.acquire()
