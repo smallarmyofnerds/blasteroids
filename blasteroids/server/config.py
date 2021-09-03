@@ -125,6 +125,7 @@ class MegaShieldConfig:
 
 class AsteroidConfig:
     def __init__(self, config):
+        self.min_speed = int(config['MinSpeed'])
         self.max_speed = int(config['MaxSpeed'])
         self.base_damage = int(config['BaseDamage'])
         self.base_health = int(config['BaseHealth'])

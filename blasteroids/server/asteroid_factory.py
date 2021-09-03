@@ -5,6 +5,7 @@ from blasteroids.server.game_objects import Asteroid
 
 class AsteroidFactory:
     def __init__(self, config):
+        self.min_speed = config.asteroid.min_speed
         self.max_speed = config.asteroid.max_speed
         self.damage = {}
         self.health = {}
@@ -20,7 +21,7 @@ class AsteroidFactory:
             id,
             position,
             Vector2(0, 1).rotate(random.random() * 360.0),
-            Vector2(0, 1).rotate(random.random() * 360.0) * random.random() * self.max_speed,
+            Vector2(0, 1).rotate(random.random() * 360.0) * min(self.min_speed, random.random() * self.max_speed),
             self.collision_radius[level],
             self.damage[level],
             self.health[level],

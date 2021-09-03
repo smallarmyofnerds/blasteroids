@@ -50,7 +50,7 @@ class Asteroid(Obstacle):
         self.level = level
 
     def _random_rotational_velocity(self):
-        return random.randint(-10, 10) * 2
+        return random.randint(-10, 10) * 5
 
     def _generate_random_drop(self, world):
         roll = 100 * random.random()
