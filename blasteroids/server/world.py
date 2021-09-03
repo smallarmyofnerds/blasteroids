@@ -183,16 +183,19 @@ class World:
 
     def _test_projectile_collisions(self):
         for projectile in self.projectiles:
-            for other in [*self.ships, *self.obstacles]:
-                if projectile.collides_with(other):
-                    projectile.apply_damage_to(other, self)
-                    projectile.destroy()
+            for other in [*self.ships, *self.obstacles, *self.projectiles]:
+                if other == projectile:
+                    continue
+                if projectile.can_hit(other):
+                    if projectile.collides_with(other):
+                        projectile.apply_damage_to(other, self)
+                        projectile.destroy()
 
     def _test_power_up_collisions(self):
         for ship in self.ships:
             for pickup in self.power_ups:
                 if ship.collides_with(pickup):
-                    pickup.apply_power_up_to(ship, self)
+                    pickup.apply_pickup_to(ship, self)
                     pickup.destroy()
 
     def update(self, delta_time):

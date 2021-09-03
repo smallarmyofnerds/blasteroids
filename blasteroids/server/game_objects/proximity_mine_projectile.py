@@ -34,3 +34,9 @@ class ProximityMineProjectile(Projectile):
     def apply_damage_to(self, other, world):
         other.take_damage(self.damage)
         self._detonate(world)
+
+    def can_hit(self, other):
+        return other.can_be_hit_by('proximity_mine')
+
+    def can_be_hit_by(self, type):
+        return True

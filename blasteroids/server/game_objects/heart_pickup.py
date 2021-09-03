@@ -6,6 +6,6 @@ class HeartPickup(Pickup):
         super(HeartPickup, self).__init__(id, "heart_pickup", position, lifespan)
         self.amount = amount
 
-    def apply_power_up_to(self, ship, world):
+    def apply_pickup_to(self, ship, world):
         world.create_sound_effect('healing_pickup', self.position)
         ship.heal_by(self.amount)

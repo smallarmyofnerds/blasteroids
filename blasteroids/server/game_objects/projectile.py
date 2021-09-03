@@ -10,3 +10,6 @@ class Projectile(PhysicalGameObject):
         if other == self.owner:
             return False
         return super(Projectile, self).collides_with(other)
+
+    def can_hit(self, other):
+        return False

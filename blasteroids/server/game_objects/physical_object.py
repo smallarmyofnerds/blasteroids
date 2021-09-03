@@ -27,3 +27,6 @@ class PhysicalGameObject(GameObject):
         distance_between = vector_between.length()
         min_distance = self.collision_radius + other.collision_radius
         return distance_between <= min_distance
+
+    def can_be_hit_by(self, type):
+        return False

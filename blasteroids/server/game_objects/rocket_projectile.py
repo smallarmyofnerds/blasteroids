@@ -33,3 +33,11 @@ class RocketProjectile(Projectile):
                 self.orientation = self.orientation.rotate(-1 * delta_time * 2 * correction)
                 self.velocity = self.orientation.normalize() * self.speed
             self.position = self.position + delta_time * self.velocity
+
+    def can_hit(self, other):
+        if other == self.owner:
+            return False
+        return other.can_be_hit_by('rocket')
+
+    def can_be_hit_by(self, type):
+        return type == 'laser' or type == 'rocket'

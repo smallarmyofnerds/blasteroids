@@ -15,5 +15,5 @@ class Pickup(PhysicalGameObject):
         else:
             super(Pickup, self).update(world, delta_time)
 
-    def apply_power_up_to(self, ship, world):
+    def apply_pickup_to(self, ship, world):
         pass
