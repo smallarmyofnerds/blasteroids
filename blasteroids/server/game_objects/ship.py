@@ -200,14 +200,14 @@ class Armoury:
                 config.proximity_mine.explosion_damage,
             ),
         }
-        self.active_weapon_name = 'proximity_mine'
+        self.active_weapon_name = 'laser'
         self.cooldown = Cooldown(0)
     
     def set_active_weapon(self, weapon_name):
         self.active_weapon_name = weapon_name
     
     def reset_weapon(self):
-        self.set_active_weapon('proximity_mine')
+        self.set_active_weapon('laser')
         self.cooldown.set_cooldown(500)
     
     def shoot_active_weapon(self, ship, world):
