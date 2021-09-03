@@ -2,7 +2,7 @@ import signal
 
 import pygame
 from .config import Config
-from blasteroids.lib import log, SpriteLibrary
+from blasteroids.lib import log
 from .game_server import GameServer
 from .game import Game
 

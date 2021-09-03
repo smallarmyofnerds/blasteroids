@@ -1,4 +1,5 @@
 import pygame
+from .animation import Animation
 
 
 class SpriteLibrary:
@@ -7,8 +8,10 @@ class SpriteLibrary:
         self.convert = convert
         self.animations = {}
 
-    def _load_sprite(self, filename, size):
-        return pygame.transform.scale(pygame.image.load(f'assets/sprites/{filename}'), size)
+    def _load_sprite(self, filename, size=None):
+        if size:
+            return pygame.transform.scale(pygame.image.load(f'assets/sprites/{filename}'), size)
+        return pygame.image.load(f'assets/sprites/{filename}')
 
     def load_all(self):
         self.sprites['player_1_static'] = self._load_sprite('player_1_static.png', (48, 48))
@@ -38,7 +41,18 @@ class SpriteLibrary:
         frames = []
         for i in range(10):
             frames.append(self._load_sprite(f'exhaust_{i}.png', (32, 32)))
-        self.animations['exhaust'] = frames
+        self.animations['exhaust'] = Animation(frames, 100)
+
+        sprite_sheet = self._load_sprite('explosion_1.png')
+        frames = []
+        for row in range(13):
+            for column in range(5):
+                frame = pygame.Surface((192, 192), pygame.SRCALPHA, 32)
+                frame.blit(sprite_sheet, (0, 0), pygame.Rect(column * 192, row * 192, 192, 192))
+                # frame.convert_alpha()
+                # frame.set_colorkey(pygame.Color(0, 0, 0))
+                frames.append(frame)
+        self.animations['explosion'] = Animation(frames, 20)
 
     def get(self, name):
         return self.sprites.get(name)

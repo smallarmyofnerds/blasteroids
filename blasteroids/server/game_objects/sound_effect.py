@@ -1,5 +1,5 @@
 from pygame import Vector2
-from blasteroids.server.game_objects.game_object import GameObject
+from .game_object import GameObject
 
 
 class SoundEffect(GameObject):

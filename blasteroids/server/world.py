@@ -1,7 +1,9 @@
+from .game_objects.animation import Animation
+from blasteroids.lib.server_world.server_animation import ServerAnimation
 import random
 from pygame import Vector2
 from blasteroids.server.game_objects import Obstacle, Ship, Asteroid
-from blasteroids.lib.server_world import ServerShip, ServerPickup, ServerProjectile, ServerObstacle, ServerEffect
+from blasteroids.lib.server_world import ServerShip, ServerPickup, ServerProjectile, ServerObstacle, ServerSound, ServerAnimation
 from blasteroids.server.game_objects.sound_effect import SoundEffect
 from .asteroid_factory import AsteroidFactory
 from .loot_factory import LootFactory
@@ -25,7 +27,8 @@ class World:
         self.projectiles = []
         self.power_ups = []
         self.obstacles = []
-        self.effects = []
+        self.sounds = []
+        self.animations = []
         self.id_generator = IdGenerator()
         self.edge_acceleration_factor = config.world.edge_acceleration_factor
 
@@ -91,7 +94,10 @@ class World:
         self.obstacles.append(Obstacle(self.id_generator.get_next_id(), Vector2(0, 0), Vector2(0, 1), 10000))
 
     def create_sound_effect(self, name, position):
-        self.effects.append(SoundEffect(self.id_generator.get_next_id(), position, name))
+        self.sounds.append(SoundEffect(self.id_generator.get_next_id(), position, name))
+    
+    def create_animation(self, name, position, velocity, duration):
+        self.animations.append(Animation(self.id_generator.get_next_id(), position, velocity, name, duration))
 
     def create_random_drop(self, level, position):
         random_drop = self.loot_factory.create(level, position)
@@ -134,10 +140,11 @@ class World:
         self._remove_destroyed_objects(self.obstacles)
         self._remove_destroyed_objects(self.power_ups)
         self._remove_destroyed_objects(self.projectiles)
-        self._remove_destroyed_objects(self.effects)
+        self._remove_destroyed_objects(self.sounds)
+        self._remove_destroyed_objects(self.animations)
 
     def _update_all(self, delta_time):
-        objects_to_update = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles, *self.effects]
+        objects_to_update = [*self.ships, *self.projectiles, *self.power_ups, *self.obstacles, *self.sounds, *self.animations]
         for o in objects_to_update:
             o.update(self, delta_time)
             if not o.is_in_bounds(self):
@@ -191,6 +198,8 @@ class World:
             objects.append(ServerPickup.from_power_up(pickup))
         for obstacle in self.obstacles:
             objects.append(ServerObstacle.from_obstacle(obstacle))
-        for effect in self.effects:
-            objects.append(ServerEffect.from_effect(effect))
+        for sound in self.sounds:
+            objects.append(ServerSound.from_sound(sound))
+        for animation in self.animations:
+            objects.append(ServerAnimation.from_animation(animation))
         return objects

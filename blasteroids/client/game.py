@@ -4,7 +4,8 @@ from blasteroids.lib.client_messages.input import InputMessage
 import pygame
 from .screen import Screen
 from .world import World
-from blasteroids.lib import log, PlayerInputs, SpriteLibrary
+from .sprite_library import SpriteLibrary
+from blasteroids.lib import log, PlayerInputs
 
 logger = log.get_logger(__name__)
 

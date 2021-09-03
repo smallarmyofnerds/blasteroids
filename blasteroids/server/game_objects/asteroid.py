@@ -24,6 +24,7 @@ class Asteroid(Obstacle):
 
     def on_removed(self, world):
         world.create_sound_effect('impact', self.position)
+        world.create_animation('explosion', self.position, self.velocity, 800)
         world.create_random_drop(self.level, self.position)
         if self.level > 1:
             for i in range(3):

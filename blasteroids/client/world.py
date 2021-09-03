@@ -1,22 +1,10 @@
-import pygame
 from .ship_object import ShipObject
 from .projectile_object import ProjectileObject
 from .obstacle_object import ObstacleObject
 from .pickup_object import PickupObject
 from .sound_effect_object import SoundEffectObject
+from .animation_object import AnimationObject
 
-class Animation:
-    def __init__(self, frames, milliseconds_per_frame):
-        self.frames = frames
-        self.milliseconds_per_frame = milliseconds_per_frame
-        self.active_frame = 0
-        self.last_frame_advance = pygame.time.get_ticks()
-    
-    def draw(self, screen, position, orientation):
-        if pygame.time.get_ticks() - self.last_frame_advance > self.milliseconds_per_frame:
-            self.active_frame = (self.active_frame + 1) % len(self.frames)
-            self.last_frame_advance = pygame.time.get_ticks()
-        screen.draw_sprite(self.frames[self.active_frame], position, orientation)
 
 class World:
     def __init__(self, sprite_library, sound_library):
@@ -30,7 +18,7 @@ class World:
         self.shield = 0
         self.active_weapon = ''
         self.is_engine_on = False
-        self.exhaust_animation = Animation(sprite_library.animations['exhaust'], 100)
+        self.exhaust_animation = sprite_library.animations['exhaust']
 
     def draw(self, screen):
         for object in self.game_objects:
@@ -71,8 +59,10 @@ class World:
                     new_object = ObstacleObject(object, self.sprite_library)
                 elif object.type == 'PICKUP':
                     new_object = PickupObject(object, self.sprite_library)
-                elif object.type == 'EFFECT':
+                elif object.type == 'SOUND':
                     new_object = SoundEffectObject(object, self.sound_library)
+                elif object.type == 'ANIM':
+                    new_object = AnimationObject(object, self.sprite_library)
                 else:
                     raise Exception(f'Unrecognized object type {object.type} from server')
 
