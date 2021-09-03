@@ -34,6 +34,7 @@ class SpriteLibrary:
         self.sprites['time_bomb_pickup'] = pygame.transform.scale(self._load_sprite('time_bomb_pickup.png'), (48, 48))
         self.sprites['rocket_projectile'] = pygame.transform.scale(self._load_sprite('rocket_projectile.png'), (15, 60))
         self.sprites['rocket_salvo_projectile'] = pygame.transform.scale(self._load_sprite('rocket_salvo_projectile.png'), (12, 24))
+        self.sprites['time_bomb_projectile'] = pygame.transform.scale(self._load_sprite('rocket_salvo_projectile.png'), (12, 24))
 
     def get(self, name):
         return self.sprites.get(name)

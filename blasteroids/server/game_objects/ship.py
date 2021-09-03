@@ -1,5 +1,5 @@
 from blasteroids.server.game_objects.rocket_projectile import RocketProjectile
-from blasteroids.server.game_objects.rocket_salvo_projectile import RocketSalvoProjectile
+from .time_bomb_projectile import TimeBombProjectile
 from blasteroids.server.game_objects.laser import Laser
 import pygame
 from .physical_object import PhysicalGameObject
@@ -112,6 +112,19 @@ class RocketSalvoWeapon(RocketWeapon):
         world.create_instant_effect('rocket_shot', ship.position)
 
 
+class TimeBombWeapon(Weapon):
+    def __init__(self, collision_radius, damage, timer_duration, explosion_radius, explosion_damage):
+        self.collision_radius = collision_radius
+        self.damage = damage
+        self.timer_duration = timer_duration
+        self.explosion_radius = explosion_radius
+        self.explosion_damage = explosion_damage
+    
+    def shoot(self, ship, world):
+        world.create_projectile(TimeBombProjectile(ship, None, ship.position, ship.velocity, self.collision_radius, self.damage, self.timer_duration, self.explosion_radius, self.explosion_damage))
+        ship.reset_weapon()
+
+
 class Armoury:
     def __init__(self, config):
         self.weapons = {
@@ -158,15 +171,22 @@ class Armoury:
                 config.rocket_salvo.projectile_lifespan,
                 config.rocket_salvo.spread,
             ),
+            'time_bomb': TimeBombWeapon(
+                config.time_bomb.projectile_radius,
+                config.time_bomb.projectile_damage,
+                config.time_bomb.timer_duration,
+                config.time_bomb.explosion_radius,
+                config.time_bomb.explosion_damage,
+            ),
         }
-        self.active_weapon_name = 'laser'
+        self.active_weapon_name = 'time_bomb'
         self.cooldown = Cooldown(0)
     
     def set_active_weapon(self, weapon_name):
         self.active_weapon_name = weapon_name
     
     def reset_weapon(self):
-        self.set_active_weapon('laser')
+        self.set_active_weapon('time_bomb')
         self.cooldown.set_cooldown(500)
     
     def shoot_active_weapon(self, ship, world):

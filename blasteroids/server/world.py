@@ -163,7 +163,15 @@ class World:
                 if position.distance_squared_to(ship.position) < position.distance_squared_to(closest.position):
                     closest = ship
         return closest
-            
+
+    def all_objects_in_range(self, position, range):
+        targets = []
+        range_squared = range * range
+        for o in [*self.ships, *self.obstacles, *self.projectiles]:
+            if position.distance_squared_to(o.position) < range_squared:
+                targets.append(o)
+        return targets
+
     def _remove_destroyed_objects(self, object_list):
         objects_to_remove = []
         for o in object_list:
@@ -193,14 +201,14 @@ class World:
                 if ship == other:
                     continue
                 if ship.collides_with(other):
-                    ship.apply_damage_to(other)
-                    other.apply_damage_to(ship)
+                    ship.apply_damage_to(other, self)
+                    other.apply_damage_to(ship, self)
 
     def _test_projectile_collisions(self):
         for projectile in self.projectiles:
             for other in [*self.ships, *self.obstacles]:
                 if projectile.collides_with(other):
-                    projectile.apply_damage_to(other)
+                    projectile.apply_damage_to(other, self)
                     projectile.destroy()
 
     def _test_power_up_collisions(self):

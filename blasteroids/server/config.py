@@ -137,6 +137,11 @@ class ProximityMineConfig:
 class TimeBombConfig:
     def __init__(self, config):
         self.pickup_lifespan = int(config['PickupLifespan'])
+        self.projectile_radius = int(config['ProjectileRadius'])
+        self.projectile_damage = int(config['ProjectileDamage'])
+        self.timer_duration = int(config['TimerDuration'])
+        self.explosion_radius = int(config['ExplosionRadius'])
+        self.explosion_damage = int(config['ExplosionDamage'])
 
 class RocketConfig:
     def __init__(self, config):

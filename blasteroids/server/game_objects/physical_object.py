@@ -19,7 +19,7 @@ class PhysicalGameObject(GameObject):
             self.health = 0
             self.destroy()
 
-    def apply_damage_to(self, other):
+    def apply_damage_to(self, other, world):
         other.take_damage(self.damage)
 
     def collides_with(self, other):
