@@ -133,6 +133,12 @@ class AsteroidConfig:
 class ProximityMineConfig:
     def __init__(self, config):
         self.pickup_lifespan = int(config['PickupLifespan'])
+        self.projectile_radius = int(config['ProjectileRadius'])
+        self.projectile_damage = int(config['ProjectileDamage'])
+        self.detection_range = int(config['DetectionRange'])
+        self.timer_duration = int(config['TimerDuration'])
+        self.explosion_radius = int(config['ExplosionRadius'])
+        self.explosion_damage = int(config['ExplosionDamage'])
 
 class TimeBombConfig:
     def __init__(self, config):

@@ -1,5 +1,6 @@
 from blasteroids.server.game_objects.rocket_projectile import RocketProjectile
 from .time_bomb_projectile import TimeBombProjectile
+from .proximity_mine_projectile import ProximityMineProjectile
 from blasteroids.server.game_objects.laser import Laser
 import pygame
 from .physical_object import PhysicalGameObject
@@ -124,6 +125,18 @@ class TimeBombWeapon(Weapon):
         world.create_projectile(TimeBombProjectile(ship, None, ship.position, ship.velocity, self.collision_radius, self.damage, self.timer_duration, self.explosion_radius, self.explosion_damage))
         ship.reset_weapon()
 
+class ProximityMineWeapon(Weapon):
+    def __init__(self, collision_radius, damage, detection_range, timer_duration, explosion_radius, explosion_damage):
+        self.collision_radius = collision_radius
+        self.damage = damage
+        self.detection_range = detection_range
+        self.timer_duration = timer_duration
+        self.explosion_radius = explosion_radius
+        self.explosion_damage = explosion_damage
+    
+    def shoot(self, ship, world):
+        world.create_projectile(ProximityMineProjectile(ship, None, ship.position, ship.velocity, self.collision_radius, self.damage, self.detection_range, self.timer_duration, self.explosion_radius, self.explosion_damage))
+        ship.reset_weapon()
 
 class Armoury:
     def __init__(self, config):
@@ -178,15 +191,23 @@ class Armoury:
                 config.time_bomb.explosion_radius,
                 config.time_bomb.explosion_damage,
             ),
+            'proximity_mine': ProximityMineWeapon(
+                config.proximity_mine.projectile_radius,
+                config.proximity_mine.projectile_damage,
+                config.proximity_mine.detection_range,
+                config.proximity_mine.timer_duration,
+                config.proximity_mine.explosion_radius,
+                config.proximity_mine.explosion_damage,
+            ),
         }
-        self.active_weapon_name = 'time_bomb'
+        self.active_weapon_name = 'proximity_mine'
         self.cooldown = Cooldown(0)
     
     def set_active_weapon(self, weapon_name):
         self.active_weapon_name = weapon_name
     
     def reset_weapon(self):
-        self.set_active_weapon('time_bomb')
+        self.set_active_weapon('proximity_mine')
         self.cooldown.set_cooldown(500)
     
     def shoot_active_weapon(self, ship, world):
