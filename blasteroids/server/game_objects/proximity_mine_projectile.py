@@ -14,6 +14,7 @@ class ProximityMineProjectile(Projectile):
         self.armed = False
 
     def _detonate(self, world):
+        world.create_sound_effect('bomb_explosion', self.position)
         targets = world.all_objects_in_range(self.position, self.explosion_radius, self)
         for target in targets:
             target.take_damage(self.explosion_damage, world)
