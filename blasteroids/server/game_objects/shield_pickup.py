@@ -7,5 +7,5 @@ class ShieldPickup(PowerUp):
         self.amount = amount
 
     def apply_power_up_to(self, ship, world):
-        world.create_instant_effect('shielding_pickup', self.position)
+        world.create_sound_effect('shielding_pickup', self.position)
         ship.shield_by(self.amount)

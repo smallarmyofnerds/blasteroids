@@ -6,5 +6,5 @@ class SpreadFirePickup(PowerUp):
         super(SpreadFirePickup, self).__init__(id, "spread_fire_pickup", position, lifespan)
 
     def apply_power_up_to(self, ship, world):
-        world.create_instant_effect('spread_fire_pickup', self.position)
+        world.create_sound_effect('spread_fire_pickup', self.position)
         ship.set_active_weapon('spread_fire')

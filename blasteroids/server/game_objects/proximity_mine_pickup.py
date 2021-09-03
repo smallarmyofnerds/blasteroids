@@ -6,5 +6,5 @@ class ProximityMinePickup(PowerUp):
         super(ProximityMinePickup, self).__init__(id, "proximity_mine_pickup", position, lifespan)
 
     def apply_power_up_to(self, ship, world):
-        world.create_instant_effect('proximity_mine_pickup', self.position)
+        world.create_sound_effect('proximity_mine_pickup', self.position)
         ship.set_active_weapon('proximity_mine_pickup')

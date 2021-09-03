@@ -2,7 +2,7 @@ from .ship_object import ShipObject
 from .projectile_object import ProjectileObject
 from .obstacle_object import ObstacleObject
 from .power_up_object import PowerUpObject
-from .effect_object import EffectObject
+from .sound_effect_object import SoundEffectObject
 
 
 class World:
@@ -55,7 +55,7 @@ class World:
                 elif object.type == 'POWERUP':
                     new_object = PowerUpObject(object, self.sprite_library)
                 elif object.type == 'EFFECT':
-                    new_object = EffectObject(object, self.sound_library)
+                    new_object = SoundEffectObject(object, self.sound_library)
                 else:
                     raise Exception(f'Unrecognized object type {object.type} from server')
 

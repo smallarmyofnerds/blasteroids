@@ -62,7 +62,7 @@ class Asteroid(Obstacle):
                 break
                 
     def on_removed(self, world):
-        world.create_instant_effect('impact', self.position)
+        world.create_sound_effect('impact', self.position)
         self._generate_random_drop(world)
         if self.level > 1:
             for i in range(3):

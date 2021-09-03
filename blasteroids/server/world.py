@@ -13,7 +13,7 @@ from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjec
 from blasteroids.server.game_objects.heart_pickup import HeartPickup
 from blasteroids.server.game_objects.shield_pickup import ShieldPickup
 from blasteroids.server.game_objects.rapid_fire_pickup import RapidFirePickup
-from blasteroids.server.game_objects.instant_effect import InstantEffect
+from blasteroids.server.game_objects.sound_effect import SoundEffect
 
 
 class AsteroidFactory:
@@ -125,8 +125,8 @@ class World:
     def remove_obstacle(self, obstacle):
         self.obstacles.remove(obstacle)
     
-    def create_instant_effect(self, name, position):
-        self.effects.append(InstantEffect(self._get_next_id(), position, name))
+    def create_sound_effect(self, name, position):
+        self.effects.append(SoundEffect(self._get_next_id(), position, name))
 
     def add_new_power_up(self, name, position):
         if name == 'heart':

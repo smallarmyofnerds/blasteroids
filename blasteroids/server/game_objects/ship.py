@@ -43,7 +43,7 @@ class LaserWeapon(Weapon):
     def shoot(self, ship, world):
         if self.cooldown.can_shoot():
             self._generate_laser(ship, world, ship.position, ship.orientation)
-            world.create_instant_effect('laser', ship.position)
+            world.create_sound_effect('laser', ship.position)
             self.cooldown.update_last_shot()
 
 
@@ -56,7 +56,7 @@ class DoubleFireWeapon(LaserWeapon):
         if self.cooldown.can_shoot():
             self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(90).normalize(), ship.orientation)
             self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(-90).normalize(), ship.orientation)
-            world.create_instant_effect('laser', ship.position)
+            world.create_sound_effect('laser', ship.position)
             self.cooldown.update_last_shot()
 
 
@@ -70,7 +70,7 @@ class SpreadFireWeapon(LaserWeapon):
             self._generate_laser(ship, world, ship.position, ship.orientation)
             self._generate_laser(ship, world, ship.position, ship.orientation.rotate(self.spread))
             self._generate_laser(ship, world, ship.position, ship.orientation.rotate(-1 * self.spread))
-            world.create_instant_effect('laser', ship.position)
+            world.create_sound_effect('laser', ship.position)
             self.cooldown.update_last_shot()
 
 
@@ -88,7 +88,7 @@ class RocketWeapon(Weapon):
     def shoot(self, ship, world):
         self._generate_rocket(ship, world, ship.position, ship.orientation)
         ship.reset_weapon()
-        world.create_instant_effect('rocket_shot', ship.position)
+        world.create_sound_effect('rocket_shot', ship.position)
 
 
 class RocketSalvoWeapon(RocketWeapon):
@@ -110,7 +110,7 @@ class RocketSalvoWeapon(RocketWeapon):
 
         ship.reset_weapon()
 
-        world.create_instant_effect('rocket_shot', ship.position)
+        world.create_sound_effect('rocket_shot', ship.position)
 
 
 class TimeBombWeapon(Weapon):
@@ -242,7 +242,7 @@ class Ship(PhysicalGameObject):
         self.max_shields = config.ship.max_shields
 
     def on_removed(self, world):
-        world.create_instant_effect('shipimpact', self.position)
+        world.create_sound_effect('shipimpact', self.position)
         self.player.kill()
 
     def shoot(self, world):

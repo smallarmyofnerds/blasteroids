@@ -7,5 +7,5 @@ class HeartPickup(PowerUp):
         self.amount = amount
 
     def apply_power_up_to(self, ship, world):
-        world.create_instant_effect('healing_pickup', self.position)
+        world.create_sound_effect('healing_pickup', self.position)
         ship.heal_by(self.amount)

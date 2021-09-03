@@ -1,9 +1,9 @@
 from .game_object import GameObject
 
 
-class EffectObject(GameObject):
+class SoundEffectObject(GameObject):
     def __init__(self, server_object, sound_library):
-        super(EffectObject, self).__init__(server_object)
+        super(SoundEffectObject, self).__init__(server_object)
         self.sound = sound_library.get_sound(server_object.name)
         self.has_played = False
 
@@ -22,4 +22,4 @@ class EffectObject(GameObject):
             self.has_played = True
 
     def update(self, raw_effect):
-        super(EffectObject, self)._update(raw_effect.position, raw_effect.orientation)
+        super(SoundEffectObject, self)._update(raw_effect.position, raw_effect.orientation)

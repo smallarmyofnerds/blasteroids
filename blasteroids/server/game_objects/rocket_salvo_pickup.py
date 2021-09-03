@@ -6,5 +6,5 @@ class RocketSalvoPickup(PowerUp):
         super(RocketSalvoPickup, self).__init__(id, "rocket_salvo_pickup", position, lifespan)
 
     def apply_power_up_to(self, ship, world):
-        world.create_instant_effect('rocket_salvo_pickup', self.position)
+        world.create_sound_effect('rocket_salvo_pickup', self.position)
         ship.set_active_weapon('rocket_salvo')

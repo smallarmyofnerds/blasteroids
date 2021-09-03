@@ -2,9 +2,9 @@ from pygame import Vector2
 from blasteroids.server.game_objects.game_object import GameObject
 
 
-class InstantEffect(GameObject):
+class SoundEffect(GameObject):
     def __init__(self, id, position, name):
-        super(InstantEffect, self).__init__(id, name, position, Vector2(0, 1), Vector2(0, 0))
+        super(SoundEffect, self).__init__(id, name, position, Vector2(0, 1), Vector2(0, 0))
         self.has_happened = False
     
     def update(self, world, delta_time):
