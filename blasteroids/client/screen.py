@@ -17,7 +17,11 @@ class Screen:
         self.font = pygame.font.Font(None, 32)
 
     def init(self):
-        self.surface = pygame.display.set_mode((self.width, self.height))
+        self.surface = pygame.display.set_mode(size=(self.width, self.height), flags=pygame.RESIZABLE)
+
+    def set_window_size(self, width, height):
+        self.width = width
+        self.height = height
 
     def initialize_world(self, world_width, world_height):
         self.world_width = world_width

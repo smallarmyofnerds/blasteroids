@@ -48,6 +48,8 @@ class Game:
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.stop()
                 return
+            if event.type == pygame.VIDEORESIZE:
+                self.screen.set_window_size(event.w, event.h)
 
         is_key_pressed = pygame.key.get_pressed()
 
@@ -79,9 +81,12 @@ class Game:
         self.sprite_library.load_all()
         while self.running:
             self.clock.tick(self.fps)
-            self._process_inputs()
-            self._update()
-            self._draw()
+            try:
+                self._process_inputs()
+                self._update()
+                self._draw()
+            except Exception as e:
+                logger.exception(e)
 
     def stop(self):
         if self.running:
