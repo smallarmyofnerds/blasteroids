@@ -34,9 +34,9 @@ class Ship(PhysicalGameObject):
     def shoot(self, world):
         self.armoury.shoot_active_weapon(self, world)
 
-    def take_damage(self, amount):
+    def take_damage(self, amount, world):
         if amount >= self.shield:
-            super(Ship, self).take_damage(amount - self.shield)
+            super(Ship, self).take_damage(amount - self.shield, world)
             self.shield = 0
         else:
             self.shield -= amount

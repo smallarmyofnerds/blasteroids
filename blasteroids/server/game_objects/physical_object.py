@@ -12,7 +12,7 @@ class PhysicalGameObject(GameObject):
 
         self.collision_radius = collision_radius
 
-    def take_damage(self, damage):
+    def take_damage(self, damage, world):
         self.health -= damage
 
         if self.health <= 0:
@@ -20,7 +20,7 @@ class PhysicalGameObject(GameObject):
             self.destroy()
 
     def apply_damage_to(self, other, world):
-        other.take_damage(self.damage)
+        other.take_damage(self.damage, world)
 
     def collides_with(self, other):
         vector_between = self.position - other.position

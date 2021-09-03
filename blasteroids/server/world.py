@@ -141,10 +141,12 @@ class World:
                     closest = ship
         return closest
 
-    def all_objects_in_range(self, position, range):
+    def all_objects_in_range(self, position, range, ignore):
         targets = []
         range_squared = range * range
         for o in [*self.ships, *self.obstacles, *self.projectiles]:
+            if o == ignore:
+                continue
             if position.distance_squared_to(o.position) < range_squared:
                 targets.append(o)
         return targets

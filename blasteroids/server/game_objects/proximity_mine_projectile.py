@@ -14,9 +14,9 @@ class ProximityMineProjectile(Projectile):
         self.armed = False
 
     def _detonate(self, world):
-        targets = world.all_objects_in_range(self.position, self.explosion_radius)
+        targets = world.all_objects_in_range(self.position, self.explosion_radius, self)
         for target in targets:
-            target.take_damage(self.explosion_damage)
+            target.take_damage(self.explosion_damage, world)
 
     def update(self, world, delta_time):
         super(ProximityMineProjectile, self).update(world, delta_time)
@@ -31,8 +31,12 @@ class ProximityMineProjectile(Projectile):
                     self.armed = True
                     self.armed_at = pygame.time.get_ticks()
 
+    def take_damage(self, damage, world):
+        super(ProximityMineProjectile, self).take_damage(damage, world)
+        self._detonate()
+
     def apply_damage_to(self, other, world):
-        other.take_damage(self.damage)
+        other.take_damage(self.damage, world)
         self._detonate(world)
 
     def can_hit(self, other):
