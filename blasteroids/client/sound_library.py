@@ -23,8 +23,8 @@ class SoundLibrary:
         self.sounds['rocket_shot'] = Sound('assets/sounds/rocket_shot.wav')
         self.sounds['time_bomb_shot'] = Sound('assets/sounds/time_bomb_shot.wav')
         self.sounds['rocket_salvo_shot'] = Sound('assets/sounds/rocket_salvo_shot.wav')
-        self.sounds['rocket_explosion'] = Sound('assets/sounds/rocket_shot.wav')
-        self.sounds['rocket_salvo_explosion'] = Sound('assets/sounds/rocket_salvo_shot.wav')
+        self.sounds['rocket_explosion'] = Sound('assets/sounds/rocket_explosion.wav')
+        self.sounds['rocket_salvo_explosion'] = Sound('assets/sounds/rocket_salvo_explosion.wav')
 
     def get_sound(self, name):
         return self.sounds[name]
