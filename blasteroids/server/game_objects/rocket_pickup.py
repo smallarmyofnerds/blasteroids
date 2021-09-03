@@ -1,7 +1,7 @@
-from blasteroids.server.game_objects.power_up import PowerUp
+from blasteroids.server.game_objects.pickup import Pickup
 
 
-class RocketPickup(PowerUp):
+class RocketPickup(Pickup):
     def __init__(self, id, position, lifespan, **kwargs):
         super(RocketPickup, self).__init__(id, "rocket_pickup", position, lifespan)
 

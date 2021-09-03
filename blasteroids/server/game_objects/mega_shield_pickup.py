@@ -1,7 +1,7 @@
-from blasteroids.server.game_objects.power_up import PowerUp
+from blasteroids.server.game_objects.pickup import Pickup
 
 
-class MegaShieldPickup(PowerUp):
+class MegaShieldPickup(Pickup):
     def __init__(self, id, position, lifespan, **kwargs):
         super(MegaShieldPickup, self).__init__(id, "mega_shield_pickup", position, lifespan)
 

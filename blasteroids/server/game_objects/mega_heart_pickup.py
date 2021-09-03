@@ -1,7 +1,7 @@
-from blasteroids.server.game_objects.power_up import PowerUp
+from blasteroids.server.game_objects.pickup import Pickup
 
 
-class MegaHeartPickup(PowerUp):
+class MegaHeartPickup(Pickup):
     def __init__(self, id, position, lifespan, **kwargs):
         super(MegaHeartPickup, self).__init__(id, "mega_heart_pickup", position, lifespan)
 

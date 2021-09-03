@@ -1,7 +1,7 @@
 from .ship_object import ShipObject
 from .projectile_object import ProjectileObject
 from .obstacle_object import ObstacleObject
-from .power_up_object import PowerUpObject
+from .pickup_object import PickupObject
 from .sound_effect_object import SoundEffectObject
 
 
@@ -52,8 +52,8 @@ class World:
                     new_object = ProjectileObject(object, self.sprite_library)
                 elif object.type == 'OBSTACLE':
                     new_object = ObstacleObject(object, self.sprite_library)
-                elif object.type == 'POWERUP':
-                    new_object = PowerUpObject(object, self.sprite_library)
+                elif object.type == 'PICKUP':
+                    new_object = PickupObject(object, self.sprite_library)
                 elif object.type == 'EFFECT':
                     new_object = SoundEffectObject(object, self.sound_library)
                 else:

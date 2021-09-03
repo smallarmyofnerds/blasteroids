@@ -8,8 +8,8 @@ from blasteroids.server.game_objects.double_fire_pickup import DoubleFirePickup
 from blasteroids.server.game_objects.mega_heart_pickup import MegaHeartPickup
 import random
 from pygame import Vector2
-from blasteroids.server.game_objects import Obstacle, Ship, PowerUp, Asteroid
-from blasteroids.lib.server_world import ServerShip, ServerPowerUp, ServerProjectile, ServerObstacle, ServerEffect
+from blasteroids.server.game_objects import Obstacle, Ship, Asteroid
+from blasteroids.lib.server_world import ServerShip, ServerPickup, ServerProjectile, ServerObstacle, ServerEffect
 from blasteroids.server.game_objects.heart_pickup import HeartPickup
 from blasteroids.server.game_objects.shield_pickup import ShieldPickup
 from blasteroids.server.game_objects.rapid_fire_pickup import RapidFirePickup
@@ -213,10 +213,10 @@ class World:
 
     def _test_power_up_collisions(self):
         for ship in self.ships:
-            for power_up in self.power_ups:
-                if ship.collides_with(power_up):
-                    power_up.apply_power_up_to(ship, self)
-                    power_up.destroy()
+            for pickup in self.power_ups:
+                if ship.collides_with(pickup):
+                    pickup.apply_power_up_to(ship, self)
+                    pickup.destroy()
 
     def update(self, delta_time):
         self._remove_destroyed()
@@ -232,8 +232,8 @@ class World:
             objects.append(ServerShip.from_ship(ship))
         for projectile in self.projectiles:
             objects.append(ServerProjectile.from_projectile(projectile))
-        for power_up in self.power_ups:
-            objects.append(ServerPowerUp.from_power_up(power_up))
+        for pickup in self.power_ups:
+            objects.append(ServerPickup.from_power_up(pickup))
         for obstacle in self.obstacles:
             objects.append(ServerObstacle.from_obstacle(obstacle))
         for effect in self.effects:

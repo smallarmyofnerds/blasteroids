@@ -1,7 +1,7 @@
-from blasteroids.server.game_objects.power_up import PowerUp
+from blasteroids.server.game_objects.pickup import Pickup
 
 
-class SpreadFirePickup(PowerUp):
+class SpreadFirePickup(Pickup):
     def __init__(self, id, position, lifespan, **kwargs):
         super(SpreadFirePickup, self).__init__(id, "spread_fire_pickup", position, lifespan)
 
