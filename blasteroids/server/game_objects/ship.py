@@ -113,6 +113,3 @@ class Ship(PhysicalGameObject):
 
         if inputs and inputs.fire:
             self.shoot(world)
-
-    def can_be_hit_by(self, type):
-        return True

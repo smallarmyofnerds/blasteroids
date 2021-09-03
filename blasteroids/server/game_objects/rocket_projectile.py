@@ -34,8 +34,8 @@ class RocketProjectile(Projectile):
                 self.velocity = self.orientation.normalize() * self.speed
             self.position = self.position + delta_time * self.velocity
 
-    def can_hit(self, other):
-        if other == self.owner:
+    def can_hit_projectile(self, other):
+        if other.owner == self.owner:
             return False
         return other.can_be_hit_by('rocket')
 

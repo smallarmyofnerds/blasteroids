@@ -185,10 +185,14 @@ class World:
 
     def _test_projectile_collisions(self):
         for projectile in self.projectiles:
-            for other in [*self.ships, *self.obstacles, *self.projectiles]:
+            for other in [*self.ships, *self.obstacles]:
+                if projectile.collides_with(other):
+                    projectile.apply_damage_to(other, self)
+                    projectile.destroy()
+            for other in [*self.projectiles]:
                 if other == projectile:
                     continue
-                if projectile.can_hit(other):
+                if projectile.can_hit_projectile(other):
                     if projectile.collides_with(other):
                         projectile.apply_damage_to(other, self)
                         projectile.destroy()

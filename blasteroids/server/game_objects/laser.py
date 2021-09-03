@@ -14,7 +14,7 @@ class Laser(Projectile):
         else:
             super(Laser, self).update(world, delta_time)
 
-    def can_hit(self, other):
+    def can_hit_projectile(self, other):
         if other == self.owner:
             return False
         return other.can_be_hit_by('laser')
