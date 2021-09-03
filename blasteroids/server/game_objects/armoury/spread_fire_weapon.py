@@ -11,5 +11,5 @@ class SpreadFireWeapon(LaserWeapon):
             self._generate_laser(ship, world, ship.position, ship.orientation)
             self._generate_laser(ship, world, ship.position, ship.orientation.rotate(self.spread))
             self._generate_laser(ship, world, ship.position, ship.orientation.rotate(-1 * self.spread))
-            world.create_sound_effect('laser', ship.position)
+            world.create_sound_effect('spread_fire_shot', ship.position)
             self.cooldown.update_last_shot()

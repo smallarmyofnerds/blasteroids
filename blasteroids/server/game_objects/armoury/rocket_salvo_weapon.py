@@ -20,4 +20,4 @@ class RocketSalvoWeapon(RocketWeapon):
 
         ship.reset_weapon()
 
-        world.create_sound_effect('rocket_shot', ship.position)
+        world.create_sound_effect('rocket_salvo_shot', ship.position)

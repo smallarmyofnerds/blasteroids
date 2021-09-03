@@ -21,3 +21,7 @@ class Laser(Projectile):
 
     def can_be_hit_by(self, type):
         return False
+
+    def apply_damage_to(self, other, world):
+        world.create_sound_effect('laser_hit', self.position)
+        super(Laser, self).apply_damage_to(other, world)

@@ -13,4 +13,5 @@ class ProximityMineWeapon(Weapon):
     
     def shoot(self, ship, world):
         world.create_projectile(ProximityMineProjectile(ship, None, ship.position, ship.velocity, self.collision_radius, self.damage, self.detection_range, self.timer_duration, self.explosion_radius, self.explosion_damage))
+        world.create_sound_effect('proximity_mine_shot', ship.position)
         ship.reset_weapon()

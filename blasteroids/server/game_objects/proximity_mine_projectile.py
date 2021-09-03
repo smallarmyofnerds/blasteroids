@@ -23,6 +23,7 @@ class ProximityMineProjectile(Projectile):
     def update(self, world, delta_time):
         super(ProximityMineProjectile, self).update(world, delta_time)
         if self.armed:
+            world.create_sound_effect('arming_noise', self.position)
             if pygame.time.get_ticks() - self.armed_at > self.timer_duration:
                 self._detonate(world)
                 self.destroy()
@@ -36,6 +37,7 @@ class ProximityMineProjectile(Projectile):
     def take_damage(self, damage, world):
         super(ProximityMineProjectile, self).take_damage(damage, world)
         self._detonate()
+        world.create_sound_effect('bomb_clank', self.position)
 
     def apply_damage_to(self, other, world):
         other.take_damage(self.damage, world)

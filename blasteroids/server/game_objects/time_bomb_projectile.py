@@ -24,10 +24,12 @@ class TimeBombProjectile(Projectile):
             self.destroy()
         else:
             super(TimeBombProjectile, self).update(world, delta_time)
+            world.create_sound_effect('arming_noise', self.position)
 
     def take_damage(self, damage, world):
         super(TimeBombProjectile, self).take_damage(damage, world)
         self._detonate(world)
+        world.create_sound_effect('bomb_clank', self.position)
 
     def apply_damage_to(self, other, world):
         other.take_damage(self.damage, world)

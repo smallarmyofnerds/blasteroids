@@ -10,5 +10,5 @@ class DoubleFireWeapon(LaserWeapon):
         if self.cooldown.can_shoot():
             self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(90).normalize(), ship.orientation)
             self._generate_laser(ship, world, ship.position + self.offset * ship.orientation.rotate(-90).normalize(), ship.orientation)
-            world.create_sound_effect('laser', ship.position)
+            world.create_sound_effect('double_fire_shot', ship.position)
             self.cooldown.update_last_shot()

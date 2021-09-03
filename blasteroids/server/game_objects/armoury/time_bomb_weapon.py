@@ -12,4 +12,5 @@ class TimeBombWeapon(Weapon):
     
     def shoot(self, ship, world):
         world.create_projectile(TimeBombProjectile(ship, None, ship.position, ship.velocity, self.collision_radius, self.damage, self.timer_duration, self.explosion_radius, self.explosion_damage))
+        world.create_sound_effect('time_bomb_shot', ship.position)
         ship.reset_weapon()
