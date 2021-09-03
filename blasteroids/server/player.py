@@ -57,5 +57,6 @@ class Player:
                 self.ship.health if self.ship is not None else 0,
                 self.ship.shield if self.ship is not None else 0,
                 self.ship.get_active_weapon() if self.ship is not None else '',
+                self.ship.is_engine_on if self.ship is not None else False,
             ),
         )

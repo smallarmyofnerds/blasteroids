@@ -24,6 +24,7 @@ class Ship(PhysicalGameObject):
 
         self.armoury = Armoury(config)
 
+        self.is_engine_on = False
         self.shield = 0
         self.max_shields = config.ship.max_shields
 
@@ -102,6 +103,8 @@ class Ship(PhysicalGameObject):
 
     def _set_accelerations(self, world):
         inputs = self.player.get_inputs()
+
+        self.is_engine_on = inputs.up
 
         self._set_rotations(inputs)
 

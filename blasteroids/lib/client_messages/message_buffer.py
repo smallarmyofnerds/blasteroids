@@ -30,7 +30,6 @@ class MessageBuffer:
             if encoded_message is None:
                 break
 
-            # print(f'About to decode {encoded_message}')
             try:
                 messages.append(self.message_encoding.decode(EncodedMessage(encoded_message)))
             except Exception as e:

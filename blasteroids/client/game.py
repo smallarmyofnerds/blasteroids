@@ -21,6 +21,7 @@ class Game:
         self.something_pressed_last_time = False
 
         self.sprite_library = SpriteLibrary()
+        self.sprite_library.load_all()
         self.sound_library = SoundLibrary()
         self.world = World(self.sprite_library, self.sound_library)
 
@@ -38,7 +39,6 @@ class Game:
 
     def _update(self):
         if self.world_buffer:
-            # print(self.world_buffer)
             self.world.update(self.world_buffer)
             if self.world.my_ship:
                 self.screen.move_camera_to(self.world.my_ship.position)
@@ -78,7 +78,6 @@ class Game:
 
     def run(self):
         self.screen.init()
-        self.sprite_library.load_all()
         while self.running:
             self.clock.tick(self.fps)
             try:

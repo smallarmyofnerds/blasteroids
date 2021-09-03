@@ -1,9 +1,22 @@
+import pygame
 from .ship_object import ShipObject
 from .projectile_object import ProjectileObject
 from .obstacle_object import ObstacleObject
 from .pickup_object import PickupObject
 from .sound_effect_object import SoundEffectObject
 
+class Animation:
+    def __init__(self, frames, milliseconds_per_frame):
+        self.frames = frames
+        self.milliseconds_per_frame = milliseconds_per_frame
+        self.active_frame = 0
+        self.last_frame_advance = pygame.time.get_ticks()
+    
+    def draw(self, screen, position, orientation):
+        if pygame.time.get_ticks() - self.last_frame_advance > self.milliseconds_per_frame:
+            self.active_frame = (self.active_frame + 1) % len(self.frames)
+            self.last_frame_advance = pygame.time.get_ticks()
+        screen.draw_sprite(self.frames[self.active_frame], position, orientation)
 
 class World:
     def __init__(self, sprite_library, sound_library):
@@ -16,6 +29,8 @@ class World:
         self.health = 0
         self.shield = 0
         self.active_weapon = ''
+        self.is_engine_on = False
+        self.exhaust_animation = Animation(sprite_library.animations['exhaust'], 100)
 
     def draw(self, screen):
         for object in self.game_objects:
@@ -24,6 +39,8 @@ class World:
             object.draw(screen, self.my_ship.position if self.my_ship is not None else None)
         if self.my_ship:
             self.my_ship.draw(screen, None)
+            if self.is_engine_on:
+                self.exhaust_animation.draw(screen, self.my_ship.position - self.my_ship.orientation * 30, self.my_ship.orientation)
             screen.draw_ui(self.health, self.shield, self.active_weapon, self.sprite_library)
 
     def _destroy_objects(self, server_world):
@@ -87,6 +104,7 @@ class World:
         self.health = server_world.health
         self.shield = server_world.shield
         self.active_weapon = server_world.active_weapon
+        self.is_engine_on = server_world.is_engine_on
         self._sync_my_ship(server_world)
         self._destroy_objects(server_world)
         self._create_new_objects(server_world)
