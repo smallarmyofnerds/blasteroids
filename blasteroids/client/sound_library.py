@@ -22,7 +22,8 @@ class SoundLibrary:
         self.sounds['proximity_mine_pickup'] = Sound('assets/sounds/proximity_mine_pickup.wav')
         self.sounds['mega_pickup'] = Sound('assets/sounds/mega_pickup.wav')
         self.sounds['rocket_shot'] = Sound('assets/sounds/rocket_shot.wav')
-        self.sounds['time_bomb_shot'] = Sound('assets/sounds/time_bomb_shot.wav')
+        self.sounds['time_bomb_shot'] = Sound('assets/sounds/bomb_shot.wav')
+        self.sounds['proximity_mine_shot'] = Sound('assets/sounds/bomb_shot.wav')
         self.sounds['rocket_salvo_shot'] = Sound('assets/sounds/rocket_salvo_shot.wav')
         self.sounds['rocket_explosion'] = Sound('assets/sounds/rocket_explosion.wav')
         self.sounds['rocket_salvo_explosion'] = Sound('assets/sounds/rocket_salvo_explosion.wav')
@@ -30,6 +31,7 @@ class SoundLibrary:
         self.sounds['spread_fire_shot'] = Sound('assets/sounds/spread_fire_shot.wav')
         self.sounds['double_fire_shot'] = Sound('assets/sounds/double_fire_shot.wav')
         self.sounds['rapid_fire_shot'] = Sound('assets/sounds/rapid_fire_shot.wav')
+        self.sounds['arming_noise'] = Sound('assets/sounds/arming_noise.wav')
 
     def get_sound(self, name):
         return self.sounds[name]
