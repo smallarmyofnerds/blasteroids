@@ -21,5 +21,5 @@ Use the left and right arrow keys to rotate, the up arrow key to accelerate forw
 
 # Authors
 
-* Cameron Hale (summer intern)
+* Cameron Hale (Small Army Summer Intern)
 * Jamie Hale (Cameron's Dad)
