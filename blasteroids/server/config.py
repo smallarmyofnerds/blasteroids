@@ -167,6 +167,15 @@ class RocketSalvoConfig:
         self.projectile_lifespan = int(config['ProjectileLifespan'])
         self.spread = int(config['Spread'])
 
+class LootConfig:
+    def __init__(self, config):
+        self.level_1_chance = int(config['Level1Chance'])
+        self.level_1_drops = list(filter(lambda d: len(d) > 0, config['Level1Drops'].split(',')))
+        self.level_2_chance = int(config['Level2Chance'])
+        self.level_2_drops = list(filter(lambda d: len(d) > 0, config['Level2Drops'].split(',')))
+        self.level_3_chance = int(config['Level3Chance'])
+        self.level_3_drops = list(filter(lambda d: len(d) > 0, config['Level3Drops'].split(',')))
+
 class Config:
     def __init__(self, filename):
         config = configparser.ConfigParser()
@@ -176,6 +185,7 @@ class Config:
         self.misc = MiscConfig(config['Misc'])
         self.world = WorldConfig(config['World'])
         self.asteroid = AsteroidConfig(config['Asteroid'])
+        self.loot = LootConfig(config['Loot'])
 
         self.ship = ShipConfig(config['Ship'])
         self.laser = LaserConfig(config['Laser'])

@@ -74,14 +74,14 @@ def build_weapons(config):
 class Armoury:
     def __init__(self, config):
         self.weapons = build_weapons(config)
-        self.active_weapon_name = 'laser'
+        self.active_weapon_name = 'rocket'
         self.cooldown = Cooldown(0)
     
     def set_active_weapon(self, weapon_name):
         self.active_weapon_name = weapon_name
     
     def reset_weapon(self):
-        self.set_active_weapon('laser')
+        self.set_active_weapon('rocket_salvo')
         self.cooldown.set_cooldown(500)
     
     def shoot_active_weapon(self, ship, world):

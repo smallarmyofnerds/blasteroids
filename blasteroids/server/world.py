@@ -1,20 +1,19 @@
-from blasteroids.server.game_objects.time_bomb_pickup import TimeBombPickup
-from blasteroids.server.game_objects.proximity_mine_pickup import ProximityMinePickup
-from blasteroids.server.game_objects.mega_shield_pickup import MegaShieldPickup
-from blasteroids.server.game_objects.rocket_pickup import RocketPickup
-from blasteroids.server.game_objects.rocket_salvo_pickup import RocketSalvoPickup
-from blasteroids.server.game_objects.spread_fire_pickup import SpreadFirePickup
-from blasteroids.server.game_objects.double_fire_pickup import DoubleFirePickup
-from blasteroids.server.game_objects.mega_heart_pickup import MegaHeartPickup
 import random
 from pygame import Vector2
 from blasteroids.server.game_objects import Obstacle, Ship, Asteroid
 from blasteroids.lib.server_world import ServerShip, ServerPickup, ServerProjectile, ServerObstacle, ServerEffect
-from blasteroids.server.game_objects.heart_pickup import HeartPickup
-from blasteroids.server.game_objects.shield_pickup import ShieldPickup
-from blasteroids.server.game_objects.rapid_fire_pickup import RapidFirePickup
 from blasteroids.server.game_objects.sound_effect import SoundEffect
 from .asteroid_factory import AsteroidFactory
+from .loot_factory import LootFactory
+
+class IdGenerator:
+    def __init__(self):
+        self.next_id = 1
+    
+    def get_next_id(self):
+        id = self.next_id
+        self.next_id += 1
+        return id
 
 
 class World:
@@ -27,11 +26,11 @@ class World:
         self.power_ups = []
         self.obstacles = []
         self.effects = []
-        self.next_id = 1
+        self.id_generator = IdGenerator()
         self.edge_acceleration_factor = config.world.edge_acceleration_factor
 
-        self.asteroid_factory = AsteroidFactory(config)
-
+        self.asteroid_factory = AsteroidFactory(config, self.id_generator)
+        self.loot_factory = LootFactory(config, self.id_generator)
         self._top_up_asteroids()
 
     def is_in_bounds(self, p, padding=0):
@@ -66,12 +65,7 @@ class World:
             self.add_new_asteroid(3, Vector2(random.randint(0, self.width), random.randint(0, self.height)))
 
     def add_new_asteroid(self, level, position):
-        self.obstacles.append(self.asteroid_factory.create(level, self._get_next_id(), position))
-
-    def _get_next_id(self):
-        id = self.next_id
-        self.next_id += 1
-        return id
+        self.obstacles.append(self.asteroid_factory.create(level, position))
 
     def _get_safe_position(self):
         while True:
@@ -82,7 +76,7 @@ class World:
 
     def create_ship(self, player):
         position = self._get_safe_position()
-        ship = Ship(self.config, self._get_next_id(), position, Vector2(0, 1), player)
+        ship = Ship(self.config, self.id_generator.get_next_id(), position, Vector2(0, 1), player)
         self.ships.append(ship)
         return ship
     
@@ -90,45 +84,20 @@ class World:
         self.ships.remove(ship)
 
     def create_projectile(self, projectile):
-        projectile.id = self._get_next_id()
+        projectile.id = self.id_generator.get_next_id()
         self.projectiles.append(projectile)
 
-    def remove_projectile(self, projectile):
-        self.projectiles.remove(projectile)
-
     def create_obstacle(self, name):
-        self.obstacles.append(Obstacle(self._get_next_id(), Vector2(0, 0), Vector2(0, 1), 10000))
+        self.obstacles.append(Obstacle(self.id_generator.get_next_id(), Vector2(0, 0), Vector2(0, 1), 10000))
 
-    def remove_obstacle(self, obstacle):
-        self.obstacles.remove(obstacle)
-    
     def create_sound_effect(self, name, position):
-        self.effects.append(SoundEffect(self._get_next_id(), position, name))
+        self.effects.append(SoundEffect(self.id_generator.get_next_id(), position, name))
 
-    def add_new_power_up(self, name, position):
-        if name == 'heart':
-            self.power_ups.append(HeartPickup(self._get_next_id(), position, self.config.heart.health_amount, self.config.heart.pickup_lifespan))
-        elif name == 'mega_heart':
-            self.power_ups.append(MegaHeartPickup(self._get_next_id(), position, self.config.mega_heart.pickup_lifespan))
-        elif name == 'shield':
-            self.power_ups.append(ShieldPickup(self._get_next_id(), position, self.config.shield.shield_amount, self.config.shield.pickup_lifespan))
-        elif name == 'mega_shield':
-            self.power_ups.append(MegaShieldPickup(self._get_next_id(), position, self.config.mega_shield.pickup_lifespan))
-        elif name == 'double_fire':
-            self.power_ups.append(DoubleFirePickup(self._get_next_id(), position, self.config.double_fire.pickup_lifespan))
-        elif name == 'spread_fire':
-            self.power_ups.append(SpreadFirePickup(self._get_next_id(), position, self.config.spread_fire.pickup_lifespan))
-        elif name == 'rapid_fire':
-            self.power_ups.append(RapidFirePickup(self._get_next_id(), position, self.config.rapid_fire.pickup_lifespan))
-        elif name == 'rocket':
-            self.power_ups.append(RocketPickup(self._get_next_id(), position, self.config.rocket.pickup_lifespan))
-        elif name == 'rocket_salvo':
-            self.power_ups.append(RocketSalvoPickup(self._get_next_id(), position, self.config.rocket_salvo.pickup_lifespan))
-        elif name == 'proximity_mine':
-            self.power_ups.append(ProximityMinePickup(self._get_next_id(), position, self.config.proximity_mine.pickup_lifespan))
-        elif name == 'time_bomb':
-            self.power_ups.append(TimeBombPickup(self._get_next_id(), position, self.config.time_bomb.pickup_lifespan))
-
+    def create_random_drop(self, level, position):
+        random_drop = self.loot_factory.create(level, position)
+        if random_drop:
+            self.power_ups.append(random_drop)
+    
     def ship_closest_to(self, position, ignore):
         closest = None
         for ship in self.ships:

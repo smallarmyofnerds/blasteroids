@@ -9,6 +9,12 @@ class RocketProjectile(Projectile):
         self.life_span = life_span
         self.created_at = pygame.time.get_ticks()
 
+    def on_removed(self, world):
+        if self.name == 'rocket_projectile':
+            world.create_sound_effect('rocket_explosion', self.position)
+        else:
+            world.create_sound_effect('rocket_salvo_explosion', self.position)
+
     def update(self, world, delta_time):
         if pygame.time.get_ticks() - self.created_at > self.life_span:
             self.destroy()
