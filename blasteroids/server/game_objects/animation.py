@@ -15,3 +15,6 @@ class Animation(GameObject):
             self.destroy()
         else:
             super(Animation, self).update(world, delta_time)
+
+    def is_in_bounds(self, world):
+        return world.is_player_in_bounds(self.position, 200)

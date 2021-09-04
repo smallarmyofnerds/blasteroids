@@ -47,7 +47,7 @@ class ServerConnection(threading.Thread):
 
     def _handle_message(self, message):
         if message.message_id == WELCOME_MESSAGE_ID:
-            self.game.initialize_world(message.world_width, message.world_height)
+            self.game.initialize_world(message.world_width, message.world_height, message.boundary)
             return
         if message.message_id != WORLD_MESSAGE_ID:
             raise Exception(f'Unexpected message type {message.message_id}')

@@ -30,8 +30,8 @@ class Game:
         self.world_buffer = None
         self.counter_delete_me = 0
 
-    def initialize_world(self, world_width, world_height):
-        self.screen.initialize_world(world_width, world_height)
+    def initialize_world(self, world_width, world_height, boundary):
+        self.screen.initialize_world(world_width, world_height, boundary)
 
     def update_world(self, server_world):
         self.lock.acquire()

@@ -110,7 +110,7 @@ class Ship(PhysicalGameObject):
 
         self._set_rotations(inputs)
 
-        if world.is_in_bounds(self.position):
+        if world.is_point_in_bounds(self.position):
             self._set_linear(inputs)
         else:
             # pull back into world
@@ -118,3 +118,6 @@ class Ship(PhysicalGameObject):
 
         if inputs and inputs.fire:
             self.shoot(world)
+
+    def is_in_bounds(self, world):
+        return world.is_player_in_bounds(self.position)

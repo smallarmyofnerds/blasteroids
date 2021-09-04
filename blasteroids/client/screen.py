@@ -12,6 +12,7 @@ class Screen:
         self.height = height
         self.world_width = 1000
         self.world_height = 1000
+        self.boundary = 1000
         self.surface = None
         self.camera_position = Vector2(0, 0)
         self.screen_bottom_left = Vector2(0, 0)
@@ -24,16 +25,47 @@ class Screen:
         self.width = width
         self.height = height
 
-    def initialize_world(self, world_width, world_height):
+    def initialize_world(self, world_width, world_height, boundary):
         self.world_width = world_width
         self.world_height = world_height
+        self.boundary = boundary
+
+    def _draw_grid(self):
+        for i in range(int((self.world_width + 1) / 500) + 1):
+            pygame.draw.line(self.surface, (255, 255, 255), self._world_to_viewport(Vector2(i * 500, self.world_height)), self._world_to_viewport(Vector2(i * 500, 0)))
+        for i in range(int((self.world_height + 1) / 500) + 1):
+            pygame.draw.line(self.surface, (255, 255, 255), self._world_to_viewport(Vector2(0, i * 500)), self._world_to_viewport(Vector2(self.world_width, i * 500)))
+
+    def _draw_boundaries(self):
+        pygame.draw.line(
+            self.surface,
+            (255, 0, 0),
+            self._world_to_viewport(Vector2(-1 * self.boundary, -1 * self.boundary)),
+            self._world_to_viewport(Vector2(-1 * self.boundary, self.world_height + self.boundary)),
+        )
+        pygame.draw.line(
+            self.surface,
+            (255, 0, 0),
+            self._world_to_viewport(Vector2(-1 * self.boundary, self.world_height + self.boundary)),
+            self._world_to_viewport(Vector2(self.world_width + self.boundary, self.world_height + self.boundary)),
+        )
+        pygame.draw.line(
+            self.surface,
+            (255, 0, 0),
+            self._world_to_viewport(Vector2(self.world_width + self.boundary, self.world_height + self.boundary)),
+            self._world_to_viewport(Vector2(self.world_width + self.boundary, -1 * self.boundary)),
+        )
+        pygame.draw.line(
+            self.surface,
+            (255, 0, 0),
+            self._world_to_viewport(Vector2(self.world_width + self.boundary, -1 * self.boundary)),
+            self._world_to_viewport(Vector2(-1 * self.boundary, -1 * self.boundary)),
+        )
 
     def reset(self):
         self.surface.fill((0, 0, 0))
-        for i in range(int((self.world_width + 1) / 500)):
-            pygame.draw.line(self.surface, (255, 255, 255), self._world_to_viewport(Vector2(i * 500, self.world_height)), self._world_to_viewport(Vector2(i * 500, 0)))
-        for i in range(int((self.world_height + 1) / 500)):
-            pygame.draw.line(self.surface, (255, 255, 255), self._world_to_viewport(Vector2(0, i * 500)), self._world_to_viewport(Vector2(self.world_width, i * 500)))
+        self._draw_grid()
+        self._draw_boundaries()
 
     def move_camera_to(self, position):
         self.camera_position = position

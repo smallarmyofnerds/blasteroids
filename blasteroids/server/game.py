@@ -26,7 +26,7 @@ class Game(threading.Thread):
         if self.players[1] is None:
             return 2
         raise Exception('Too many players')
-    
+
     def _get_next_player(self):
         player_id = self._get_next_player_id()
         player_name = f'player_{player_id}'
@@ -39,8 +39,8 @@ class Game(threading.Thread):
 
         player = Player(player_id, player_name, client_connection)
         self.players[player_id - 1] = player
-        
-        client_connection.queue_message(WelcomeMessage(self.world.width, self.world.height))
+
+        client_connection.queue_message(WelcomeMessage(self.world.width, self.world.height, self.world.player_boundary))
 
         self.lock.release()
 
@@ -58,7 +58,7 @@ class Game(threading.Thread):
             self.players[1] = None
         else:
             logger.error('Removing unknown player')
-        
+
         self.lock.release()
 
     def _spawn_players(self):

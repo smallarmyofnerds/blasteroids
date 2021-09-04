@@ -23,6 +23,9 @@ class World:
         self.config = config
         self.width = config.world.width
         self.height = config.world.height
+        self.player_boundary = config.world.player_boundary
+        self.object_boundary = config.world.object_boundary
+        self.safe_respawn_distance = config.world.safe_respawn_distance
         self.ships = []
         self.projectiles = []
         self.power_ups = []
@@ -36,8 +39,14 @@ class World:
         self.loot_factory = LootFactory(config, self.id_generator)
         self._top_up_asteroids()
 
-    def is_in_bounds(self, p, padding=0):
+    def is_point_in_bounds(self, p, padding=0):
         return (p.x + padding) > 0 and (p.x - padding) < self.width and (p.y + padding) > 0 and (p.y - padding) < self.height
+
+    def is_object_in_bounds(self, p):
+        return self.is_point_in_bounds(p, self.object_boundary)
+
+    def is_player_in_bounds(self, p, padding=0):
+        return self.is_point_in_bounds(p, self.player_boundary + padding)
 
     def get_return_vector(self, p, v):
         if p.x < 0:
@@ -70,15 +79,15 @@ class World:
     def add_new_asteroid(self, level, position):
         self.obstacles.append(self.asteroid_factory.create(level, position))
 
-    def _get_safe_position(self):
+    def _get_safe_respawn_position(self):
         while True:
             position = Vector2(random.randint(0, self.width), random.randint(0, self.height))
             for o in [*self.ships, *self.obstacles, *self.projectiles, *self.power_ups]:
-                if position.distance_squared_to(o.position) > 10000:
+                if position.distance_squared_to(o.position) > (self.safe_respawn_distance * self.safe_respawn_distance):
                     return position
 
     def create_ship(self, player):
-        position = self._get_safe_position()
+        position = self._get_safe_respawn_position()
         ship = Ship(self.config, self.id_generator.get_next_id(), position, Vector2(0, 1), player)
         self.ships.append(ship)
         return ship

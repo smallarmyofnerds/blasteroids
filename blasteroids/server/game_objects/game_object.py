@@ -54,4 +54,4 @@ class GameObject:
         pass
 
     def is_in_bounds(self, world):
-        return world.is_in_bounds(self.position, 500)
+        return world.is_object_in_bounds(self.position)

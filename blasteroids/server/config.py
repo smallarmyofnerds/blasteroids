@@ -18,6 +18,8 @@ class WorldConfig:
         self.height = int(config['Height'])
         self.edge_acceleration_factor = float(config['EdgeAccelerationFactor'])
         self.min_obstacles = int(config['MinObstacles'])
+        self.player_boundary = int(config['PlayerBoundary'])
+        self.object_boundary = int(config['ObjectBoundary'])
         self.safe_respawn_distance = int(config['SafeRespawnDistance'])
 
 
