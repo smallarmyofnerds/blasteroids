@@ -1,9 +1,4 @@
-from .ship_object import ShipObject
-from .projectile_object import ProjectileObject
-from .obstacle_object import ObstacleObject
-from .pickup_object import PickupObject
-from .sound_effect_object import SoundEffectObject
-from .animation_object import AnimationObject
+from .game_objects import AnimationObject, ProjectileObject, ObstacleObject, PickupObject, ProjectileObject, ShipObject, SoundEffectObject
 
 
 class World:
@@ -13,7 +8,6 @@ class World:
         self.my_ship = None
         self.game_objects = []
         self.game_objects_by_id = {}
-        self.dying_objects = []
         self.health = 0
         self.shield = 0
         self.active_weapon = ''
@@ -22,8 +16,6 @@ class World:
 
     def draw(self, screen):
         for object in self.game_objects:
-            object.draw(screen, self.my_ship.position if self.my_ship is not None else None)
-        for object in self.dying_objects:
             object.draw(screen, self.my_ship.position if self.my_ship is not None else None)
         if self.my_ship:
             self.my_ship.draw(screen, None)
@@ -42,8 +34,6 @@ class World:
         for object in objects_to_remove:
             self.game_objects.remove(object)
             del self.game_objects_by_id[object.id]
-            self.dying_objects.append(object)
-            object.destroy()
 
     def _create_new_objects(self, server_world):
         for object in server_world.objects:
@@ -74,21 +64,12 @@ class World:
             if server_world.my_ship:
                 self.my_ship.update(server_world.my_ship)
             else:
-                self.my_ship.destroy()
                 self.my_ship = None
         else:
             if server_world.my_ship:
                 self.my_ship = ShipObject(server_world.my_ship, self.sprite_library)
             else:
                 pass
-
-    def _remove_dead_objects(self):
-        objects_to_remove = []
-        for object in self.dying_objects:
-            if object.should_be_removed():
-                objects_to_remove.append(object)
-        for object in objects_to_remove:
-            self.dying_objects.remove(object)
 
     def update(self, server_world):
         self.health = server_world.health
@@ -98,4 +79,3 @@ class World:
         self._sync_my_ship(server_world)
         self._destroy_objects(server_world)
         self._create_new_objects(server_world)
-        self._remove_dead_objects()

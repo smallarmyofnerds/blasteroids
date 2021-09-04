@@ -1,11 +1,12 @@
 import pygame
 from pygame.mixer import Sound
 
+
 class SoundLibrary:
     def __init__(self):
         self.sounds = {}
         pygame.mixer.init()
-        pygame.mixer.set_num_channels(16)
+        pygame.mixer.set_num_channels(32)
 
         self.sounds['laser'] = Sound('assets/sounds/laser.wav')
         self.sounds['impact'] = Sound('assets/sounds/impact.wav')
