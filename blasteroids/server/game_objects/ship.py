@@ -55,14 +55,14 @@ class Ship(PhysicalGameObject):
     def shield_full(self):
         self.shield = self.max_shields
     
-    def set_active_weapon(self, weapon_name):
-        self.armoury.set_active_weapon(weapon_name)
+    def set_active_weapon(self, weapon_id):
+        self.armoury.set_active_weapon(weapon_id)
     
     def reset_weapon(self):
         self.armoury.reset_weapon()
     
     def get_active_weapon(self):
-        return self.armoury.active_weapon_name
+        return self.armoury.get_active_weapon()
 
     def _set_rotating_left(self):
         self.rotational_acceleration = -1 * self.rotational_acceleration_rate

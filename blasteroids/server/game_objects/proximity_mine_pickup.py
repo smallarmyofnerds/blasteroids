@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import PROXIMITY_MINE_WEAPON_ID
 from blasteroids.server.game_objects.pickup import Pickup
 
 
@@ -7,4 +8,4 @@ class ProximityMinePickup(Pickup):
 
     def apply_pickup_to(self, ship, world):
         world.create_sound_effect('proximity_mine_pickup', self.position)
-        ship.set_active_weapon('proximity_mine')
+        ship.set_active_weapon(PROXIMITY_MINE_WEAPON_ID)

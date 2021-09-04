@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import TIME_BOMB_WEAPON_ID
 from blasteroids.server.game_objects.pickup import Pickup
 
 
@@ -7,4 +8,4 @@ class TimeBombPickup(Pickup):
 
     def apply_pickup_to(self, ship, world):
         world.create_sound_effect('time_bomb_pickup', self.position)
-        ship.set_active_weapon('time_bomb')
+        ship.set_active_weapon(TIME_BOMB_WEAPON_ID)

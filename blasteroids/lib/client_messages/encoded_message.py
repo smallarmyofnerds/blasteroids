@@ -22,8 +22,14 @@ class EncodedMessage:
         value = int.from_bytes(self.pop(1), 'little')
         return True if value == 1 else False
 
+    def pop_byte(self):
+        return int.from_bytes(self.pop(1), 'little')
+
     def pop_short(self):
         return int.from_bytes(self.pop(2), 'little')
+
+    def pop_long(self):
+        return int.from_bytes(self.pop(4), 'little')
 
     def pop_string(self):
         length = self.pop_short()

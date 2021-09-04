@@ -36,7 +36,7 @@ class ProximityMineProjectile(Projectile):
 
     def take_damage(self, damage, world):
         super(ProximityMineProjectile, self).take_damage(damage, world)
-        self._detonate()
+        self._detonate(world)
         world.create_sound_effect('bomb_clank', self.position)
 
     def apply_damage_to(self, other, world):

@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import RAPID_FIRE_WEAPON_ID
 from blasteroids.server.game_objects.pickup import Pickup
 
 
@@ -7,4 +8,4 @@ class RapidFirePickup(Pickup):
 
     def apply_pickup_to(self, ship, world):
         world.create_sound_effect('rapid_fire_pickup', self.position)
-        ship.set_active_weapon('rapid_fire')
+        ship.set_active_weapon(RAPID_FIRE_WEAPON_ID)

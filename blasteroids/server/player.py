@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import LASER_WEAPON_ID
 from blasteroids.lib.player_inputs import PlayerInputs
 import threading
 
@@ -42,7 +43,7 @@ class Player:
         self.inputs = PlayerInputs()
         self.died_at = pygame.time.get_ticks()
         self.lock.release()
-    
+
     def get_died_at(self):
         self.lock.acquire()
         died_at = self.died_at
@@ -56,7 +57,7 @@ class Player:
                 self.ship.id if self.ship is not None else 0,
                 self.ship.health if self.ship is not None else 0,
                 self.ship.shield if self.ship is not None else 0,
-                self.ship.get_active_weapon() if self.ship is not None else '',
+                self.ship.get_active_weapon() if self.ship is not None else LASER_WEAPON_ID,
                 self.ship.is_engine_on if self.ship is not None else False,
             ),
         )

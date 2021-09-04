@@ -2,14 +2,17 @@ import struct
 
 
 class MessageEncoder:
-    def __init__(self, type):
-        self.type = type
+    def __init__(self, message_id):
+        self.message_id = message_id
 
-    def _encode_type(self):
-        return bytes(self.type, 'utf-8')
+    def _encode_byte(self, n):
+        return n.to_bytes(1, byteorder='little')
 
     def _encode_short(self, n):
         return n.to_bytes(2, byteorder='little')
+
+    def _encode_long(self, n):
+        return n.to_bytes(4, byteorder='little')
 
     def _encode_boolean(self, b):
         n = 1 if b else 0

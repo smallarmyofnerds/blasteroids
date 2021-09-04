@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import SPREAD_FIRE_WEAPON_ID
 from blasteroids.server.game_objects.pickup import Pickup
 
 
@@ -7,4 +8,4 @@ class SpreadFirePickup(Pickup):
 
     def apply_pickup_to(self, ship, world):
         world.create_sound_effect('spread_fire_pickup', self.position)
-        ship.set_active_weapon('spread_fire')
+        ship.set_active_weapon(SPREAD_FIRE_WEAPON_ID)

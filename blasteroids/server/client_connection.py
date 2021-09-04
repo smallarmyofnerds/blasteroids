@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import INPUT_MESSAGE_ID, WELCOME_MESSAGE_ID, WORLD_MESSAGE_ID
 from blasteroids.lib.client_messages.input import InputMessageEncoder
 import select
 import threading
@@ -8,9 +9,9 @@ logger = log.get_logger(__name__)
 
 
 client_message_encoders = {
-    WelcomeMessage.TYPE: WelcomeMessageEncoder(),
-    InputMessage.TYPE: InputMessageEncoder(),
-    WorldMessage.TYPE: WorldMessageEncoder()
+    WELCOME_MESSAGE_ID: WelcomeMessageEncoder(),
+    INPUT_MESSAGE_ID: InputMessageEncoder(),
+    WORLD_MESSAGE_ID: WorldMessageEncoder()
 }
 
 
@@ -39,7 +40,7 @@ class ClientConnection(threading.Thread):
         encoded_bytes = self.socket.recv(8192)
         self.game_server.record_bytes_received(len(encoded_bytes))
         self.message_buffer.push(encoded_bytes)
-    
+
     def _process_messages(self):
         messages = self.message_buffer.pop_all()
         for message in messages:
@@ -47,8 +48,8 @@ class ClientConnection(threading.Thread):
             self._handle_message(message)
 
     def _handle_message(self, message):
-        if message.type != InputMessage.TYPE:
-            raise Exception(f'Unexpected message type "{message.type}"')
+        if message.message_id != INPUT_MESSAGE_ID:
+            raise Exception(f'Unexpected message type "{message.message_id}"')
 
         self.player.update_inputs(message.to_player_inputs())
 

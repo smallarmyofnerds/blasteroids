@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import ROCKET_WEAPON_ID
 from blasteroids.server.game_objects.pickup import Pickup
 
 
@@ -7,4 +8,4 @@ class RocketPickup(Pickup):
 
     def apply_pickup_to(self, ship, world):
         world.create_sound_effect('rocket_pickup', self.position)
-        ship.set_active_weapon('rocket')
+        ship.set_active_weapon(ROCKET_WEAPON_ID)

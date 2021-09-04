@@ -3,14 +3,14 @@ class MessageEncoding:
         self.encoders = encoders
 
     def decode(self, encoded_message):
-        type = encoded_message.pop_raw_string(4)
-        encoder = self.encoders.get(type)
+        message_id = encoded_message.pop_byte()
+        encoder = self.encoders.get(message_id)
         if encoder is None:
-            raise Exception(f'Unhandled message type {type}')
+            raise Exception(f'Unhandled message type {message_id}')
         return encoder.decode(encoded_message)
 
     def encode(self, message):
-        encoder = self.encoders.get(message.type)
+        encoder = self.encoders.get(message.message_id)
         if encoder is None:
-            raise Exception(f'Unhandled message type {type}')
+            raise Exception(f'Unhandled message type {message.message_id}')
         return encoder.encode(message)
