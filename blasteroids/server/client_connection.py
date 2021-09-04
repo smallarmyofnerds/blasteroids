@@ -1,17 +1,17 @@
+from blasteroids.lib.client_messages.message_encoder import MessageEncoder
 from blasteroids.lib.constants import INPUT_MESSAGE_ID, WELCOME_MESSAGE_ID, WORLD_MESSAGE_ID
-from blasteroids.lib.client_messages.input import InputMessageEncoder
 import select
 import threading
 from blasteroids.lib import log
-from blasteroids.lib.client_messages import InputMessage, WorldMessage, WorldMessageEncoder, MessageEncoding, WelcomeMessage, WelcomeMessageEncoder, MessageBuffer
+from blasteroids.lib.client_messages import InputMessage, WorldMessage, MessageEncoding, WelcomeMessage, MessageBuffer
 
 logger = log.get_logger(__name__)
 
 
 client_message_encoders = {
-    WELCOME_MESSAGE_ID: WelcomeMessageEncoder(),
-    INPUT_MESSAGE_ID: InputMessageEncoder(),
-    WORLD_MESSAGE_ID: WorldMessageEncoder()
+    WELCOME_MESSAGE_ID: WelcomeMessage,
+    INPUT_MESSAGE_ID: InputMessage,
+    WORLD_MESSAGE_ID: WorldMessage,
 }
 
 
@@ -25,8 +25,7 @@ class ClientConnection(threading.Thread):
         self.game = game
         self.player = None
         self.game_server = game_server
-        self.message_encoding = MessageEncoding(client_message_encoders)
-        self.message_buffer = MessageBuffer(self.message_encoding)
+        self.message_buffer = MessageBuffer(MessageEncoding(client_message_encoders))
 
         self.outgoing_messages = []
         self.lock = threading.Lock()
@@ -61,9 +60,11 @@ class ClientConnection(threading.Thread):
         self.lock.release()
 
     def _send_message(self, message):
-        encoded_message = self.message_encoding.encode(message)
-        self.socket.send(encoded_message)
-        self.game_server.record_bytes_sent(len(encoded_message))
+        encoder = MessageEncoder()
+        message.encode(encoder)
+        encoded_message = encoder.get_bytes()
+        self.socket.send(encoded_message + b'****')
+        self.game_server.record_bytes_sent(len(encoded_message) + 4)
 
     def run(self):
         logger.info('Running client connection')
@@ -93,7 +94,10 @@ class ClientConnection(threading.Thread):
                         self._flush_outgoing_messages()
 
         except Exception as e:
-            logger.error(e)
+            if e.errno == 54:
+                logger.info('Player disconnected')
+            else:
+                logger.exception(e)
         finally:
             logger.info('Removing player from game')
             self.game.remove_player(self.player)

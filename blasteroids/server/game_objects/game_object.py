@@ -6,10 +6,9 @@ class GameObject:
     MIN_ROTATIONAL_VELOCITY = 0.001
     MAX_ROTATIONAL_VELOCITY = 190
 
-    def __init__(self, id, name, position, orientation, velocity, **kwargs):
+    def __init__(self, id, position, orientation, velocity, **kwargs):
         self.id = id
-        self.name = name
-        
+
         self.position = position
 
         self.orientation = orientation

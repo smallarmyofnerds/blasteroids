@@ -1,13 +1,11 @@
 class GameObject:
     def __init__(self, server_object):
-        self.id = server_object.id
+        self.type_id = server_object.type_id
+        self.object_id = server_object.object_id
         self.position = server_object.position
-        self.orientation = server_object.orientation
-        self.name = server_object.name
 
-    def _update(self, position, orientation):
-        self.position = position
-        self.orientation = orientation
+    def update(self, server_object):
+        self.position = server_object.position
 
     def draw(self, screen, my_position):
         pass

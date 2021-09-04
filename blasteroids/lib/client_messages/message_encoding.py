@@ -7,10 +7,4 @@ class MessageEncoding:
         encoder = self.encoders.get(message_id)
         if encoder is None:
             raise Exception(f'Unhandled message type {message_id}')
-        return encoder.decode(encoded_message)
-
-    def encode(self, message):
-        encoder = self.encoders.get(message.message_id)
-        if encoder is None:
-            raise Exception(f'Unhandled message type {message.message_id}')
-        return encoder.encode(message)
+        return encoder.decode_body(encoded_message)

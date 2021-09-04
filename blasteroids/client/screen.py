@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import DOUBLE_FIRE_PICKUP_ID, DOUBLE_FIRE_WEAPON_ID, LASER_WEAPON_ID, PROXIMITY_MINE_PICKUP_ID, PROXIMITY_MINE_WEAPON_ID, RAPID_FIRE_PICKUP_ID, RAPID_FIRE_WEAPON_ID, ROCKET_PICKUP_ID, ROCKET_SALVO_PICKUP_ID, ROCKET_SALVO_WEAPON_ID, ROCKET_WEAPON_ID, SPREAD_FIRE_PICKUP_ID, SPREAD_FIRE_WEAPON_ID, TIME_BOMB_PICKUP_ID, TIME_BOMB_WEAPON_ID
 import pygame
 from pygame.math import Vector2
 from pygame.transform import rotozoom
@@ -51,7 +52,19 @@ class Screen:
         rotated_sprite_rect.center = self._world_to_viewport(position)
         self.surface.blit(rotated_sprite, rotated_sprite_rect)
 
-    def draw_ui(self, health, shield, active_weapon, sprite_library):
+    def pickup_id_from_weapon_id(self, active_weapon_id):
+        return {
+            LASER_WEAPON_ID: None,
+            DOUBLE_FIRE_WEAPON_ID: DOUBLE_FIRE_PICKUP_ID,
+            SPREAD_FIRE_WEAPON_ID: SPREAD_FIRE_PICKUP_ID,
+            RAPID_FIRE_WEAPON_ID: RAPID_FIRE_PICKUP_ID,
+            ROCKET_WEAPON_ID: ROCKET_PICKUP_ID,
+            ROCKET_SALVO_WEAPON_ID: ROCKET_SALVO_PICKUP_ID,
+            TIME_BOMB_WEAPON_ID: TIME_BOMB_PICKUP_ID,
+            PROXIMITY_MINE_WEAPON_ID: PROXIMITY_MINE_PICKUP_ID,
+        }[active_weapon_id]
+
+    def draw_ui(self, health, shield, active_weapon_id, sprite_library):
         self.health_message = self.font.render(str(health), True, (0, 255, 0))
         self.health_width = self.health_message.get_width()
 
@@ -61,5 +74,7 @@ class Screen:
         self.surface.blit(self.health_message, (75 - int(self.health_width), 25, 100, 100))
         self.surface.blit(self.shield_message, (150 - int(self.shield_width), 25, 100, 100))
 
-        if sprite_library.get(f'{active_weapon}_pickup') is not None:
-            self.surface.blit(sprite_library.get(f'{active_weapon}_pickup'), (self.width -75, 25, 50, 50))
+        if active_weapon_id:
+            pickup_id = self.pickup_id_from_weapon_id(active_weapon_id)
+            if pickup_id:
+                self.surface.blit(sprite_library.pickup_sprites[pickup_id], (self.width - 75, 25, 50, 50))

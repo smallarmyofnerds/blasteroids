@@ -37,7 +37,7 @@ class Game(threading.Thread):
 
         player_id, player_name = self._get_next_player()
 
-        player = Player(player_name, client_connection)
+        player = Player(player_id, player_name, client_connection)
         self.players[player_id - 1] = player
         
         client_connection.queue_message(WelcomeMessage(self.world.width, self.world.height))

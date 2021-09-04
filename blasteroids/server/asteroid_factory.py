@@ -18,7 +18,6 @@ class AsteroidFactory:
 
     def create(self, level, position):
         return Asteroid(
-            level,
             self.id_generator.get_next_id(),
             position,
             Vector2(0, 1).rotate(random.random() * 360.0),
@@ -26,4 +25,5 @@ class AsteroidFactory:
             self.collision_radius[level],
             self.damage[level],
             self.health[level],
+            level,
         )

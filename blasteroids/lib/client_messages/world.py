@@ -1,51 +1,51 @@
-from blasteroids.lib.constants import WORLD_MESSAGE_ID
+from blasteroids.lib.server_world.server_sound import ServerSound
+from blasteroids.lib.server_world.server_ship import ServerShip
+from blasteroids.lib.server_world.server_projectile import ServerProjectile
+from blasteroids.lib.server_world.server_pickup import ServerPickup
+from blasteroids.lib.server_world.server_asteroid import ServerAsteroid
+from blasteroids.lib.server_world.server_animation import ServerAnimation
+from blasteroids.lib.constants import ANIMATION_OBJECT_ID, ASTEROID_OBJECT_ID, PICKUP_OBJECT_ID, PROJECTILE_OBJECT_ID, SHIP_OBJECT_ID, SOUND_OBJECT_ID, WORLD_MESSAGE_ID
 from blasteroids.lib.server_world.server_world import ServerWorld
 from .message import Message
-from .message_encoder import MessageEncoder
 
 
 class WorldMessage(Message):
-    def __init__(self, objects, ship_id, health, shield, active_weapon_id, is_engine_on):
+    def __init__(self, objects, ship_object_id):
         super(WorldMessage, self).__init__(WORLD_MESSAGE_ID)
         self.objects = objects
-        self.ship_id = ship_id
-        self.health = health
-        self.shield = shield
-        self.active_weapon_id = active_weapon_id
-        self.is_engine_on = is_engine_on
+        self.ship_object_id = ship_object_id
 
     def to_server_world(self):
-        return ServerWorld(self.objects, self.ship_id, self.health, self.shield, self.active_weapon_id, self.is_engine_on)
+        return ServerWorld(self.objects, self.ship_object_id)
 
     def __repr__(self):
         return f'{super(WorldMessage, self).__repr__()}:...'
 
+    def encode(self, message_encoder):
+        super(WorldMessage, self).encode(message_encoder)
+        message_encoder.push_short(len(self.objects))
+        for object in self.objects:
+            object.encode(message_encoder)
+        message_encoder.push_long(self.ship_object_id)
 
-class WorldMessageEncoder(MessageEncoder):
-    def __init__(self):
-        super(WorldMessageEncoder, self).__init__(WORLD_MESSAGE_ID)
-
-    def encode(self, message):
-        buffer = bytearray()
-        buffer += self._encode_byte(WORLD_MESSAGE_ID)
-        buffer += self._encode_short(len(message.objects))
-        for object in message.objects:
-            buffer += self._encode_server_object(object)
-        buffer += self._encode_long(message.ship_id)
-        buffer += self._encode_short(message.health)
-        buffer += self._encode_short(message.shield)
-        buffer += self._encode_byte(message.active_weapon_id)
-        buffer += self._encode_boolean(message.is_engine_on)
-        return bytes(buffer) + b'****'
-
-    def decode(self, encoded_message):
+    def decode_body(encoded_message):
         count = encoded_message.pop_short()
         objects = []
         for i in range(count):
-            objects.append(encoded_message.pop_object())
-        ship_id = encoded_message.pop_long()
-        health = encoded_message.pop_short()
-        shield = encoded_message.pop_short()
-        active_weapon_id = encoded_message.pop_byte()
-        is_engine_on = encoded_message.pop_boolean()
-        return WorldMessage(objects, ship_id, health, shield, active_weapon_id, is_engine_on)
+            type_id = encoded_message.pop_byte()
+            if type_id == ANIMATION_OBJECT_ID:
+                objects.append(ServerAnimation.decode_body(encoded_message))
+            elif type_id == ASTEROID_OBJECT_ID:
+                objects.append(ServerAsteroid.decode_body(encoded_message))
+            elif type_id == PICKUP_OBJECT_ID:
+                objects.append(ServerPickup.decode_body(encoded_message))
+            elif type_id == PROJECTILE_OBJECT_ID:
+                objects.append(ServerProjectile.decode_body(encoded_message))
+            elif type_id == SHIP_OBJECT_ID:
+                objects.append(ServerShip.decode_body(encoded_message))
+            elif type_id == SOUND_OBJECT_ID:
+                objects.append(ServerSound.decode_body(encoded_message))
+            else:
+                raise Exception('Unrecognized object type {type_id}')
+        ship_object_id = encoded_message.pop_long()
+        return WorldMessage(objects, ship_object_id)

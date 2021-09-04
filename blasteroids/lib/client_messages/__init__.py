@@ -1,6 +1,6 @@
 from .message_encoding import MessageEncoding
 from .encoded_message import EncodedMessage
-from .input import InputMessage, InputMessageEncoder
-from .world import WorldMessage, WorldMessageEncoder
-from .welcome import WelcomeMessage, WelcomeMessageEncoder
+from .input import InputMessage
+from .world import WorldMessage
+from .welcome import WelcomeMessage
 from .message_buffer import MessageBuffer

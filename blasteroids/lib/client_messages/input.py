@@ -1,6 +1,5 @@
 from blasteroids.lib.constants import INPUT_MESSAGE_ID
 from .message import Message
-from .message_encoder import MessageEncoder
 from blasteroids.lib.player_inputs import PlayerInputs
 
 
@@ -26,24 +25,19 @@ class InputMessage(Message):
     def __repr__(self):
         return f'{super(InputMessage, self).__repr__()}:{self.left}:{self.right}:{self.up}:{self.fire}'
 
+    def encode(self, message_encoder):
+        super(InputMessage, self).encode(message_encoder)
+        flags = 0
+        flags |= (1 << 3) if self.left else 0
+        flags |= (1 << 2) if self.right else 0
+        flags |= (1 << 1) if self.up else 0
+        flags |= 1 if self.fire else 0
+        message_encoder.push_byte(flags)
 
-class InputMessageEncoder(MessageEncoder):
-    def __init__(self):
-        super(InputMessageEncoder, self).__init__(INPUT_MESSAGE_ID)
-
-    def encode(self, message):
-        buffer = bytearray()
-        buffer += self._encode_byte(INPUT_MESSAGE_ID)
-        buffer += self._encode_boolean(message.left)
-        buffer += self._encode_boolean(message.right)
-        buffer += self._encode_boolean(message.up)
-        buffer += self._encode_boolean(message.fire)
-        buffer += b'****'
-        return bytes(buffer)
-
-    def decode(self, encoded_message):
-        left = encoded_message.pop_boolean()
-        right = encoded_message.pop_boolean()
-        up = encoded_message.pop_boolean()
-        fire = encoded_message.pop_boolean()
+    def decode_body(encoded_message):
+        flags = encoded_message.pop_byte()
+        left = flags & (1 << 3)
+        right = flags & (1 << 2)
+        up = flags & (1 << 1)
+        fire = flags & 1
         return InputMessage(left, right, up, fire)

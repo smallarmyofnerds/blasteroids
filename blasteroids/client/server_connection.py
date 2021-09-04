@@ -1,7 +1,8 @@
+from blasteroids.lib.client_messages.message_encoder import MessageEncoder
 from blasteroids.lib.constants import INPUT_MESSAGE_ID, WELCOME_MESSAGE_ID, WORLD_MESSAGE_ID
-from blasteroids.lib.client_messages.welcome import WelcomeMessage, WelcomeMessageEncoder
-from blasteroids.lib.client_messages.input import InputMessage, InputMessageEncoder
-from blasteroids.lib.client_messages.world import WorldMessage, WorldMessageEncoder
+from blasteroids.lib.client_messages.welcome import WelcomeMessage
+from blasteroids.lib.client_messages.input import InputMessage
+from blasteroids.lib.client_messages.world import WorldMessage
 import threading
 import socket
 import select
@@ -11,9 +12,9 @@ from blasteroids.lib.client_messages import MessageEncoding, MessageBuffer
 logger = log.get_logger(__name__)
 
 server_message_encoders = {
-    WELCOME_MESSAGE_ID: WelcomeMessageEncoder(),
-    INPUT_MESSAGE_ID: InputMessageEncoder(),
-    WORLD_MESSAGE_ID: WorldMessageEncoder()
+    WELCOME_MESSAGE_ID: WelcomeMessage,
+    INPUT_MESSAGE_ID: InputMessage,
+    WORLD_MESSAGE_ID: WorldMessage,
 }
 
 
@@ -24,8 +25,7 @@ class ServerConnection(threading.Thread):
         self.server_port = config.server.port
         self.socket = None
         self.running = False
-        self.message_encoding = MessageEncoding(server_message_encoders)
-        self.message_buffer = MessageBuffer(self.message_encoding)
+        self.message_buffer = MessageBuffer(MessageEncoding(server_message_encoders))
         self.outgoing_messages = []
         self.lock = threading.Lock()
         self.game = None
@@ -66,7 +66,9 @@ class ServerConnection(threading.Thread):
         self.lock.release()
 
     def _send_message(self, message):
-        self.socket.send(self.message_encoding.encode(message))
+        encoder = MessageEncoder()
+        message.encode(encoder)
+        self.socket.send(encoder.get_bytes() + b'****')
 
     def run(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

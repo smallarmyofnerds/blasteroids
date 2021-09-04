@@ -1,13 +1,13 @@
-from .game_object import GameObject
+from .orientable_game_object import OrientableGameObject
 
 
-class ProjectileObject(GameObject):
-    def __init__(self, server_object, sprite_library):
-        super(ProjectileObject, self).__init__(server_object)
-        self.sprite = sprite_library.get(server_object.name)
+class ProjectileObject(OrientableGameObject):
+    def __init__(self, server_projectile, sprite_library):
+        super(ProjectileObject, self).__init__(server_projectile)
+        self.sprite = sprite_library.projectile_sprites[server_projectile.projectile_id]
 
     def draw(self, screen, my_position):
         screen.draw_sprite(self.sprite, self.position, self.orientation)
 
-    def update(self, raw_obstacle):
-        super(ProjectileObject, self)._update(raw_obstacle.position, raw_obstacle.orientation)
+    def update(self, server_projectile):
+        super(ProjectileObject, self).update(server_projectile)

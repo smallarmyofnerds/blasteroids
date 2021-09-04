@@ -1,17 +1,17 @@
 from .game_objects.animation import Animation
-from blasteroids.lib.server_world.server_animation import ServerAnimation
 import random
 from pygame import Vector2
-from blasteroids.server.game_objects import Obstacle, Ship, Asteroid
-from blasteroids.lib.server_world import ServerShip, ServerPickup, ServerProjectile, ServerObstacle, ServerSound, ServerAnimation
+from blasteroids.server.game_objects import Ship
+from blasteroids.lib.server_world import ServerShip, ServerPickup, ServerProjectile, ServerAsteroid, ServerSound, ServerAnimation
 from blasteroids.server.game_objects.sound_effect import SoundEffect
 from .asteroid_factory import AsteroidFactory
 from .loot_factory import LootFactory
 
+
 class IdGenerator:
     def __init__(self):
         self.next_id = 1
-    
+
     def get_next_id(self):
         id = self.next_id
         self.next_id += 1
@@ -82,7 +82,7 @@ class World:
         ship = Ship(self.config, self.id_generator.get_next_id(), position, Vector2(0, 1), player)
         self.ships.append(ship)
         return ship
-    
+
     def remove_ship(self, ship):
         self.ships.remove(ship)
 
@@ -90,20 +90,17 @@ class World:
         projectile.id = self.id_generator.get_next_id()
         self.projectiles.append(projectile)
 
-    def create_obstacle(self, name):
-        self.obstacles.append(Obstacle(self.id_generator.get_next_id(), Vector2(0, 0), Vector2(0, 1), 10000))
+    def create_sound_effect(self, sound_id, position):
+        self.sounds.append(SoundEffect(self.id_generator.get_next_id(), position, sound_id))
 
-    def create_sound_effect(self, name, position):
-        self.sounds.append(SoundEffect(self.id_generator.get_next_id(), position, name))
-    
-    def create_animation(self, name, position, velocity, duration):
-        self.animations.append(Animation(self.id_generator.get_next_id(), position, velocity, name, duration))
+    def create_animation(self, animation_id, position, velocity, duration):
+        self.animations.append(Animation(self.id_generator.get_next_id(), position, velocity, animation_id, duration))
 
     def create_random_drop(self, level, position):
         random_drop = self.loot_factory.create(level, position)
         if random_drop:
             self.power_ups.append(random_drop)
-    
+
     def ship_closest_to(self, position, ignore):
         closest = None
         for ship in self.ships:
@@ -195,9 +192,9 @@ class World:
         for projectile in self.projectiles:
             objects.append(ServerProjectile.from_projectile(projectile))
         for pickup in self.power_ups:
-            objects.append(ServerPickup.from_power_up(pickup))
+            objects.append(ServerPickup.from_pickup(pickup))
         for obstacle in self.obstacles:
-            objects.append(ServerObstacle.from_obstacle(obstacle))
+            objects.append(ServerAsteroid.from_asteroid(obstacle))
         for sound in self.sounds:
             objects.append(ServerSound.from_sound(sound))
         for animation in self.animations:

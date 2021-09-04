@@ -10,7 +10,8 @@ logger = log.get_logger(__name__)
 
 
 class Player:
-    def __init__(self, name, client_connection):
+    def __init__(self, id, name, client_connection):
+        self.id = id
         self.name = name
         self.ship = None
         self.client_connection = client_connection
@@ -55,9 +56,5 @@ class Player:
             WorldMessage(
                 server_objects,
                 self.ship.id if self.ship is not None else 0,
-                self.ship.health if self.ship is not None else 0,
-                self.ship.shield if self.ship is not None else 0,
-                self.ship.get_active_weapon() if self.ship is not None else LASER_WEAPON_ID,
-                self.ship.is_engine_on if self.ship is not None else False,
             ),
         )

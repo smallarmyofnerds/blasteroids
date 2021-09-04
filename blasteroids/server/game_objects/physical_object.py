@@ -2,8 +2,8 @@ from .game_object import GameObject
 
 
 class PhysicalGameObject(GameObject):
-    def __init__(self, id, name, position, orientation, velocity, collision_radius, damage, max_health, **kwargs):
-        super(PhysicalGameObject, self).__init__(id, name, position, orientation, velocity, **kwargs)
+    def __init__(self, id, position, orientation, velocity, collision_radius, damage, max_health, **kwargs):
+        super(PhysicalGameObject, self).__init__(id, position, orientation, velocity, **kwargs)
 
         self.damage = damage
 

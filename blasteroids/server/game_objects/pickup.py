@@ -5,8 +5,9 @@ from .physical_object import PhysicalGameObject
 
 
 class Pickup(PhysicalGameObject):
-    def __init__(self, id, name, position, lifespan):
-        super(Pickup, self).__init__(id, name, position, Vector2(0, 1), Vector2(0, 1).rotate(random.random() * 360.0) * random.random() * 40, 10, 0, 0)
+    def __init__(self, id, position, pickup_id, lifespan):
+        super(Pickup, self).__init__(id, position, Vector2(0, 1), Vector2(0, 1).rotate(random.random() * 360.0) * random.random() * 40, 10, 0, 0)
+        self.pickup_id = pickup_id
         self.lifespan = lifespan
         self.created_at = pygame.time.get_ticks()
 

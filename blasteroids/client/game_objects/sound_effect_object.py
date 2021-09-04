@@ -2,9 +2,9 @@ from .game_object import GameObject
 
 
 class SoundEffectObject(GameObject):
-    def __init__(self, server_object, sound_library):
-        super(SoundEffectObject, self).__init__(server_object)
-        self.sound = sound_library.get_sound(server_object.name)
+    def __init__(self, server_sound, sound_library):
+        super(SoundEffectObject, self).__init__(server_sound)
+        self.sound = sound_library.sounds[server_sound.sound_id]
         self.has_played = False
 
     def draw(self, screen, my_position):
@@ -21,5 +21,5 @@ class SoundEffectObject(GameObject):
             self.sound.play()
             self.has_played = True
 
-    def update(self, raw_effect):
-        super(SoundEffectObject, self)._update(raw_effect.position, raw_effect.orientation)
+    def update(self, server_sound):
+        super(SoundEffectObject, self).update(server_sound)

@@ -1,14 +1,13 @@
-from pygame import Vector2
-from .game_object import GameObject
+from .orientable_game_object import OrientableGameObject
 
 
-class AnimationObject(GameObject):
-    def __init__(self, server_object, sprite_library):
-        super(AnimationObject, self).__init__(server_object)
-        self.animation = sprite_library.animations[server_object.name]
+class AnimationObject(OrientableGameObject):
+    def __init__(self, server_animation, sprite_library):
+        super(AnimationObject, self).__init__(server_animation)
+        self.animation = sprite_library.animations[server_animation.animation_id]
 
     def draw(self, screen, my_position):
-        self.animation.draw(screen, self.position, Vector2(0, 1))
+        self.animation.draw(screen, self.position, self.orientation)
 
-    def update(self, raw_animation):
-        super(AnimationObject, self)._update(raw_animation.position, raw_animation.orientation)
+    def update(self, server_animation):
+        super(AnimationObject, self).update(server_animation)

@@ -1,6 +1,5 @@
 import struct
 from pygame.math import Vector2
-from blasteroids.lib.server_world import ServerShip, ServerObstacle, ServerProjectile, ServerPickup, ServerSound, ServerAnimation
 
 
 class EncodedMessage:
@@ -38,31 +37,3 @@ class EncodedMessage:
     def pop_vector(self):
         x, y = struct.unpack('ff', self.pop(8))
         return Vector2(x, y)
-
-    def pop_object(self):
-        type = self.pop_string()
-        id = self.pop_short()
-        position = self.pop_vector()
-        orientation = self.pop_vector()
-        name = self.pop_string()
-        if type == 'SHIP':
-            return ServerShip(id, position, orientation, name)
-        elif type == 'PROJECTILE':
-            return ServerProjectile(id, position, orientation, name)
-        elif type == 'OBSTACLE':
-            return ServerObstacle(id, position, orientation, name)
-        elif type == 'PICKUP':
-            return ServerPickup(id, position, orientation, name)
-        elif type == 'SOUND':
-            return ServerSound(id, position, orientation, name)
-        elif type == 'ANIM':
-            return ServerAnimation(id, position, orientation, name)
-        else:
-            raise Exception(f'Unrecognized object type {type}')
-
-    def pop_string_array(self):
-        length = self.pop_short()
-        a = []
-        for i in range(length):
-            a.append(self.pop_string())
-        return a

@@ -2,43 +2,28 @@ import struct
 
 
 class MessageEncoder:
-    def __init__(self, message_id):
-        self.message_id = message_id
+    def __init__(self):
+        self.buffer = bytearray()
 
-    def _encode_byte(self, n):
-        return n.to_bytes(1, byteorder='little')
+    def push_byte(self, n):
+        self.buffer += n.to_bytes(1, byteorder='little')
 
-    def _encode_short(self, n):
-        return n.to_bytes(2, byteorder='little')
+    def push_short(self, n):
+        self.buffer += n.to_bytes(2, byteorder='little')
 
-    def _encode_long(self, n):
-        return n.to_bytes(4, byteorder='little')
+    def push_long(self, n):
+        self.buffer += n.to_bytes(4, byteorder='little')
 
-    def _encode_boolean(self, b):
+    def push_boolean(self, b):
         n = 1 if b else 0
-        return n.to_bytes(1, byteorder='little')
+        self.buffer += n.to_bytes(1, byteorder='little')
 
-    def _encode_string(self, s):
-        return self._encode_short(len(s)) + bytes(s, 'utf-8')
+    def push_string(self, s):
+        self.push_short(len(s))
+        self.buffer += bytes(s, 'utf-8')
 
-    def _encode_string_array(self, a):
-        encoded_array = ''.join(map(self._encode_string, a))
-        return self._encode_short(len(a)) + encoded_array
+    def push_vector(self, v):
+        self.buffer += struct.pack('ff', float(v.x), float(v.y))
 
-    def _encode_vector(self, v):
-        return struct.pack('ff', float(v.x), float(v.y))
-
-    def _encode_server_object(self, server_object):
-        buffer = bytearray()
-        buffer += self._encode_string(server_object.type)
-        buffer += self._encode_short(server_object.id)
-        buffer += self._encode_vector(server_object.position)
-        buffer += self._encode_vector(server_object.orientation)
-        buffer += self._encode_string(server_object.name)
-        return bytes(buffer)
-
-    def encode(self, message):
-        raise Exception('Unimplemented')
-
-    def decode(self, encoded_message):
-        raise Exception('Unimplemented')
+    def get_bytes(self):
+        return bytes(self.buffer)

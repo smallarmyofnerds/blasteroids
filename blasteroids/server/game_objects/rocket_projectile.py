@@ -1,19 +1,19 @@
+from blasteroids.lib.constants import ROCKET_EXPLOSION_SOUND_ID, ROCKET_PROJECTILE_ID, ROCKET_SALVO_EXPLOSION_SOUND_ID
 import pygame
 from .projectile import Projectile
 
 
 class RocketProjectile(Projectile):
-    def __init__(self, owner, id, position, orientation, speed, collision_radius, damage, life_span, name):
-        super(RocketProjectile, self).__init__(owner, id, name, position, orientation, orientation.normalize() * speed, collision_radius, damage)
-        self.speed = speed
+    def __init__(self, id, position, orientation, velocity, collision_radius, damage, projectile_id, owner, life_span):
+        super(RocketProjectile, self).__init__(id, position, orientation, velocity, collision_radius, damage, projectile_id, owner)
         self.life_span = life_span
         self.created_at = pygame.time.get_ticks()
 
     def on_removed(self, world):
-        if self.name == 'rocket_projectile':
-            world.create_sound_effect('rocket_explosion', self.position)
+        if self.projectile_id == ROCKET_PROJECTILE_ID:
+            world.create_sound_effect(ROCKET_EXPLOSION_SOUND_ID, self.position)
         else:
-            world.create_sound_effect('rocket_salvo_explosion', self.position)
+            world.create_sound_effect(ROCKET_SALVO_EXPLOSION_SOUND_ID, self.position)
 
     def update(self, world, delta_time):
         if pygame.time.get_ticks() - self.created_at > self.life_span:
@@ -36,8 +36,8 @@ class RocketProjectile(Projectile):
                         correction = 45
                     else:
                         correction = angle_to_closest_ship
-                self.orientation = self.orientation.rotate(-1 * delta_time * 2 * correction)
-                self.velocity = self.orientation.normalize() * self.speed
+                self.velocity = self.velocity.rotate(-1 * delta_time * 2 * correction)
+                self.orientation = self.velocity.normalize()
             self.position = self.position + delta_time * self.velocity
 
     def can_hit_projectile(self, other):

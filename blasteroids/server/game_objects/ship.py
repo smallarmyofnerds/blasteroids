@@ -1,3 +1,4 @@
+from blasteroids.lib.constants import EXPLOSION_ANIMATION_ID, SHIP_IMPACT_SOUND_ID
 import pygame
 from .physical_object import PhysicalGameObject
 from blasteroids.server.game_objects.armoury import Armoury
@@ -7,7 +8,6 @@ class Ship(PhysicalGameObject):
     def __init__(self, config, id, position, orientation, player):
         super(Ship, self).__init__(
             id,
-            player.name,
             position,
             orientation,
             pygame.Vector2(0, 0),
@@ -17,6 +17,7 @@ class Ship(PhysicalGameObject):
         )
         self.config = config
         self.player = player
+        self.player_id = player.id
         self.acceleration_rate = config.ship.linear_acceleration
         self.rotational_acceleration_rate = config.ship.angular_acceleration
         self.rotational_velocity_friction = config.ship.angular_friction
@@ -29,8 +30,8 @@ class Ship(PhysicalGameObject):
         self.max_shields = config.ship.max_shields
 
     def on_removed(self, world):
-        world.create_sound_effect('shipimpact', self.position)
-        world.create_animation('explosion', self.position, self.velocity, 2000)
+        world.create_sound_effect(SHIP_IMPACT_SOUND_ID, self.position)
+        world.create_animation(EXPLOSION_ANIMATION_ID, self.position, self.velocity, 2000)
         self.player.kill()
 
     def shoot(self, world):
