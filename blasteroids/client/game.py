@@ -55,9 +55,9 @@ class Game:
         is_key_pressed = pygame.key.get_pressed()
 
         inputs = PlayerInputs()
-        inputs.right = is_key_pressed[pygame.K_RIGHT]
-        inputs.left = is_key_pressed[pygame.K_LEFT]
-        inputs.up = is_key_pressed[pygame.K_UP]
+        inputs.right = is_key_pressed[pygame.K_RIGHT] or is_key_pressed[pygame.K_d]
+        inputs.left = is_key_pressed[pygame.K_LEFT] or is_key_pressed[pygame.K_a]
+        inputs.up = is_key_pressed[pygame.K_UP] or is_key_pressed[pygame.K_w]
         inputs.fire = is_key_pressed[pygame.K_SPACE]
 
         if inputs.is_anything_pressed():
