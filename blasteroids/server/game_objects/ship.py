@@ -31,7 +31,7 @@ class Ship(PhysicalGameObject):
 
     def on_removed(self, world):
         world.create_sound_effect(SHIP_IMPACT_SOUND_ID, self.position)
-        world.create_animation(EXPLOSION_ANIMATION_ID, self.position, self.velocity, 2000)
+        world.create_animation(EXPLOSION_ANIMATION_ID, self.position, self.velocity * 0.3, 2000)
         self.player.kill()
 
     def shoot(self, world):
