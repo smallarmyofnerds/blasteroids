@@ -1,4 +1,5 @@
-from .game_objects import AnimationObject, ProjectileObject, ObstacleObject, PickupObject, ProjectileObject, ShipObject, SoundEffectObject
+from .game_objects import AnimationObject, ProjectileObject, ObstacleObject, PickupObject, ProjectileObject, ShipObject, SoundEffectObject, MyShipObject
+from .hud import Hud
 
 
 class World:
@@ -8,20 +9,14 @@ class World:
         self.my_ship = None
         self.game_objects = []
         self.game_objects_by_id = {}
-        self.health = 0
-        self.shield = 0
-        self.active_weapon = ''
-        self.is_engine_on = False
-        self.exhaust_animation = sprite_library.animations['exhaust']
+        self.hud = Hud(sprite_library)
 
     def draw(self, screen):
         for object in self.game_objects:
             object.draw(screen, self.my_ship.position if self.my_ship is not None else None)
         if self.my_ship:
             self.my_ship.draw(screen, None)
-            if self.is_engine_on:
-                self.exhaust_animation.draw(screen, self.my_ship.position - self.my_ship.orientation * 30, self.my_ship.orientation)
-            screen.draw_ui(self.health, self.shield, self.active_weapon, self.sprite_library)
+            self.hud.draw(screen)
 
     def _destroy_objects(self, server_world):
         objects_to_remove = []
@@ -62,20 +57,20 @@ class World:
     def _sync_my_ship(self, server_world):
         if self.my_ship:
             if server_world.my_ship:
-                self.my_ship.update(server_world.my_ship)
+                self.my_ship.update(server_world.my_ship, server_world.is_engine_on)
             else:
                 self.my_ship = None
         else:
             if server_world.my_ship:
-                self.my_ship = ShipObject(server_world.my_ship, self.sprite_library)
+                self.my_ship = MyShipObject(server_world.my_ship, self.sprite_library, server_world.is_engine_on)
             else:
                 pass
 
+    def _sync_hud(self, server_world):
+        self.hud.update(server_world.health, server_world.shield, server_world.active_weapon)
+
     def update(self, server_world):
-        self.health = server_world.health
-        self.shield = server_world.shield
-        self.active_weapon = server_world.active_weapon
-        self.is_engine_on = server_world.is_engine_on
+        self._sync_hud(server_world)
         self._sync_my_ship(server_world)
         self._destroy_objects(server_world)
         self._create_new_objects(server_world)
