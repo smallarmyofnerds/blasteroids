@@ -15,7 +15,7 @@ class Game:
         pygame.init()
         self.running = True
         self.clock = pygame.time.Clock()
-        self.fps = 60
+        self.fps = 30
         self.screen = Screen(config.client.screen_width, config.client.screen_height)
         server_connection.game = self
         self.server_connection = server_connection

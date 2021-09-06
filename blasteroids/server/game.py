@@ -16,7 +16,7 @@ class Game(threading.Thread):
         self.clock = pygame.time.Clock()
         self.players = [None] * 2
         self.world = World(config)
-        self.fps = 60
+        self.fps = 30
         self.respawn_delay = 5000
         self.lock = threading.Lock()
 
